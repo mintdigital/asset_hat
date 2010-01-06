@@ -6,6 +6,10 @@ require File.join(File.dirname(__FILE__), %w[.. asset_hat])
 
 
 
+unless defined?(RAILS_ROOT)
+  RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
+end
+
 task :default => :test
 
 desc 'Run tests'
@@ -130,16 +134,14 @@ namespace :asset_hat do
         raise 'Usage: rake asset_hat:css:minify_bundle[application]' and return
       end
 
-      config_filename = File.join('config', 'assets.yml')
-      config = YAML::load(File.open(config_filename))
-        # TODO: Memoize config
+      config = AssetHat::config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
 
       # Get bundle filenames
       filenames = config['css']['bundles'][args.bundle]
       if filenames.empty?
-        raise "No CSS files are specified for the #{args.bundle} bundle in #{config_filename}."
+        raise "No CSS files are specified for the #{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}."
         return
       end
       filepaths = filenames.map do |filename|
@@ -181,9 +183,7 @@ namespace :asset_hat do
     desc 'Concatenates and minifies all CSS bundles'
     task :minify do
       # Get input bundles
-      config_filename = File.join('config', 'assets.yml')
-      config = YAML::load(File.open(config_filename))
-        # TODO: Memoize config
+      config = AssetHat::config
       bundles = config['css']['bundles'].keys
 
       # Minify bundles
@@ -226,16 +226,14 @@ namespace :asset_hat do
         raise 'Usage: rake asset_hat:js:minify_bundle[application]' and return
       end
 
-      config_filename = File.join('config', 'assets.yml')
-      config = YAML::load(File.open(config_filename))
-        # TODO: Memoize config
+      config = AssetHat::config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
 
       # Get bundle filenames
       filenames = config['js']['bundles'][args.bundle]
       if filenames.empty?
-        raise "No JS files are specified for the #{args.bundle} bundle in #{config_filename}."
+        raise "No JS files are specified for the #{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}."
         return
       end
       filepaths = filenames.map do |filename|
@@ -272,9 +270,7 @@ namespace :asset_hat do
     desc 'Concatenates and minifies all JS bundles'
     task :minify do
       # Get input bundles
-      config_filename = File.join('config', 'assets.yml')
-      config = YAML::load(File.open(config_filename))
-        # TODO: Memoize config
+      config = AssetHat::config
       bundles = config['js']['bundles'].keys
 
       # Minify bundles

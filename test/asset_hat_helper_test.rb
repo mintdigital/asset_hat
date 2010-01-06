@@ -67,7 +67,7 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with real bundle files' do
         setup do
           @asset_id = ENV['RAILS_ASSET_ID'] = '111'
-          @config = get_config
+          @config = AssetHat::config
         end
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
@@ -175,7 +175,7 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with real bundle files' do
         setup do
           @asset_id = ENV['RAILS_ASSET_ID'] = '111'
-          @config = get_config
+          @config = AssetHat::config
         end
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
@@ -204,14 +204,6 @@ class AssetHatHelperTest < ActionView::TestCase
 
 
   private
-
-  def get_config
-    unless defined?(@@config)
-      config_filename = File.join(RAILS_ROOT, 'config', 'assets.yml')
-      @@config = YAML::load(File.open(config_filename, 'r'))
-    end
-    @@config
-  end
 
   def css_tag(filename)
     %Q{<link href="/stylesheets/#{filename}" media="screen,projection" rel="stylesheet" type="text/css" />}

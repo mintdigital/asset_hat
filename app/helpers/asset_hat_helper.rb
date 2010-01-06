@@ -34,9 +34,7 @@ module AssetHatHelper
       if use_caching
         sources += bundles.map { |b| "bundles/#{b}.min.#{type}" }
       else
-        config_filename = File.join(RAILS_ROOT, 'config', 'assets.yml')
-        config = YAML::load(File.open(config_filename, 'r'))
-          # TODO: Memoize config
+        config = AssetHat::config
         filenames = bundles.map { |b| config[type.to_s]['bundles'][b] }.
                       flatten.reject(&:blank?)
       end

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.homepage    = %q{http://github.com/mintdigital/asset_hat}
   s.description = %q{Your assets are covered.}
-  s.files       = %w[README] + Dir.glob(File.join('{app,lib,rails,tasks,test}', '**', '*'))
+  s.files       = %w[README] + Dir.glob(File.join('{app,config,lib,public,rails,tasks,test}', '**', '*'))
   s.test_files  = Dir.glob(File.join('test', '**', '*'))
 
   s.rubyforge_project = %q{asset_hat}
