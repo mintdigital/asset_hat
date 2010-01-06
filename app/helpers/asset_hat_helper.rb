@@ -1,4 +1,8 @@
 module AssetHatHelper
+  unless defined?(RAILS_ROOT)
+    RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
+  end
+
   def include_assets(type, *args)
     # `include_css` and `include_js` are recommended instead.
 

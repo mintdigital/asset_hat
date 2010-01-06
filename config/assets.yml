@@ -1,0 +1,53 @@
+# Configure your bundles below; no `.css` or `.js` suffixes needed. Example:
+#
+#     css:
+#       bundles:
+#         application:
+#           - reset
+#           - application
+#           - clearfix
+#         admin:
+#           - reset
+#           - admin
+#           - clearfix
+#     js:
+#       bundles:
+#         plugins:
+#           - init
+#           - third-party-plugin.min
+#             # Here, the suffix `.min` indicates that the code has already
+#             # been minified, and should not be re-minified.
+#         common:
+#           - utilities
+#           - application
+#
+# In your app, this belongs at `config/assets.yml`.
+
+css:
+  bundles:
+    css-bundle-1:
+      - css-file-1-1
+      - css-file-1-2
+      - css-file-1-3
+    css-bundle-2:
+      - css-file-2-1
+      - css-file-2-2
+      - css-file-2-3
+    css-bundle-3:
+      - css-file-3-1
+      - css-file-3-2
+      - css-file-3-3
+js:
+  bundles:
+    js-bundle-1:
+      - js-file-1-1
+      - js-file-1-2
+      - js-file-1-3
+    js-bundle-2:
+      - js-file-2-1
+      - js-file-2-2
+      - js-file-2-3
+    js-bundle-3:
+      - js-file-3-1
+      - js-file-3-2
+      - js-file-3-3

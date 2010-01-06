@@ -33,8 +33,9 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple files as a bundle' do
-          output = include_css(:bundle => 'test', :cache => true)
-          assert_equal css_tag("bundles/test.min.css?#{@asset_id}"), output
+          bundle = 'css-bundle-1'
+          output = include_css(:bundle => bundle, :cache => true)
+          assert_equal css_tag("bundles/#{bundle}.min.css?#{@asset_id}"), output
         end
       end # context 'with minified versions'
 
@@ -71,15 +72,16 @@ class AssetHatHelperTest < ActionView::TestCase
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
-          expected = @config['css']['bundles']['application'].map do |source|
+          bundle = 'css-bundle-1'
+          expected = @config['css']['bundles'][bundle].map do |source|
             css_tag("#{source}.css?#{@asset_id}")
           end.join("\n")
-          output = include_css(:bundle => 'application', :cache => false)
+          output = include_css(:bundle => bundle, :cache => false)
           assert_equal expected, output
         end
 
         should 'include multiple bundles as separate files' do
-          bundles = %w[application iframe]
+          bundles = [1,2,3].map { |i| "css-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['css']['bundles'][bundle]
             sources.map { |src| css_tag("#{src}.css?#{@asset_id}") }
@@ -126,8 +128,9 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple files as a bundle' do
-          output = include_js(:bundle => 'test', :cache => true)
-          assert_equal js_tag("bundles/test.min.js?#{@asset_id}"), output
+          bundle = 'js-bundle-1'
+          output = include_js(:bundle => bundle, :cache => true)
+          assert_equal js_tag("bundles/#{bundle}.min.js?#{@asset_id}"), output
         end
 
         should 'include multiple bundles' do
@@ -177,14 +180,15 @@ class AssetHatHelperTest < ActionView::TestCase
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
-          sources = @config['js']['bundles']['common']
+          bundle = 'js-bundle-1'
+          sources = @config['js']['bundles'][bundle]
           expected = sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
-          output = include_js(:bundle => 'common', :cache => false)
+          output = include_js(:bundle => bundle, :cache => false)
           assert_equal expected, output
         end
 
         should 'include multiple bundles as separate files' do
-          bundles = %w[plugins common]
+          bundles = [1,2,3].map { |i| "js-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['js']['bundles'][bundle]
             sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }
@@ -204,7 +208,7 @@ class AssetHatHelperTest < ActionView::TestCase
   def get_config
     unless defined?(@@config)
       config_filename = File.join(RAILS_ROOT, 'config', 'assets.yml')
-      @config = YAML::load(File.open(config_filename, 'r'))
+      @@config = YAML::load(File.open(config_filename, 'r'))
     end
     @@config
   end

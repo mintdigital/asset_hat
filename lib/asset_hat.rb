@@ -1,12 +1,10 @@
-require File.join(File.dirname(__FILE__), '..', 'rails', 'init.rb')
-
 module AssetHat
-  def min_filepath(filepath, extension)
+  def self.min_filepath(filepath, extension)
     filepath.sub(/([^\.]*).#{extension}$/, "\\1.min.#{extension}")
   end
 
   module CSS
-    def minify(input_string)
+    def self.minify(input_string)
       # TODO: Replace with a real minification engine, e.g., YUI, cssmin
 
       input   = StringIO.new(input_string)
@@ -24,14 +22,14 @@ module AssetHat
       output.read
     end
 
-    def add_css_asset_mtimes(css)
+    def self.add_asset_mtimes(css)
       css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
         mtime = File.mtime(File.join(Rails.public_path, $1))
         "url(#{$1}?#{mtime.to_i})"
       end
     end
 
-    def add_css_asset_hosts(css, asset_host)
+    def self.add_asset_hosts(css, asset_host)
       return if asset_host.blank?
       css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
         source = $1
@@ -41,7 +39,7 @@ module AssetHat
   end
 
   module JS
-    def minify(input_string)
+    def self.minify(input_string)
       # TODO: Replace with a better minification engine (e.g., YUI, Closure)
       #       that won't require a significant change in coding style.
 

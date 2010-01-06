@@ -1,13 +1,23 @@
 require 'rake/testtask'
+require 'active_support'
+require 'action_controller'
+require 'action_view'
+require File.join(File.dirname(__FILE__), %w[.. asset_hat])
 
-desc 'Run tests'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = false
-end
+
 
 task :default => :test
+
+desc 'Run tests'
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib' << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.verbose = false
+end
+
+desc 'Empty test; allows Rails tasks to span multiple files'
+task :environment do
+end
 
 
 
@@ -42,12 +52,12 @@ namespace :asset_hat do
 
       # Generate i18n.LOCALE.min.js
       request_path    = "/javascripts/i18n.#{args.locale}.js"
-      target_filepath = min_filepath(
+      target_filepath = AssetHat::min_filepath(
         File.join(%w[public javascripts locales], args.locale, 'i18n.js'), 'js')
       begin
         FileUtils.makedirs(File.dirname(target_filepath))
         app.get request_path
-        output = minify_js(app.response.body)
+        output = AssetHat::JS::minify(app.response.body)
         File.open(target_filepath, 'w') { |f| f.write output }
         puts "- Generated #{target_filepath}"
       rescue Exception => e
@@ -68,7 +78,7 @@ namespace :asset_hat do
       args.with_defaults :verbose => true
 
       css = File.open(args.filename, 'r') { |f| f.read }
-      css = add_css_asset_mtimes(css)
+      css = AssetHat::CSS::add_asset_mtimes(css)
       File.open(args.filename, 'w') { |f| f.write css }
 
       puts "- Added asset mtimes to #{args.filename}" if args.verbose
@@ -89,7 +99,7 @@ namespace :asset_hat do
       end
 
       css = File.open(args.filename, 'r') { |f| f.read }
-      css = add_css_asset_hosts(css, asset_host)
+      css = AssetHat::CSS::add_asset_hosts(css, asset_host)
       File.open(args.filename, 'w') { |f| f.write css }
 
       puts "- Added asset hosts to #{args.filename}" if args.verbose
@@ -104,10 +114,10 @@ namespace :asset_hat do
       args.with_defaults :verbose => false
 
       input   = File.open(args.filepath, 'r').read
-      output  = minify_css(input)
+      output  = AssetHat::CSS::minify(input)
 
       # Write minified content to file
-      target_filepath = min_filepath(args.filepath, 'css')
+      target_filepath = AssetHat::min_filepath(args.filepath, 'css')
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -135,7 +145,7 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'stylesheets', "#{filename}.css")
       end
-      bundle_filepath = min_filepath(File.join(
+      bundle_filepath = AssetHat::min_filepath(File.join(
         'public', 'stylesheets', 'bundles', "#{args.bundle}.css"), 'css')
 
       # Concatenate and process output
@@ -145,10 +155,10 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
 
-        file_output = minify_css(file_output)
-        file_output = add_css_asset_mtimes(file_output)
+        file_output = AssetHat::CSS::minify(file_output)
+        file_output = AssetHat::CSS::add_asset_mtimes(file_output)
         if asset_host.present?
-          file_output = add_css_asset_hosts(file_output, asset_host)
+          file_output = AssetHat::CSS::add_asset_hosts(file_output, asset_host)
         end
 
         new_bundle_size += file_output.size
@@ -200,10 +210,10 @@ namespace :asset_hat do
       end
 
       input   = File.open(args.filepath, 'r').read
-      output  = minify_js(input)
+      output  = AssetHat::JS::minify(input)
 
       # Write minified content to file
-      target_filepath = min_filepath(args.filepath, 'js')
+      target_filepath = AssetHat::min_filepath(args.filepath, 'js')
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -231,7 +241,7 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'javascripts', "#{filename}.js")
       end
-      bundle_filepath = min_filepath(File.join(
+      bundle_filepath = AssetHat::min_filepath(File.join(
         'public', 'javascripts', 'bundles', "#{args.bundle}.js"), 'js')
 
       # Concatenate and process output
@@ -240,7 +250,7 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
         unless filepath =~ /\.min\.js$/ # Already minified
-          file_output = minify_js(file_output)
+          file_output = AssetHat::JS::minify(file_output)
         end
         new_bundle_size += file_output.size
         output << file_output + "\n"
