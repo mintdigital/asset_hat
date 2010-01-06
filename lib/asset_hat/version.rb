@@ -6,4 +6,6 @@ module AssetHat
 
     STRING = [MAJOR, MINOR, TINY].join('.')
   end
+
+  VERSION = Version::STRING
 end
