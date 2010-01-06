@@ -4,6 +4,7 @@ Your assets are covered.
 
 * Minify CSS and JS with one command.
 * Bundle CSS and JS to reduce HTTP requests.
+* Reuse CSS and JS bundles across layouts without repetition.
 * Bust cached image URLs in your CSS.
 * Force image URLs in your CSS to use CDN subdomains.
 
