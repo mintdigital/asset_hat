@@ -32,46 +32,6 @@ namespace :asset_hat do
     Rake::Task['asset_hat:js:minify'].invoke  # Generate all JS bundles
   end
 
-  namespace :locales do
-    desc 'Generates locale-specific assets for all locales'
-    task :generate, :host, :needs => :environment do |t, args|
-      args.with_defaults :host => 'http://localhost:3000'
-      locales = COUNTRY_LOCALES.keys.map(&:to_s)
-
-      locales.each do |locale|
-        puts `rake asset_hat:locales:generate_for[#{args.host},#{locale}]`
-          # Doesn't work with `Rake::Task[...].invoke`
-      end
-    end # task :generate
-
-    desc 'Generates locale-specific assets for one given locale'
-    task :generate_for, :host, :locale, :needs => :environment do |t, args|
-      unless args.host.present? && args.locale.present?
-        raise 'Usage: rake asset_hat:locales:generate_for[host,locale]' and return
-      end
-
-      require 'action_controller/integration'
-      app = ActionController::Integration::Session.new
-      app.host! args.host
-
-      # Generate i18n.LOCALE.min.js
-      request_path    = "/javascripts/i18n.#{args.locale}.js"
-      target_filepath = AssetHat::min_filepath(
-        File.join(%w[public javascripts locales], args.locale, 'i18n.js'), 'js')
-      begin
-        FileUtils.makedirs(File.dirname(target_filepath))
-        app.get request_path
-        output = AssetHat::JS::minify(app.response.body)
-        File.open(target_filepath, 'w') { |f| f.write output }
-        puts "- Generated #{target_filepath}"
-      rescue Exception => e
-        puts "Could not write file: #{target_filepath}"
-        puts "- #{e}"
-      end
-    end # task :generate_for
-
-  end # namespace :locales
-
   namespace :css do
     desc 'Adds mtimes to asset URLs in CSS'
     task :add_asset_mtimes, :filename, :verbose do |t, args|
