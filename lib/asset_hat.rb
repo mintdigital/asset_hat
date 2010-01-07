@@ -11,6 +11,10 @@ module AssetHat
   end
 
   module CSS
+    def self.min_filepath(filepath)
+      AssetHat::min_filepath(filepath, 'css')
+    end
+
     def self.minify(input_string)
       # TODO: Replace with a real minification engine, e.g., YUI, cssmin
 
@@ -46,6 +50,10 @@ module AssetHat
   end
 
   module JS
+    def self.min_filepath(filepath)
+      AssetHat::min_filepath(filepath, 'js')
+    end
+
     def self.minify(input_string)
       # TODO: Replace with a better minification engine (e.g., YUI, Closure)
       #       that won't require a significant change in coding style.

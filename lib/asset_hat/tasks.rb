@@ -121,7 +121,7 @@ namespace :asset_hat do
       output  = AssetHat::CSS::minify(input)
 
       # Write minified content to file
-      target_filepath = AssetHat::min_filepath(args.filepath, 'css')
+      target_filepath = AssetHat::CSS::min_filepath(args.filepath)
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -147,8 +147,8 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'stylesheets', "#{filename}.css")
       end
-      bundle_filepath = AssetHat::min_filepath(File.join(
-        'public', 'stylesheets', 'bundles', "#{args.bundle}.css"), 'css')
+      bundle_filepath = AssetHat::CSS::min_filepath(File.join(
+        'public', 'stylesheets', 'bundles', "#{args.bundle}.css"))
 
       # Concatenate and process output
       output = ''
@@ -213,7 +213,7 @@ namespace :asset_hat do
       output  = AssetHat::JS::minify(input)
 
       # Write minified content to file
-      target_filepath = AssetHat::min_filepath(args.filepath, 'js')
+      target_filepath = AssetHat::JS::min_filepath(args.filepath)
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -239,8 +239,8 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'javascripts', "#{filename}.js")
       end
-      bundle_filepath = AssetHat::min_filepath(File.join(
-        'public', 'javascripts', 'bundles', "#{args.bundle}.js"), 'js')
+      bundle_filepath = AssetHat::JS::min_filepath(File.join(
+        'public', 'javascripts', 'bundles', "#{args.bundle}.js"))
 
       # Concatenate and process output
       output = ''
