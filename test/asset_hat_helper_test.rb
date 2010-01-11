@@ -6,10 +6,13 @@ class AssetHatHelperTest < ActionView::TestCase
   context 'include_css' do
     context 'with caching enabled' do
       context 'with minified versions' do
-        setup     { @asset_id = ENV['RAILS_ASSET_ID'] = '111' }
-        teardown  { ENV['RAILS_ASSET_ID'] = nil }
+        setup do
+          @asset_id = '111'
+          flexmock(AssetHat).should_receive(:last_commit_id => @asset_id)
+        end
 
         should 'include one file by name, and automatically use minified version' do
+          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
           output = include_css('foo', :cache => true)
           assert_equal css_tag("foo.min.css?#{@asset_id}"), output
         end
@@ -25,6 +28,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple files by name' do
+          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
           expected = %w[foo bar].map do |source|
             css_tag("#{source}.min.css?#{@asset_id}")
           end.join("\n")
@@ -66,10 +70,10 @@ class AssetHatHelperTest < ActionView::TestCase
 
       context 'with real bundle files' do
         setup do
-          @asset_id = ENV['RAILS_ASSET_ID'] = '111'
+          @asset_id = '111'
+          flexmock(AssetHat).should_receive(:last_commit_id => @asset_id)
           @config = AssetHat::config
         end
-        teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
           bundle = 'css-bundle-1'
@@ -96,10 +100,16 @@ class AssetHatHelperTest < ActionView::TestCase
   context 'include_js' do
     context 'with caching enabled' do
       context 'with minified versions' do
-        setup     { @asset_id = ENV['RAILS_ASSET_ID'] = '111' }
-        teardown  { ENV['RAILS_ASSET_ID'] = nil }
+        setup do
+          @asset_id = '111'
+          flexmock(AssetHat).should_receive(
+            :last_commit_id => @asset_id,
+            :last_bundle_commit_id => @asset_id
+          )
+        end
 
         should 'include one file by name, and automatically use minified version' do
+          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
           output = include_js('jquery.some-plugin', :cache => true)
           assert_equal js_tag("jquery.some-plugin.min.js?#{@asset_id}"), output
         end
@@ -120,6 +130,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple files by name' do
+          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
           expected = %w[foo jquery.bar].map do |source|
             js_tag("#{source}.min.js?#{@asset_id}")
           end.join("\n")
@@ -134,6 +145,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple bundles' do
+          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
           expected = %w[foo bar].map do |bundle|
             js_tag("bundles/#{bundle}.min.js?#{@asset_id}")
           end.join("\n")
@@ -174,10 +186,10 @@ class AssetHatHelperTest < ActionView::TestCase
 
       context 'with real bundle files' do
         setup do
-          @asset_id = ENV['RAILS_ASSET_ID'] = '111'
+          @asset_id = '111'
+          flexmock(AssetHat).should_receive(:last_commit_id => @asset_id)
           @config = AssetHat::config
         end
-        teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
           bundle = 'js-bundle-1'

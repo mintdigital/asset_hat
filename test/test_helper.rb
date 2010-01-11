@@ -6,6 +6,7 @@ require 'action_view/test_case'
 
 require 'shoulda'
 require 'asset_hat'
+require 'flexmock/test_unit'
 Dir[File.join(File.dirname(__FILE__), %w[.. app helpers *])].each { |f| require f }
 
 

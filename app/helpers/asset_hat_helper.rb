@@ -6,8 +6,9 @@ module AssetHatHelper
   def include_assets(type, *args)
     # `include_css` and `include_js` are recommended instead.
 
+    type = type.to_sym
     allowed_types = AssetHat::TYPES
-    unless allowed_types.include?(type.to_sym)
+    unless allowed_types.include?(type)
       expected_types = allowed_types.map { |x| ":#{x}" }.to_sentence(
         :two_words_connector => ' or ',
         :last_word_connector => ', or '
@@ -20,9 +21,9 @@ module AssetHatHelper
     options.symbolize_keys!
     options.reverse_merge!(:media => 'screen,projection') if type == :css
 
-    filenames   = []
-    sources     = []
-    assets_dir  = (type == :css ? 'stylesheets' : 'javascripts')
+    filenames = []
+    sources   = [] # The URLs that are ultimately included via HTML
+    source_commit_ids = {} # Last commit ID for each source
 
     # Set to `true` to use bundles and minified code:
     use_caching = ActionController::Base.perform_caching
@@ -47,10 +48,7 @@ module AssetHatHelper
         sources << filename
       else
         min_filename_with_ext = "#{filename}.min.#{type}"
-        if  use_caching &&
-            rails_asset_id(File.join(assets_dir, min_filename_with_ext)).present?
-          # This condition takes advantage of the caching built into
-          # `rails_asset_id`.
+        if use_caching && AssetHat::asset_exists?(min_filename_with_ext, type)
           sources << min_filename_with_ext  # Use minified version
         else
           sources << "#{filename}.#{type}"  # Use original version
@@ -59,8 +57,27 @@ module AssetHatHelper
     end
 
     sources.uniq!
+
+    # Add commit IDs to bust browser caches based on when each file was
+    # last updated in the repository
+    sources.map! do |src|
+      if src =~ /^bundles\//
+        # Get commit ID of bundle file with most recently committed update
+        bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
+        commit_id = AssetHat::last_bundle_commit_id(bundle, type)
+      else
+        # Get commit ID of file's most recently committed update
+        commit_id = AssetHat::last_commit_id(
+          File.join(AssetHat::assets_dir(type), src))
+      end
+      if commit_id.present? # False if file isn't committed to repo
+        src += "#{src =~ /\?/ ? '&' : '?'}#{commit_id}"
+      end
+      src
+    end
+
+    # Build output HTML
     sources.map do |src|
-      # TODO: If use_caching, bust cache with git-sha of last modified file
       case type
       when :css
         stylesheet_link_tag(src, options)
