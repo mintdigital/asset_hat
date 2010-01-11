@@ -14,4 +14,9 @@ class AssetHatTest < ActiveSupport::TestCase
                     AssetHat::JS::min_filepath('foo/bar/baz.js')
     end
   end # context 'AssetHat::JS'
+
+  should "return a bundle's filenames" do
+    assert_equal  %w[css-file-1-1 css-file-1-2 css-file-1-3],
+                  AssetHat::bundle_filenames('css-bundle-1', 'css')
+  end
 end

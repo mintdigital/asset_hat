@@ -6,13 +6,13 @@ module AssetHatHelper
   def include_assets(type, *args)
     # `include_css` and `include_js` are recommended instead.
 
-    allowed_types = [:css, :js]
-    unless allowed_types.include?(type)
+    allowed_types = AssetHat::TYPES
+    unless allowed_types.include?(type.to_sym)
       expected_types = allowed_types.map { |x| ":#{x}" }.to_sentence(
         :two_words_connector => ' or ',
         :last_word_connector => ', or '
       )
-      raise "Unknown type :#{klass}; should be #{expected_types}"
+      raise "Unknown type :#{type}; should be #{expected_types}"
       return
     end
 
@@ -30,12 +30,12 @@ module AssetHatHelper
 
     if options[:bundle].present? || options[:bundles].present?
       bundles = [options.delete(:bundle), options.delete(:bundles)].
-                  compact.flatten.reject(&:blank?)
+                  flatten.reject(&:blank?)
       if use_caching
         sources += bundles.map { |b| "bundles/#{b}.min.#{type}" }
       else
         config = AssetHat::config
-        filenames = bundles.map { |b| config[type.to_s]['bundles'][b] }.
+        filenames = bundles.map { |b| AssetHat::bundle_filenames(b, type) }.
                       flatten.reject(&:blank?)
       end
     else
