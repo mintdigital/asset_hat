@@ -26,7 +26,7 @@ module AssetHatHelper
     source_commit_ids = {} # Last commit ID for each source
 
     # Set to `true` to use bundles and minified code:
-    use_caching = ActionController::Base.perform_caching
+    use_caching = AssetHat::cache?
     use_caching = options[:cache] unless options[:cache].nil?
 
     if options[:bundle].present? || options[:bundles].present?
