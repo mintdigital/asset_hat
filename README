@@ -17,7 +17,9 @@ Your assets are covered.
 Installation
 ------------
 
-1. Install the gem: `gem install asset_hat`
+1. Install the gem:
+
+        gem install asset_hat
 
 2. Configure the gem:
 
@@ -44,11 +46,15 @@ Installation
 Configuration
 -------------
 
-1.  Create the default config file: `rake asset_hat:config`
+1.  Create the default config file:
+
+        rake asset_hat:config
+
 2.  In your app, open the config file at `config/assets.yml`, and set up your
     CSS/JS bundles. No `.css` or `.js` suffixes are needed. Here's an example:
 
         css:
+          engine: cssmin
           bundles:
             application:
               - reset
@@ -59,6 +65,7 @@ Configuration
               - admin
               - clearfix
         js:
+          engine: jsmin
           bundles:
             plugins:
               - init
@@ -69,13 +76,21 @@ Configuration
               - utilities
               - application
 
+
 3.  Minify your bundles, which are written to `public/stylesheets/bundles/`
     and `public/javascripts/bundles/`:
 
-      rake asset_hat:minify
+        rake asset_hat:minify
 
     This will minify all of the CSS/JS files listed in `config/assets.yml`,
     and will concatenate the minified code into bundle files.
+
+### Advanced configuration ###
+
+In `config/assets.yml`, the `engine` lines indicate the methods for minifying
+CSS or JS. If the default engines cause problems from minifying too strongly,
+try switching each to `weak`. The `weak` engines are much safer, but don't
+save as many bytes.
 
 
 

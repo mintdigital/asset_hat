@@ -1,6 +1,7 @@
 # Configure your bundles below; no `.css` or `.js` suffixes needed. Example:
 #
 #     css:
+#       engine: cssmin
 #       bundles:
 #         application:
 #           - reset
@@ -11,6 +12,7 @@
 #           - admin
 #           - clearfix
 #     js:
+#       engine: jsmin
 #       bundles:
 #         plugins:
 #           - init
@@ -24,6 +26,7 @@
 # In your app, this belongs at `config/assets.yml`.
 
 css:
+  engine: cssmin
   bundles:
     css-bundle-1:
       - css-file-1-1
@@ -38,6 +41,7 @@ css:
       - css-file-3-2
       - css-file-3-3
 js:
+  engine: jsmin
   bundles:
     js-bundle-1:
       - js-file-1-1

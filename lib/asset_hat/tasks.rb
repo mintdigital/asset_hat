@@ -90,9 +90,12 @@ namespace :asset_hat do
       end
 
       args.with_defaults :verbose => false
+      min_options = {
+        :engine => AssetHat::config['css']['engine']
+      }.reject { |k,v| v.blank? }
 
       input   = File.open(args.filepath, 'r').read
-      output  = AssetHat::CSS::minify(input)
+      output  = AssetHat::CSS::minify(input, min_options)
 
       # Write minified content to file
       target_filepath = AssetHat::CSS::min_filepath(args.filepath)
@@ -111,6 +114,9 @@ namespace :asset_hat do
       config = AssetHat::config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
+      min_options = {
+        :engine => AssetHat::config['css']['engine']
+      }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
       filenames = config['css']['bundles'][args.bundle]
@@ -131,7 +137,7 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
 
-        file_output = AssetHat::CSS::minify(file_output)
+        file_output = AssetHat::CSS::minify(file_output, min_options)
         file_output = AssetHat::CSS::add_asset_mtimes(file_output)
         if asset_host.present?
           file_output = AssetHat::CSS::add_asset_hosts(file_output, asset_host)
@@ -177,6 +183,9 @@ namespace :asset_hat do
       end
 
       args.with_defaults :verbose => false
+      min_options = {
+        :engine => AssetHat::config['js']['engine']
+      }.reject { |k,v| v.blank? }
 
       if args.verbose && args.filepath.match(/\.min\.js$/)
         puts "#{args.filepath} is already minified."
@@ -184,7 +193,7 @@ namespace :asset_hat do
       end
 
       input   = File.open(args.filepath, 'r').read
-      output  = AssetHat::JS::minify(input)
+      output  = AssetHat::JS::minify(input, min_options)
 
       # Write minified content to file
       target_filepath = AssetHat::JS::min_filepath(args.filepath)
@@ -203,6 +212,9 @@ namespace :asset_hat do
       config = AssetHat::config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
+      min_options = {
+        :engine => AssetHat::config['js']['engine']
+      }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
       filenames = config['js']['bundles'][args.bundle]
@@ -222,7 +234,7 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
         unless filepath =~ /\.min\.js$/ # Already minified
-          file_output = AssetHat::JS::minify(file_output)
+          file_output = AssetHat::JS::minify(file_output, min_options)
         end
         new_bundle_size += file_output.size
         output << file_output + "\n"

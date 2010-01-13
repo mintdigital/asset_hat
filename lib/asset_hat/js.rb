@@ -13,10 +13,11 @@ module AssetHat
     def self.minify(input_string, options={})
       options.reverse_merge!(:engine => :jsmin)
 
+      options[:engine] = options[:engine].to_sym
       unless ENGINES.include?(options[:engine])
         raise %Q{
-          Unknown JS minification engine "#{options[:engine]}".
-          Allowed: #{ENGINES.map{ |e| ":#{e}" }.join(', ')}
+          Unknown JS minification engine '#{options[:engine]}'.
+          Allowed: #{ENGINES.map{ |e| "'#{e}'" }.join(', ')}
         }.strip.gsub(/\s+/, ' ') and return
       end
 
