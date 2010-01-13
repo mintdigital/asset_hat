@@ -1,25 +1,22 @@
 module AssetHat
   module CSS
+    ENGINES = [:weak]
+
     def self.min_filepath(filepath)
       AssetHat::min_filepath(filepath, 'css')
     end
 
-    def self.minify(input_string)
-      # TODO: Replace with a real minification engine, e.g., YUI, cssmin
+    def self.minify(input_string, options={})
+      options.reverse_merge!(:engine => :weak)
 
-      input   = StringIO.new(input_string)
-      output  = StringIO.new
-
-      input.each do |line|
-        # Remove indentation and trailing whitespace (including line breaks)
-        line.strip!
-        next if line.blank?
-
-        output.write line
+      unless ENGINES.include?(options[:engine])
+        raise %Q{
+          Unknown CSS minification engine :#{options[:engine]}.
+          Allowed: #{ENGINES.map{ |e| ":#{e}" }.join(', ')}
+        }.strip.gsub(/\s+/, ' ') and return
       end
 
-      output.rewind
-      output.read
+      AssetHat::CSS::Engines.send(options[:engine], input_string)
     end
 
     def self.add_asset_mtimes(css)
@@ -36,6 +33,25 @@ module AssetHat
         "url(#{(asset_host =~ /%d/) ? asset_host % (source.hash % 4) : asset_host}#{source})"
       end
     end
+
+    module Engines
+      def self.weak(input_string)
+        input   = StringIO.new(input_string)
+        output  = StringIO.new
+
+        input.each do |line|
+          # Remove indentation and trailing whitespace (including line breaks)
+          line.strip!
+          next if line.blank?
+
+          output.write line
+        end
+
+        output.rewind
+        output.read
+      end
+    end
+
   end
 
 end
