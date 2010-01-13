@@ -16,4 +16,5 @@ Gem::Specification.new do |s|
   s.rubygems_version  = %q{1.3.5}
   s.add_development_dependency('shoulda', '>= 2.10.2')
   s.add_development_dependency('flexmock', '>= 0.8.6')
+  s.add_runtime_dependency('cssmin', '>= 1.0.2')
 end

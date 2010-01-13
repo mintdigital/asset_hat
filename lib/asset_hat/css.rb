@@ -1,13 +1,15 @@
+require 'cssmin' # http://gemcutter.org/gems/cssmin
+
 module AssetHat
   module CSS
-    ENGINES = [:weak]
+    ENGINES = [:weak, :cssmin]
 
     def self.min_filepath(filepath)
       AssetHat::min_filepath(filepath, 'css')
     end
 
     def self.minify(input_string, options={})
-      options.reverse_merge!(:engine => :weak)
+      options.reverse_merge!(:engine => :cssmin)
 
       unless ENGINES.include?(options[:engine])
         raise %Q{
@@ -49,6 +51,10 @@ module AssetHat
 
         output.rewind
         output.read
+      end
+
+      def self.cssmin(input_string)
+        CSSMin.minify(input_string)
       end
     end
 
