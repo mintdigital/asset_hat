@@ -17,6 +17,11 @@ class AssetHatTest < ActiveSupport::TestCase
 
   should "return a bundle's filenames" do
     assert_equal  %w[css-file-1-1 css-file-1-2 css-file-1-3],
-                  AssetHat::bundle_filenames('css-bundle-1', 'css')
+                  AssetHat::bundle_filenames('css-bundle-1', :css)
+  end
+
+  should "return a bundle's filepaths" do
+    expected = [1,2,3].map { |i| "public/stylesheets/css-file-1-#{i}.css" }
+    assert_equal expected, AssetHat::bundle_filepaths('css-bundle-1', :css)
   end
 end
