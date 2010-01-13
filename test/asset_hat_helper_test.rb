@@ -70,15 +70,15 @@ class AssetHatHelperTest < ActionView::TestCase
 
       context 'with real bundle files' do
         setup do
-          @commit_id = '111'
-          flexmock(AssetHat).should_receive(:last_commit_id => @commit_id)
+          @asset_id = ENV['RAILS_ASSET_ID'] = '222'
           @config = AssetHat::config
         end
+        teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
           bundle = 'css-bundle-1'
           expected = @config['css']['bundles'][bundle].map do |source|
-            css_tag("#{source}.css?#{@commit_id}")
+            css_tag("#{source}.css?#{@asset_id}")
           end.join("\n")
           output = include_css(:bundle => bundle, :cache => false)
           assert_equal expected, output
@@ -88,7 +88,7 @@ class AssetHatHelperTest < ActionView::TestCase
           bundles = [1,2,3].map { |i| "css-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['css']['bundles'][bundle]
-            sources.map { |src| css_tag("#{src}.css?#{@commit_id}") }
+            sources.map { |src| css_tag("#{src}.css?#{@asset_id}") }
           end.flatten.uniq.join("\n")
           output = include_css(:bundles => bundles, :cache => false)
           assert_equal expected, output
@@ -186,15 +186,15 @@ class AssetHatHelperTest < ActionView::TestCase
 
       context 'with real bundle files' do
         setup do
-          @commit_id = '111'
-          flexmock(AssetHat).should_receive(:last_commit_id => @commit_id)
+          @asset_id = ENV['RAILS_ASSET_ID'] = '222'
           @config = AssetHat::config
         end
+        teardown { ENV['RAILS_ASSET_ID'] = nil }
 
         should 'include a bundle as separate files' do
           bundle = 'js-bundle-1'
           sources = @config['js']['bundles'][bundle]
-          expected = sources.map { |src| js_tag("#{src}.js?#{@commit_id}") }.join("\n")
+          expected = sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
           output = include_js(:bundle => bundle, :cache => false)
           assert_equal expected, output
         end
@@ -203,7 +203,7 @@ class AssetHatHelperTest < ActionView::TestCase
           bundles = [1,2,3].map { |i| "js-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['js']['bundles'][bundle]
-            sources.map { |src| js_tag("#{src}.js?#{@commit_id}") }
+            sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }
           end.flatten.uniq.join("\n")
           output = include_js(:bundles => bundles, :cache => false)
           assert_equal expected, output

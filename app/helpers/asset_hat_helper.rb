@@ -58,22 +58,26 @@ module AssetHatHelper
 
     sources.uniq!
 
-    # Add commit IDs to bust browser caches based on when each file was
-    # last updated in the repository
-    sources.map! do |src|
-      if src =~ /^bundles\//
-        # Get commit ID of bundle file with most recently committed update
-        bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
-        commit_id = AssetHat::last_bundle_commit_id(bundle, type)
-      else
-        # Get commit ID of file's most recently committed update
-        commit_id = AssetHat::last_commit_id(
-          File.join(AssetHat::assets_dir(type), src))
+    if use_caching
+      # Add commit IDs to bust browser caches based on when each file was
+      # last updated in the repository. If `use_caching` is false (e.g., in
+      # development environments), skip this, and instead default to Rails'
+      # mtime-based cache busting.
+      sources.map! do |src|
+        if src =~ /^bundles\//
+          # Get commit ID of bundle file with most recently committed update
+          bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
+          commit_id = AssetHat::last_bundle_commit_id(bundle, type)
+        else
+          # Get commit ID of file's most recently committed update
+          commit_id = AssetHat::last_commit_id(
+            File.join(AssetHat::assets_dir(type), src))
+        end
+        if commit_id.present? # False if file isn't committed to repo
+          src += "#{src =~ /\?/ ? '&' : '?'}#{commit_id}"
+        end
+        src
       end
-      if commit_id.present? # False if file isn't committed to repo
-        src += "#{src =~ /\?/ ? '&' : '?'}#{commit_id}"
-      end
-      src
     end
 
     # Build output HTML
@@ -154,7 +158,7 @@ module AssetHatHelper
       source = (Rails.env.development? || Rails.env.test?) ?
         'jquery-1.3.2.min.js' :
         'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'
-      html << include_assets(:js, source)
+      html << include_assets(:js, source, :cache => true)
     end
 
     html << include_assets(:js, *args)
