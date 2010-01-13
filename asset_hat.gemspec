@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
   s.rubyforge_project = %q{asset_hat}
   s.rubygems_version  = %q{1.3.5}
   s.add_development_dependency('shoulda', '>= 2.10.2')
+  s.add_development_dependency('flexmock', '>= 0.8.6')
 end
