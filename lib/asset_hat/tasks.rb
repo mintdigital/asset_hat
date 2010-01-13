@@ -19,10 +19,6 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = false
 end
 
-desc 'Empty test; allows Rails tasks to span multiple files'
-task :environment do
-end
-
 
 
 namespace :asset_hat do
@@ -30,6 +26,24 @@ namespace :asset_hat do
   task :minify do
     Rake::Task['asset_hat:css:minify'].invoke # Generate all CSS bundles
     Rake::Task['asset_hat:js:minify'].invoke  # Generate all JS bundles
+  end
+
+  desc 'Prepare configuration file'
+  task :config do
+    template_filepath =
+      File.join(File.dirname(__FILE__), '..', '..', AssetHat::CONFIG_FILEPATH)
+    target_filepath = File.join(RAILS_ROOT, AssetHat::CONFIG_FILEPATH)
+
+    if File.exists?(target_filepath)
+      print "Replace #{target_filepath}? (y/n) "
+      response = STDIN.gets.chomp
+      unless response.downcase == 'y'
+        puts 'Aborted.' ; exit
+      end
+    end
+
+    FileUtils.cp(template_filepath, target_filepath)
+    puts "Wrote to #{target_filepath}"
   end
 
   namespace :css do

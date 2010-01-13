@@ -44,8 +44,9 @@ Installation
 Configuration
 -------------
 
-1.  In your app, create `config/assets.yml` and set up your CSS/JS bundles. No
-    `.css` or `.js` suffixes are needed. Here's an example:
+1.  Create the default config file: `rake asset_hat:config`
+2.  In your app, open the config file at `config/assets.yml`, and set up your
+    CSS/JS bundles. No `.css` or `.js` suffixes are needed. Here's an example:
 
         css:
           bundles:
@@ -68,7 +69,7 @@ Configuration
               - utilities
               - application
 
-2.  Minify your bundles, which are written to `public/stylesheets/bundles/`
+3.  Minify your bundles, which are written to `public/stylesheets/bundles/`
     and `public/javascripts/bundles/`:
 
       rake asset_hat:minify

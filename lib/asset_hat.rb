@@ -8,7 +8,7 @@ module AssetHat
   ASSETS_DIR      = defined?(Rails.public_path) ? Rails.public_path : 'public'
   JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
   STYLESHEETS_DIR = "#{ASSETS_DIR}/stylesheets"
-  CONFIG_FILEPATH = File.join(RAILS_ROOT, 'config', 'assets.yml')
+  CONFIG_FILEPATH = File.join('config', 'assets.yml')
 
   def self.config
     @@config ||= YAML::load(File.open(CONFIG_FILEPATH, 'r'))
