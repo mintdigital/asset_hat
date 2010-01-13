@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('shoulda', '>= 2.10.2')
   s.add_development_dependency('flexmock', '>= 0.8.6')
   s.add_runtime_dependency('cssmin', '>= 1.0.2')
+  s.add_runtime_dependency('jsmin', '>= 1.0.1')
 end

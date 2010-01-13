@@ -1,4 +1,6 @@
-require 'cssmin' # http://gemcutter.org/gems/cssmin
+require 'cssmin'
+  # - http://github.com/rgrove/cssmin
+  # - http://gemcutter.org/gems/cssmin
 
 module AssetHat
   module CSS

@@ -1,15 +1,17 @@
+require 'jsmin'
+  # - http://github.com/rgrove/jsmin
+  # - http://gemcutter.org/gems/jsmin
+
 module AssetHat
   module JS
-    ENGINES = [:weak]
-      # TODO: Add with a better minification engine (e.g., YUI, Closure)
-      #       that won't require a significant change in coding style.
+    ENGINES = [:weak, :jsmin]
 
     def self.min_filepath(filepath)
       AssetHat::min_filepath(filepath, 'js')
     end
 
     def self.minify(input_string, options={})
-      options.reverse_merge!(:engine => :weak)
+      options.reverse_merge!(:engine => :jsmin)
 
       unless ENGINES.include?(options[:engine])
         raise %Q{
@@ -45,6 +47,10 @@ module AssetHat
 
         output.rewind
         output.read
+      end
+
+      def self.jsmin(input_string)
+        JSMin.minify(input_string)
       end
     end
 
