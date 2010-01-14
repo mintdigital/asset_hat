@@ -22,7 +22,8 @@ module AssetHat
 
     @@last_commit_ids ||= {}
     if @@last_commit_ids[filepaths].blank?
-      h = `git log -1 --pretty=format:%H #{filepaths} 2>/dev/null`
+      h = `git log -1 --pretty=format:%h #{filepaths} 2>/dev/null`
+        # `h` has either the abbreviated Git commit hash or an empty string
       @@last_commit_ids[filepaths] = h if h.present?
     end
     @@last_commit_ids[filepaths]
