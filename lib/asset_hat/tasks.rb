@@ -47,24 +47,39 @@ namespace :asset_hat do
   end
 
   namespace :css do
-    desc 'Adds mtimes to asset URLs in CSS'
-    task :add_asset_mtimes, :filename, :verbose do |t, args|
-      unless args.filename.present?
-        raise 'Usage: rake asset_hat:css:add_asset_mtimes[filename.css]' and return
+    # desc 'Adds mtimes to asset URLs in CSS'
+    # task :add_asset_mtimes, :filename, :verbose do |t, args|
+    #   if args.filename.blank?
+    #     raise 'Usage: rake asset_hat:css:add_asset_mtimes[filename.css]' and return
+    #   end
+    #
+    #   args.with_defaults :verbose => true
+    #
+    #   css = File.open(args.filename, 'r') { |f| f.read }
+    #   css = AssetHat::CSS::add_asset_mtimes(css)
+    #   File.open(args.filename, 'w') { |f| f.write css }
+    #
+    #   puts "- Added asset mtimes to #{args.filename}" if args.verbose
+    # end
+
+    desc 'Adds commit IDs to asset URLs in CSS for cache busting'
+    task :add_asset_commit_ids, :filename, :verbose do |t, args|
+      if args.filename.blank?
+        raise 'Usage: rake asset_hat:css:add_asset_commit_ids[filename.css]' and return
       end
 
       args.with_defaults :verbose => true
 
       css = File.open(args.filename, 'r') { |f| f.read }
-      css = AssetHat::CSS::add_asset_mtimes(css)
+      css = AssetHat::CSS::add_asset_commit_ids(css)
       File.open(args.filename, 'w') { |f| f.write css }
 
-      puts "- Added asset mtimes to #{args.filename}" if args.verbose
+      puts "- Added asset commit IDs to #{args.filename}" if args.verbose
     end
 
     desc 'Adds hosts to asset URLs in CSS'
     task :add_asset_hosts, :filename, :verbose, :needs => :environment do |t, args|
-      unless args.filename.present?
+      if args.filename.blank?
         raise 'Usage: rake asset_hat:css:add_asset_hosts[filename.css]' and return
       end
 
@@ -85,7 +100,7 @@ namespace :asset_hat do
 
     desc 'Minifies one CSS file'
     task :minify_file, :filepath, :verbose do |t, args|
-      unless args.filepath.present?
+      if args.filepath.blank?
         raise 'Usage: rake asset_hat:css:minify_file[path/to/filename.css]' and return
       end
 
@@ -107,7 +122,7 @@ namespace :asset_hat do
 
     desc 'Minifies one CSS bundle'
     task :minify_bundle, :bundle, :needs => :environment do |t, args|
-      unless args.bundle.present?
+      if args.bundle.blank?
         raise 'Usage: rake asset_hat:css:minify_bundle[application]' and return
       end
 
@@ -138,7 +153,7 @@ namespace :asset_hat do
         old_bundle_size += file_output.size
 
         file_output = AssetHat::CSS::minify(file_output, min_options)
-        file_output = AssetHat::CSS::add_asset_mtimes(file_output)
+        file_output = AssetHat::CSS::add_asset_commit_ids(file_output)
         if asset_host.present?
           file_output = AssetHat::CSS::add_asset_hosts(file_output, asset_host)
         end
@@ -178,7 +193,7 @@ namespace :asset_hat do
   namespace :js do
     desc 'Minifies one JS file'
     task :minify_file, :filepath, :verbose do |t, args|
-      unless args.filepath.present?
+      if args.filepath.blank?
         raise 'Usage: rake asset_hat:js:minify_file[filepath.js]' and return
       end
 
@@ -205,7 +220,7 @@ namespace :asset_hat do
 
     desc 'Minifies one JS bundle'
     task :minify_bundle, :bundle do |t, args|
-      unless args.bundle.present?
+      if args.bundle.blank?
         raise 'Usage: rake asset_hat:js:minify_bundle[application]' and return
       end
 
