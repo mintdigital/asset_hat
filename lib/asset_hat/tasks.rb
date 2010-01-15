@@ -106,7 +106,7 @@ namespace :asset_hat do
 
       args.with_defaults :verbose => false
       min_options = {
-        :engine => AssetHat::config['css']['engine']
+        :engine => AssetHat.config['css']['engine']
       }.reject { |k,v| v.blank? }
 
       input   = File.open(args.filepath, 'r').read
@@ -126,11 +126,11 @@ namespace :asset_hat do
         raise 'Usage: rake asset_hat:css:minify_bundle[application]' and return
       end
 
-      config = AssetHat::config
+      config = AssetHat.config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
       min_options = {
-        :engine => AssetHat::config['css']['engine']
+        :engine => config['css']['engine']
       }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
@@ -178,7 +178,7 @@ namespace :asset_hat do
     desc 'Concatenates and minifies all CSS bundles'
     task :minify do
       # Get input bundles
-      config = AssetHat::config
+      config = AssetHat.config
       bundles = config['css']['bundles'].keys
 
       # Minify bundles
@@ -199,7 +199,7 @@ namespace :asset_hat do
 
       args.with_defaults :verbose => false
       min_options = {
-        :engine => AssetHat::config['js']['engine']
+        :engine => AssetHat.config['js']['engine']
       }.reject { |k,v| v.blank? }
 
       if args.verbose && args.filepath.match(/\.min\.js$/)
@@ -224,11 +224,11 @@ namespace :asset_hat do
         raise 'Usage: rake asset_hat:js:minify_bundle[application]' and return
       end
 
-      config = AssetHat::config
+      config = AssetHat.config
       old_bundle_size = 0.0
       new_bundle_size = 0.0
       min_options = {
-        :engine => AssetHat::config['js']['engine']
+        :engine => config['js']['engine']
       }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
@@ -271,7 +271,7 @@ namespace :asset_hat do
     desc 'Concatenates and minifies all JS bundles'
     task :minify do
       # Get input bundles
-      config = AssetHat::config
+      config = AssetHat.config
       bundles = config['js']['bundles'].keys
 
       # Minify bundles

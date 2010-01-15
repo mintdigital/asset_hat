@@ -36,7 +36,7 @@ module AssetHatHelper
       if use_caching
         sources += bundles.map { |b| "bundles/#{b}.min.#{type}" }
       else
-        config = AssetHat::config
+        config = AssetHat.config
         filenames = bundles.map { |b| AssetHat::bundle_filenames(b, type) }.
                       flatten.reject(&:blank?)
       end
@@ -131,9 +131,11 @@ module AssetHatHelper
     #
     # Include jQuery:
     #   include_js :jquery  # Development/test environment
-    #   =>  <script src="/javascripts/jquery-1.3.2.min.js" ...></script>
+    #   =>  <script src="/javascripts/jquery-VERSION.min.js" ...></script>
     #   include_js :jquery  # Staging/production environment
     #   =>  <script src="http://ajax.googleapis.com/.../jquery.min.js" ...></script>
+    #     # Set jQuery versions either in `config/assets.yml`, or by using
+    #     # `include_js :jquery, :version => '1.4'`.
     #
     # Include a bundle of JS files (i.e., a concatenated set of files;
     # configure in config/assets.yml):
@@ -153,16 +155,16 @@ module AssetHatHelper
 
     return if args.blank?
     html = []
+    options = args.extract_options!
 
-    if args.include?(:jquery)
-      args.delete :jquery
-      source = (Rails.env.development? || Rails.env.test?) ?
-        'jquery-1.3.2.min.js' :
-        'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'
+    included_vendors = (args & AssetHat::JS::VENDORS)
+    included_vendors.each do |vendor|
+      args.delete vendor
+      source = AssetHat::JS::Vendors.source_for(vendor, options.slice(:version))
       html << include_assets(:js, source, :cache => true)
     end
 
-    html << include_assets(:js, *args)
+    html << include_assets(:js, *(args + [options]))
     html.join("\n").strip
   end
 

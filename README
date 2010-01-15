@@ -82,10 +82,22 @@ Configuration
 
 ### Advanced configuration ###
 
-In `config/assets.yml`, the `engine` settings indicate how CSS and JS are
-minified. If the default engines cause problems by minifying too strongly,
-try switching each to `weak`. The `weak` engines are much safer, but don't
-save as many bytes.
+Additional settings are supported in `config/assets.yml`:
+
+* `engine`: Indicates how CSS and JS are minified; omit this setting to use
+  the defaults. If the default engines cause problems by minifying too
+  strongly, try switching each to `weak`. The `weak` engines are much safer,
+  but don't save as many bytes.
+
+* `vendors`: Currently only allows for setting the jQuery version number:
+
+        js:
+          vendors:
+            jquery:
+              version: 1.4
+
+  In the future, this will be used for configuring the retrieval of other
+  third-party code.
 
 
 

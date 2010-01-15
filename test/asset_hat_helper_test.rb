@@ -71,7 +71,7 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with real bundle files' do
         setup do
           @asset_id = ENV['RAILS_ASSET_ID'] = '222'
-          @config = AssetHat::config
+          @config = AssetHat.config
         end
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
@@ -125,8 +125,17 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include jQuery' do
+          version = AssetHat::JS::Vendors::JQUERY_DEFAULT_VERSION
           output = include_js(:jquery, :cache => true)
-          assert_equal js_tag("jquery-1.3.2.min.js?#{@commit_id}"), output
+          assert_equal(
+            js_tag("jquery-#{version}.min.js?#{@commit_id}"), output)
+        end
+
+        should 'include jQuery by version' do
+          version = '1.3.2'
+          output = include_js(:jquery, :version => version, :cache => true)
+          assert_equal(
+            js_tag("jquery-#{version}.min.js?#{@commit_id}"), output)
         end
 
         should 'include multiple files by name' do
@@ -187,7 +196,7 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with real bundle files' do
         setup do
           @asset_id = ENV['RAILS_ASSET_ID'] = '222'
-          @config = AssetHat::config
+          @config = AssetHat.config
         end
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 

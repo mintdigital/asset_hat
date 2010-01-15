@@ -5,6 +5,8 @@ require 'jsmin'
 module AssetHat
   module JS
     ENGINES = [:weak, :jsmin]
+    VENDORS = [:jquery]
+      # TODO: Support jQuery UI, Prototype, MooTools, etc.
 
     def self.min_filepath(filepath)
       AssetHat::min_filepath(filepath, 'js')
@@ -53,7 +55,31 @@ module AssetHat
       def self.jsmin(input_string)
         JSMin.minify(input_string)
       end
-    end
+    end # module Engines
+
+    module Vendors
+      JQUERY_DEFAULT_VERSION = '1.4'
+
+      def self.source_for(vendor, options={})
+        version = options[:version]
+        if version.blank?
+          version = begin
+            AssetHat.config['js']['vendors'][vendor.to_s]['version']
+          rescue
+            AssetHat::JS::Vendors.const_get(
+              :"#{vendor.to_s.upcase}_DEFAULT_VERSION")
+          end
+        end
+
+        case vendor
+        when :jquery
+          src = (Rails.env.development? || Rails.env.test?) ?
+            "jquery-#{version}.min.js" :
+            "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
+        end
+        src
+      end
+    end # module Vendors
 
   end
 

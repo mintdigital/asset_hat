@@ -13,6 +13,9 @@
 #           - clearfix
 #     js:
 #       engine: jsmin
+#       vendors:
+#         jquery:
+#           version: 1.4
 #       bundles:
 #         plugins:
 #           - init
