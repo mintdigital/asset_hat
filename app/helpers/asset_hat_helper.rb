@@ -28,6 +28,7 @@ module AssetHatHelper
     # Set to `true` to use bundles and minified code:
     use_caching = AssetHat::cache?
     use_caching = options[:cache] unless options[:cache].nil?
+    options.delete :cache # Completely avoid Rails' built-in caching
 
     if options[:bundle].present? || options[:bundles].present?
       bundles = [options.delete(:bundle), options.delete(:bundles)].
