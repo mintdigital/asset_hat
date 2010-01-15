@@ -73,7 +73,7 @@ module AssetHat
 
         case vendor
         when :jquery
-          src = (Rails.env.development? || Rails.env.test?) ?
+          src = ActionController::Base.consider_all_requests_local ?
             "jquery-#{version}.min.js" :
             "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
         end
