@@ -10,7 +10,19 @@ Your assets are covered.
 * Force image URLs in your CSS to use CDN subdomains, not just the current
   host.
 
-(Tested with Rails 2.3.4)
+After setup, you can use these in your layouts and views:
+
+    include_css :bundle => 'application'
+      # => <link rel="stylesheet" ... />
+
+    include_js :bundles => ['plugins', 'common']
+      # => <script type="text/javascript" ...>
+
+And this in your deploy script:
+
+    rake asset_hat:minify
+
+Works with Rails 2.3.4 and above.
 
 
 
@@ -50,45 +62,28 @@ Configuration
 
         rake asset_hat:config
 
-2.  In your app, open the config file at `config/assets.yml`, and set up your
-    CSS/JS bundles. No `.css` or `.js` suffixes are needed. Here's an example:
+2.  In your app, open the new config file at `config/assets.yml`, and set up
+    your CSS/JS bundles according to that file's example.
 
-        css:
-          engine: cssmin
-          bundles:
-            application:
-              - reset
-              - application
-              - clearfix
-            admin:
-              - reset
-              - admin
-              - clearfix
-        js:
-          engine: jsmin
-          bundles:
-            plugins:
-              - init
-              - third-party-plugin.min
-                # The suffix `.min` indicates that the code has already
-                # been minified, and should not be re-minified.
-            common:
-              - utilities
-              - application
-
-
-3.  Minify your bundles, which are written to `public/stylesheets/bundles/`
-    and `public/javascripts/bundles/`:
+3.  Minify your bundles:
 
         rake asset_hat:minify
 
-    This will minify all of the CSS/JS files listed in `config/assets.yml`,
-    and will concatenate the minified code into bundle files.
+    This minifies all of the CSS/JS files listed in `config/assets.yml`,
+    concatenates the minified code into bundle files, and adds CDN asset hosts
+    and cache-busting commit IDs to image URLs in your CSS.
+
+    Bundles are created as new files in `public/stylesheets/bundles/` and
+    `public/javascripts/bundles/`. Your original CSS/JS files remain intact.
+
+4.  Set your deployment script to run `rake asset_hat:minify` after deploying
+    your latest CSS/JS. This overwrites previously minified bundles, and
+    leaves your original CSS/JS files intact.
 
 ### Advanced configuration ###
 
-In `config/assets.yml`, the `engine` lines indicate the methods for minifying
-CSS or JS. If the default engines cause problems from minifying too strongly,
+In `config/assets.yml`, the `engine` settings indicate how CSS and JS are
+minified. If the default engines cause problems by minifying too strongly,
 try switching each to `weak`. The `weak` engines are much safer, but don't
 save as many bytes.
 
@@ -118,8 +113,8 @@ These turn into:
       type="text/javascript"></script>
 
 If your environment has `config.action_controller.perform_caching` set to
-`true` (e.g., production environments), the layout/view will include minified
-bundle files. Otherwise, the separate, unminified files will be included.
+`true` (e.g., in production), the layout/view will include minified bundle
+files. Otherwise, the separate, unminified files will be included.
 
 ### Advanced usage ###
 

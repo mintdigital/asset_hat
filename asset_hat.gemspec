@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.authors     = ['Ron DeVera']
   s.email       = %q{ron@mintdigital.com}
 
-  s.summary     = %q{Minify, bundle, and optimize CSS/JS assets.}
+  s.summary     = %q{Your assets are covered.}
   s.homepage    = %q{http://github.com/mintdigital/asset_hat}
-  s.description = %q{Your assets are covered.}
+  s.description = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.files       = %w[README] + Dir.glob(File.join('{app,config,lib,public,rails,tasks,test}', '**', '*'))
   s.test_files  = Dir.glob(File.join('test', '**', '*'))
 
