@@ -45,7 +45,7 @@ Installation
 
       `config.gem 'asset_hat', :version => '0.x.x'`
 
-3. Add the tasks to your app's `Rakefile`:
+3. In your app, create `lib/tasks/asset_hat.rake` with the following contents:
 
         begin
           require 'asset_hat/tasks'
