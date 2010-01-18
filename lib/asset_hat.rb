@@ -59,7 +59,7 @@ module AssetHat
       return
     end
 
-    self.config[type.to_s]['bundles'][bundle]
+    self.config[type.to_s]['bundles'][bundle] rescue nil
   end
 
   def self.bundle_filepaths(bundle, type)
@@ -78,7 +78,8 @@ module AssetHat
 
     dir = self.assets_dir(type)
     filenames = self.bundle_filenames(bundle, type)
-    filepaths = filenames.map { |fn| File.join(dir, "#{fn}.#{type}") }
+    filepaths = filenames.present? ?
+      filenames.map { |fn| File.join(dir, "#{fn}.#{type}") } : nil
   end
 
 end
