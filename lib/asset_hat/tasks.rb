@@ -171,7 +171,8 @@ namespace :asset_hat do
         puts "        contains: #{filepath}"
       end
       if old_bundle_size > 0
-        puts "        MINIFIED: #{'%.1f' % (percent_saved * 100)}%"
+        engine = "(Engine: #{min_options[:engine]})"
+        puts "        MINIFIED: #{'%.1f' % (percent_saved * 100)}% #{engine}"
       end
     end
 
@@ -268,7 +269,8 @@ namespace :asset_hat do
         puts "        contains: #{filepath}"
       end
       if old_bundle_size > 0
-        puts "        MINIFIED: #{'%.1f' % (percent_saved * 100)}%"
+        engine = "(Engine: #{min_options[:engine]})"
+        puts "        MINIFIED: #{'%.1f' % (percent_saved * 100)}% #{engine}"
       end
     end
 
