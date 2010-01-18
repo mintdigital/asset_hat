@@ -13,10 +13,14 @@ Your assets are covered.
 After setup, you can use these in your layouts and views:
 
     include_css :bundle => 'application'
-      # => <link rel="stylesheet" ... />
+      # => <link href="/stylesheets/bundles/application.min.css"
+      #          media="screen,projection" rel="stylesheet" type="text/css" />
 
     include_js :bundles => ['plugins', 'common']
-      # => <script type="text/javascript" ...>
+      # => <script src="/javascripts/bundles/plugins.min.js"
+      #            type="text/javascript"></script>
+      #    <script src="/javascripts/bundles/common.min.js"
+      #            type="text/javascript"></script>
 
 And this in your deploy script:
 
