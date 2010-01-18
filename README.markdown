@@ -35,15 +35,15 @@ Installation
 
 2. Configure the gem:
 
-  * Using [Bundler](http://github.com/wycats/bundler):
+    * Using [Bundler](http://github.com/wycats/bundler):
 
-      1.  Add to your app's Gemfile: `gem 'asset_hat', '0.x.x'`
+        1.  Add to your app's Gemfile: `gem 'asset_hat', '0.x.x'`
 
-      2.  Command-line: `gem bundle`
+        2.  Command-line: `gem bundle`
 
-  * Using Rails' `config.gem`, add to your app's `config/environment.rb`:
+    * Using Rails' `config.gem`, add to your app's `config/environment.rb`:
 
-      `config.gem 'asset_hat', :version => '0.x.x'`
+        `config.gem 'asset_hat', :version => '0.x.x'`
 
 3. In your app, create `lib/tasks/asset_hat.rake` with the following contents:
 
@@ -145,5 +145,5 @@ When including multiple bundles at once, this yields one `<link>` or
 You may want to use multiple bundles to separate plugins (rarely changed) from
 application code (frequently changed). If all code is in one huge bundle, then
 whenever there's a change, browsers have to re-download the whole bundle. By
-having multiple bundles based on change frequency, browsers cache the rarely
+using multiple bundles based on change frequency, browsers cache the rarely
 changed code, and only re-download the frequently changed code.
