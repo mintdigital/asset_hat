@@ -56,7 +56,7 @@ namespace :asset_hat do
     #   args.with_defaults :verbose => true
     #
     #   css = File.open(args.filename, 'r') { |f| f.read }
-    #   css = AssetHat::CSS::add_asset_mtimes(css)
+    #   css = AssetHat::CSS.add_asset_mtimes(css)
     #   File.open(args.filename, 'w') { |f| f.write css }
     #
     #   puts "- Added asset mtimes to #{args.filename}" if args.verbose
@@ -71,7 +71,7 @@ namespace :asset_hat do
       args.with_defaults :verbose => true
 
       css = File.open(args.filename, 'r') { |f| f.read }
-      css = AssetHat::CSS::add_asset_commit_ids(css)
+      css = AssetHat::CSS.add_asset_commit_ids(css)
       File.open(args.filename, 'w') { |f| f.write css }
 
       puts "- Added asset commit IDs to #{args.filename}" if args.verbose
@@ -92,7 +92,7 @@ namespace :asset_hat do
       end
 
       css = File.open(args.filename, 'r') { |f| f.read }
-      css = AssetHat::CSS::add_asset_hosts(css, asset_host)
+      css = AssetHat::CSS.add_asset_hosts(css, asset_host)
       File.open(args.filename, 'w') { |f| f.write css }
 
       puts "- Added asset hosts to #{args.filename}" if args.verbose
@@ -110,10 +110,10 @@ namespace :asset_hat do
       }.reject { |k,v| v.blank? }
 
       input   = File.open(args.filepath, 'r').read
-      output  = AssetHat::CSS::minify(input, min_options)
+      output  = AssetHat::CSS.minify(input, min_options)
 
       # Write minified content to file
-      target_filepath = AssetHat::CSS::min_filepath(args.filepath)
+      target_filepath = AssetHat::CSS.min_filepath(args.filepath)
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -142,7 +142,7 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'stylesheets', "#{filename}.css")
       end
-      bundle_filepath = AssetHat::CSS::min_filepath(File.join(
+      bundle_filepath = AssetHat::CSS.min_filepath(File.join(
         'public', 'stylesheets', 'bundles', "#{args.bundle}.css"))
 
       # Concatenate and process output
@@ -152,10 +152,10 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
 
-        file_output = AssetHat::CSS::minify(file_output, min_options)
-        file_output = AssetHat::CSS::add_asset_commit_ids(file_output)
+        file_output = AssetHat::CSS.minify(file_output, min_options)
+        file_output = AssetHat::CSS.add_asset_commit_ids(file_output)
         if asset_host.present?
-          file_output = AssetHat::CSS::add_asset_hosts(file_output, asset_host)
+          file_output = AssetHat::CSS.add_asset_hosts(file_output, asset_host)
         end
 
         new_bundle_size += file_output.size
@@ -213,10 +213,10 @@ namespace :asset_hat do
       end
 
       input   = File.open(args.filepath, 'r').read
-      output  = AssetHat::JS::minify(input, min_options)
+      output  = AssetHat::JS.minify(input, min_options)
 
       # Write minified content to file
-      target_filepath = AssetHat::JS::min_filepath(args.filepath)
+      target_filepath = AssetHat::JS.min_filepath(args.filepath)
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
@@ -245,7 +245,7 @@ namespace :asset_hat do
       filepaths = filenames.map do |filename|
         File.join('public', 'javascripts', "#{filename}.js")
       end
-      bundle_filepath = AssetHat::JS::min_filepath(File.join(
+      bundle_filepath = AssetHat::JS.min_filepath(File.join(
         'public', 'javascripts', 'bundles', "#{args.bundle}.js"))
 
       # Concatenate and process output
@@ -254,7 +254,7 @@ namespace :asset_hat do
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
         unless filepath =~ /\.min\.js$/ # Already minified
-          file_output = AssetHat::JS::minify(file_output, min_options)
+          file_output = AssetHat::JS.minify(file_output, min_options)
         end
         new_bundle_size += file_output.size
         output << file_output + "\n"
