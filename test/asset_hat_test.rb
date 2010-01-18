@@ -6,6 +6,16 @@ class AssetHatTest < ActiveSupport::TestCase
       assert_equal  'foo/bar/baz.min.css',
                     AssetHat::CSS::min_filepath('foo/bar/baz.css')
     end
+
+    should 'add asset commit IDs' do
+      commit_id = 111
+      flexmock(AssetHat).should_receive(:last_commit_id => commit_id)
+      flexmock(Rails).should_receive(:public_path => '')
+
+      assert_equal  "p{background:url(/images/foo.png?#{commit_id})}",
+                    AssetHat::CSS.add_asset_commit_ids(
+                      'p{background:url(/images/foo.png)}')
+    end
   end # context 'AssetHat::CSS'
 
   context 'AssetHat::JS' do
