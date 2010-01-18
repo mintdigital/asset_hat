@@ -16,6 +16,15 @@ class AssetHatTest < ActiveSupport::TestCase
                     AssetHat::CSS.add_asset_commit_ids(
                       'p{background:url(/images/foo.png)}')
     end
+
+    should 'add asset hosts' do
+      asset_host = 'http://media%d.example.com'
+      assert_match(
+        /^p\{background:url\(http:\/\/media[\d]\.example\.com\/images\/foo.png\)\}$/,
+        AssetHat::CSS.add_asset_hosts(
+          'p{background:url(/images/foo.png)}', asset_host)
+      )
+    end
   end # context 'AssetHat::CSS'
 
   context 'AssetHat::JS' do
