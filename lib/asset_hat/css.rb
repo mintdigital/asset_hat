@@ -7,7 +7,7 @@ module AssetHat
     ENGINES = [:weak, :cssmin]
 
     def self.min_filepath(filepath)
-      AssetHat::min_filepath(filepath, 'css')
+      AssetHat.min_filepath(filepath, 'css')
     end
 
     def self.minify(input_string, options={})
@@ -36,7 +36,7 @@ module AssetHat
       css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
         src = $1
         filepath = File.join(Rails.public_path, src)
-        commit_id = AssetHat::last_commit_id(filepath)
+        commit_id = AssetHat.last_commit_id(filepath)
         commit_id.present? ? "url(#{src}?#{commit_id})" : "url(#{src})"
       end
     end

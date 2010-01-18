@@ -48,9 +48,9 @@ module AssetHat
   def self.bundle_filenames(bundle, type)
     # Usage:
     #
-    #     AssetHat::bundle_filenames('application', :css)
+    #     AssetHat.bundle_filenames('application', :css)
     #       # => ['reset', 'application', 'clearfix']
-    #     AssetHat::bundle_filenames('non-existent-file', :css)
+    #     AssetHat.bundle_filenames('non-existent-file', :css)
     #       # => nil
 
     # Process arguments
@@ -65,9 +65,9 @@ module AssetHat
   def self.bundle_filepaths(bundle, type)
     # Usage:
     #
-    #     AssetHat::bundle_filenames('application', :css)
+    #     AssetHat.bundle_filenames('application', :css)
     #       # => ['reset', 'application', 'clearfix']
-    #     AssetHat::bundle_filenames('non-existent-file', :css)
+    #     AssetHat.bundle_filenames('non-existent-file', :css)
     #       # => nil
 
     # Process arguments

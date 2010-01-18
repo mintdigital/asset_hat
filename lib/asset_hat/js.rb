@@ -9,7 +9,7 @@ module AssetHat
       # TODO: Support jQuery UI, Prototype, MooTools, etc.
 
     def self.min_filepath(filepath)
-      AssetHat::min_filepath(filepath, 'js')
+      AssetHat.min_filepath(filepath, 'js')
     end
 
     def self.minify(input_string, options={})

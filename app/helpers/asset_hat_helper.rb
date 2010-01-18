@@ -26,7 +26,7 @@ module AssetHatHelper
     source_commit_ids = {} # Last commit ID for each source
 
     # Set to `true` to use bundles and minified code:
-    use_caching = AssetHat::cache?
+    use_caching = AssetHat.cache?
     use_caching = options[:cache] unless options[:cache].nil?
     options.delete :cache # Completely avoid Rails' built-in caching
 
@@ -37,7 +37,7 @@ module AssetHatHelper
         sources += bundles.map { |b| "bundles/#{b}.min.#{type}" }
       else
         config = AssetHat.config
-        filenames = bundles.map { |b| AssetHat::bundle_filenames(b, type) }.
+        filenames = bundles.map { |b| AssetHat.bundle_filenames(b, type) }.
                       flatten.reject(&:blank?)
       end
     else
@@ -49,7 +49,7 @@ module AssetHatHelper
         sources << filename
       else
         min_filename_with_ext = "#{filename}.min.#{type}"
-        if use_caching && AssetHat::asset_exists?(min_filename_with_ext, type)
+        if use_caching && AssetHat.asset_exists?(min_filename_with_ext, type)
           sources << min_filename_with_ext  # Use minified version
         else
           sources << "#{filename}.#{type}"  # Use original version
@@ -68,11 +68,11 @@ module AssetHatHelper
         if src =~ /^bundles\//
           # Get commit ID of bundle file with most recently committed update
           bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
-          commit_id = AssetHat::last_bundle_commit_id(bundle, type)
+          commit_id = AssetHat.last_bundle_commit_id(bundle, type)
         else
           # Get commit ID of file's most recently committed update
-          commit_id = AssetHat::last_commit_id(
-            File.join(AssetHat::assets_dir(type), src))
+          commit_id = AssetHat.last_commit_id(
+            File.join(AssetHat.assets_dir(type), src))
         end
         if commit_id.present? # False if file isn't committed to repo
           src += "#{src =~ /\?/ ? '&' : '?'}#{commit_id}"

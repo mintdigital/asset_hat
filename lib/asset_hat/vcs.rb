@@ -2,10 +2,10 @@ module AssetHat
   def self.last_commit_id(*args)
     # Usage:
     #
-    #     AssetHat::last_commit_id('public/stylesheets/application.css')
-    #     AssetHat::last_commit_id('public/stylesheets/ie.css',
-    #                              'public/stylesheets/ie7.css',
-    #                              'public/stylesheets/ie6.css')
+    #     AssetHat.last_commit_id('public/stylesheets/application.css')
+    #     AssetHat.last_commit_id('public/stylesheets/ie.css',
+    #                             'public/stylesheets/ie7.css',
+    #                             'public/stylesheets/ie6.css')
     #
     # Returns a string of the commit ID for the file with the most recent
     # commit. If the file(s) cannot be found, `nil` is returned.
@@ -32,7 +32,7 @@ module AssetHat
   def self.last_bundle_commit_id(bundle, type)
     # Usage:
     #
-    #     AssetHat::last_bundle_commit_id('application', :css)
+    #     AssetHat.last_bundle_commit_id('application', :css)
     #
     # Returns a string of the latest commit ID for the given bundle, based
     # on which of its files were most recently modified in the repository. If
