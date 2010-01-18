@@ -1,4 +1,5 @@
-# Configure your bundles below; no `.css` or `.js` suffixes needed. Example:
+# This belongs in your app's `config` directory. Configure your bundles
+# below; no `.css` or `.js` suffixes needed. Example:
 #
 #     css:
 #       engine: cssmin
@@ -25,8 +26,6 @@
 #         common:
 #           - utilities
 #           - application
-#
-# In your app, this belongs at `config/assets.yml`.
 
 css:
   engine: cssmin

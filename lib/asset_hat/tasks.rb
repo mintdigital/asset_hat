@@ -179,6 +179,10 @@ namespace :asset_hat do
     task :minify do
       # Get input bundles
       config = AssetHat.config
+      if config['css'].blank? || config['css']['bundles'].blank?
+        puts "You need to set up CSS bundles in #{AssetHat::CONFIG_FILEPATH}."
+        exit
+      end
       bundles = config['css']['bundles'].keys
 
       # Minify bundles
@@ -272,6 +276,10 @@ namespace :asset_hat do
     task :minify do
       # Get input bundles
       config = AssetHat.config
+      if config['js'].blank? || config['js']['bundles'].blank?
+        puts "You need to set up JS bundles in #{AssetHat::CONFIG_FILEPATH}."
+        exit
+      end
       bundles = config['js']['bundles'].keys
 
       # Minify bundles
