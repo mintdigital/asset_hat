@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-01-18}
+  s.date = %q{2010-01-20}
   s.description = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.email = %q{ronald.devera@gmail.com}
   s.extra_rdoc_files = [
@@ -17,7 +17,9 @@ Gem::Specification.new do |s|
      "README.markdown"
   ]
   s.files = [
-    "LICENSE",
+    ".gitignore",
+     "HISTORY",
+     "LICENSE",
      "README.markdown",
      "Rakefile",
      "VERSION.yml",
