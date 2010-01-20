@@ -1,11 +1,11 @@
 module AssetHat
-  module Version
-    MAJOR = 0
-    MINOR = 1
-    TINY  = 0
-
-    STRING = [MAJOR, MINOR, TINY].join('.')
+  def self.version
+    data_filepath = File.join(File.dirname(__FILE__), %w[.. .. VERSION.yml])
+    data = YAML.load(File.open(data_filepath, 'r'))
+    [:major, :minor, :patch, :build].
+      map { |x| data[x] }.reject(&:blank?).join('.')
   end
 
-  VERSION = Version::STRING
+  VERSION = self.version
+
 end
