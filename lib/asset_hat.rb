@@ -11,7 +11,7 @@ module AssetHat
   CONFIG_FILEPATH = File.join(RAILS_ROOT, 'config', 'assets.yml')
 
   class << self
-    attr_accessor :include_html_cache
+    attr_accessor :html_cache
   end
 
   def self.config

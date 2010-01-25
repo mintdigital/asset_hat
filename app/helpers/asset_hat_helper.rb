@@ -116,12 +116,11 @@ module AssetHatHelper
 
     return if args.blank?
 
-    AssetHat.include_html_cache       ||= {}
-    AssetHat.include_html_cache[:css] ||= {}
+    AssetHat.html_cache       ||= {}
+    AssetHat.html_cache[:css] ||= {}
     cache_key = args.inspect
 
-    AssetHat.include_html_cache[:css][cache_key] ||=
-      include_assets(:css, *args)
+    AssetHat.html_cache[:css][cache_key] ||= include_assets(:css, *args)
   end
 
   def include_js(*args)
@@ -161,11 +160,11 @@ module AssetHatHelper
 
     return if args.blank?
 
-    AssetHat.include_html_cache       ||= {}
-    AssetHat.include_html_cache[:js]  ||= {}
+    AssetHat.html_cache       ||= {}
+    AssetHat.html_cache[:js]  ||= {}
     cache_key = args.inspect
 
-    if AssetHat.include_html_cache[:js][cache_key].blank?
+    if AssetHat.html_cache[:js][cache_key].blank?
       html = []
       options = args.extract_options!
 
@@ -177,10 +176,10 @@ module AssetHatHelper
       end
 
       html << include_assets(:js, *(args + [options]))
-      AssetHat.include_html_cache[:js][cache_key] = html.join("\n").strip
+      AssetHat.html_cache[:js][cache_key] = html.join("\n").strip
     end
 
-    AssetHat.include_html_cache[:js][cache_key]
+    AssetHat.html_cache[:js][cache_key]
   end
 
 end
