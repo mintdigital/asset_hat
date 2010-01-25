@@ -21,3 +21,11 @@ unless defined?(Rails)
     end
   end
 end
+
+class ActionView::TestCase
+  teardown :clear_html_cache
+
+  def clear_html_cache
+    AssetHat.html_cache = {}
+  end
+end
