@@ -115,7 +115,13 @@ module AssetHatHelper
     #       <link href="/stylesheets/clearfix.min.css" ... />
 
     return if args.blank?
-    include_assets :css, *args
+
+    AssetHat.include_html_cache       ||= {}
+    AssetHat.include_html_cache[:css] ||= {}
+    cache_key = args.inspect
+
+    AssetHat.include_html_cache[:css][cache_key] ||=
+      include_assets(:css, *args)
   end
 
   def include_js(*args)
@@ -154,18 +160,27 @@ module AssetHatHelper
     #       <script src="/javascripts/jquery.json.min.js" ...></script>
 
     return if args.blank?
-    html = []
-    options = args.extract_options!
 
-    included_vendors = (args & AssetHat::JS::VENDORS)
-    included_vendors.each do |vendor|
-      args.delete vendor
-      source = AssetHat::JS::Vendors.source_for(vendor, options.slice(:version))
-      html << include_assets(:js, source, :cache => true)
+    AssetHat.include_html_cache       ||= {}
+    AssetHat.include_html_cache[:js]  ||= {}
+    cache_key = args.inspect
+
+    if AssetHat.include_html_cache[:js][cache_key].blank?
+      html = []
+      options = args.extract_options!
+
+      included_vendors = (args & AssetHat::JS::VENDORS)
+      included_vendors.each do |vendor|
+        args.delete vendor
+        src = AssetHat::JS::Vendors.source_for(vendor, options.slice(:version))
+        html << include_assets(:js, src, :cache => true)
+      end
+
+      html << include_assets(:js, *(args + [options]))
+      AssetHat.include_html_cache[:js][cache_key] = html.join("\n").strip
     end
 
-    html << include_assets(:js, *(args + [options]))
-    html.join("\n").strip
+    AssetHat.include_html_cache[:js][cache_key]
   end
 
 end

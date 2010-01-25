@@ -10,6 +10,10 @@ module AssetHat
   STYLESHEETS_DIR = "#{ASSETS_DIR}/stylesheets"
   CONFIG_FILEPATH = File.join(RAILS_ROOT, 'config', 'assets.yml')
 
+  class << self
+    attr_accessor :include_html_cache
+  end
+
   def self.config
     @@config ||= YAML.load(File.open(CONFIG_FILEPATH, 'r'))
   end
