@@ -1,6 +1,11 @@
 HISTORY
 =======
 
+Version 0.1.2 (2010-01-27)
+--------------------------
+* Memoized HTML output from `include_css` and `include_js` when
+  `AssetHat.cache?` is true.
+
 Version 0.1.1 (2010-01-20)
 --------------------------
 * Rewrote `AssetHat::VERSION` to be based on `VERSION.yml`.
