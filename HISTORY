@@ -1,6 +1,10 @@
 HISTORY
 =======
 
+* Changed `AssetHat.config` to memoize only if `cache?` is true. In
+  development environments, this means the config file will be reread with
+  every request.
+
 Version 0.1.2 (2010-01-27)
 --------------------------
 * Memoized HTML output from `include_css` and `include_js` when

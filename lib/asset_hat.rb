@@ -15,7 +15,10 @@ module AssetHat
   end
 
   def self.config
-    @@config ||= YAML.load(File.open(CONFIG_FILEPATH, 'r'))
+    if !cache? || @@config.blank?
+      @@config = YAML.load(File.open(CONFIG_FILEPATH, 'r'))
+    end
+    @@config
   end
 
   def self.assets_dir(type)
