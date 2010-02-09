@@ -13,15 +13,15 @@ module AssetHat
     def self.minify(input_string, options={})
       options.reverse_merge!(:engine => :cssmin)
 
-      options[:engine] = options[:engine].to_sym
-      unless ENGINES.include?(options[:engine])
+      engine = options[:engine].to_sym
+      unless ENGINES.include?(engine)
         raise %Q{
-          Unknown CSS minification engine '#{options[:engine]}'.
+          Unknown CSS minification engine '#{engine}'.
           Allowed: #{ENGINES.map{ |e| "'#{e}'" }.join(', ')}
         }.strip.gsub(/\s+/, ' ') and return
       end
 
-      AssetHat::CSS::Engines.send(options[:engine], input_string)
+      AssetHat::CSS::Engines.send(engine, input_string)
     end
 
     # def self.add_asset_mtimes(css)

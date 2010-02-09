@@ -15,15 +15,15 @@ module AssetHat
     def self.minify(input_string, options={})
       options.reverse_merge!(:engine => :jsmin)
 
-      options[:engine] = options[:engine].to_sym
-      unless ENGINES.include?(options[:engine])
+      engine = options[:engine].to_sym
+      unless ENGINES.include?(engine)
         raise %Q{
-          Unknown JS minification engine '#{options[:engine]}'.
+          Unknown JS minification engine '#{engine}'.
           Allowed: #{ENGINES.map{ |e| "'#{e}'" }.join(', ')}
         }.strip.gsub(/\s+/, ' ') and return
       end
 
-      AssetHat::JS::Engines.send(options[:engine], input_string)
+      AssetHat::JS::Engines.send(engine, input_string)
     end
 
     module Engines
@@ -76,6 +76,7 @@ module AssetHat
           src = ActionController::Base.consider_all_requests_local ?
             "jquery-#{version}.min.js" :
             "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
+        else nil
         end
         src
       end

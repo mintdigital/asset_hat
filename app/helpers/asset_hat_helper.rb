@@ -88,6 +88,7 @@ module AssetHatHelper
         stylesheet_link_tag(src, options)
       when :js
         javascript_include_tag(src, options)
+      else nil
       end
     end.join("\n")
   end

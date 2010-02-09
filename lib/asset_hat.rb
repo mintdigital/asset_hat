@@ -22,6 +22,7 @@ module AssetHat
     case type.to_sym
     when :css ; STYLESHEETS_DIR
     when :js  ; JAVASCRIPTS_DIR
+    else nil
     end
   end
 

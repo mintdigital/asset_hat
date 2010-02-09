@@ -1,4 +1,8 @@
 module AssetHat
+  class << self
+    attr_accessor :last_commit_ids, :last_bundle_commit_ids
+  end
+
   def self.last_commit_id(*args)
     # Usage:
     #
@@ -20,13 +24,13 @@ module AssetHat
       raise 'Git is currently the only supported VCS.' and return
     end
 
-    @@last_commit_ids ||= {}
-    if @@last_commit_ids[filepaths].blank?
+    @last_commit_ids ||= {}
+    if @last_commit_ids[filepaths].blank?
       h = `git log -1 --pretty=format:%h #{filepaths} 2>/dev/null`
         # `h` has either the abbreviated Git commit hash or an empty string
-      @@last_commit_ids[filepaths] = h if h.present?
+      @last_commit_ids[filepaths] = h if h.present?
     end
-    @@last_commit_ids[filepaths]
+    @last_commit_ids[filepaths]
   end
 
   def self.last_bundle_commit_id(bundle, type)
@@ -46,20 +50,20 @@ module AssetHat
     end
 
     # Default to `{:css => {}, :js => {}}`
-    @@last_bundle_commit_ids ||=
+    @last_bundle_commit_ids ||=
       TYPES.inject({}) { |hsh, t| hsh.merge(t => {}) }
 
-    if @@last_bundle_commit_ids[type][bundle].blank?
+    if @last_bundle_commit_ids[type][bundle].blank?
       dir = self.assets_dir(type)
       filepaths = self.bundle_filepaths(bundle, type)
       if filepaths.present?
-        @@last_bundle_commit_ids[type][bundle] = self.last_commit_id(*filepaths)
+        @last_bundle_commit_ids[type][bundle] = self.last_commit_id(*filepaths)
       end
     end
 
-    @@last_bundle_commit_ids[type][bundle]
+    @last_bundle_commit_ids[type][bundle]
   end
 
-  def self.last_commit_ids ; @@last_commit_ids ; end
+  def self.last_commit_ids ; @last_commit_ids ; end
 
 end
