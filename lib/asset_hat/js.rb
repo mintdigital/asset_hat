@@ -58,23 +58,20 @@ module AssetHat
     end # module Engines
 
     module Vendors
-      JQUERY_DEFAULT_VERSION = '1.4'
-
       def self.source_for(vendor, options={})
         version = options[:version]
         if version.blank?
           version = begin
             AssetHat.config['js']['vendors'][vendor.to_s]['version']
           rescue
-            AssetHat::JS::Vendors.const_get(
-              :"#{vendor.to_s.upcase}_DEFAULT_VERSION")
+            nil
           end
         end
 
         case vendor
         when :jquery
           src = ActionController::Base.consider_all_requests_local ?
-            "jquery-#{version}.min.js" :
+            "#{['jquery', version].compact.join('-')}.min.js" :
             "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
         else nil
         end
