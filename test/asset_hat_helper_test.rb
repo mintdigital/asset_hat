@@ -129,12 +129,32 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal(js_tag("jquery.min.js?#{@commit_id}"), output)
         end
 
-        should 'include jQuery by version' do
+        should 'include jQuery by version via helper option' do
           version = '1.4.1'
           output = include_js(:jquery, :version => version, :cache => true)
           assert_equal(
             js_tag("jquery-#{version}.min.js?#{@commit_id}"), output)
         end
+
+        context 'with a mock config' do
+          setup do
+            @jquery_version = '1.4.1'
+            config = AssetHat.config
+            config['js']['vendors'] = {
+              'jquery' => {
+                'version' => @jquery_version
+              }
+            }
+            flexmock(AssetHat).should_receive(:config => config)
+          end
+
+          should 'include jQuery by version via config file' do
+            assert_equal(
+              js_tag("jquery-#{@jquery_version}.min.js?#{@commit_id}"),
+              include_js(:jquery, :cache => true)
+            )
+          end
+        end # context 'with a mock config'
 
         should 'include multiple files by name' do
           flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
