@@ -65,7 +65,9 @@ module AssetHatHelper
       # development environments), skip this, and instead default to Rails'
       # mtime-based cache busting.
       sources.map! do |src|
-        if src =~ /^bundles\//
+        if src =~ %r{^http(s?)://} || src =~ %r{^//}
+          # Absolute URL; do nothing
+        elsif src =~ /^bundles\//
           # Get commit ID of bundle file with most recently committed update
           bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
           commit_id = AssetHat.last_bundle_commit_id(bundle, type)

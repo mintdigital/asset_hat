@@ -138,22 +138,39 @@ class AssetHatHelperTest < ActionView::TestCase
 
         context 'with a mock config' do
           setup do
-            @jquery_version = '1.4.1'
+            version = '1.4.1'
             config = AssetHat.config
             config['js']['vendors'] = {
               'jquery' => {
-                'version' => @jquery_version
+                'version' => version,
+                'remote_url' => 'http://example.com/cdn/jquery.min.js'
               }
             }
             flexmock(AssetHat).should_receive(:config => config)
           end
 
           should 'include jQuery by version via config file' do
+            version = AssetHat.config['js']['vendors']['jquery']['version']
             assert_equal(
-              js_tag("jquery-#{@jquery_version}.min.js?#{@commit_id}"),
+              js_tag("jquery-#{version}.min.js?#{@commit_id}"),
               include_js(:jquery, :cache => true)
             )
           end
+
+          context 'with remote requests' do
+            setup do
+              flexmock(ActionController::Base).should_receive(
+                :consider_all_requests_local => false)
+            end
+
+            should 'use specified remote URL for jQuery' do
+              src = AssetHat.config['js']['vendors']['jquery']['remote_url']
+              assert_equal(
+                %Q{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true)
+              )
+            end
+          end # context 'with remote requests'
         end # context 'with a mock config'
 
         should 'include multiple files by name' do

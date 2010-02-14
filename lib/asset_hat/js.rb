@@ -59,22 +59,25 @@ module AssetHat
 
     module Vendors
       def self.source_for(vendor, options={})
-        version = options[:version]
-        if version.blank?
-          version = begin
-            AssetHat.config['js']['vendors'][vendor.to_s]['version']
-          rescue
-            nil
+        vendor_config =
+          AssetHat.config['js']['vendors'][vendor.to_s] rescue nil
+        use_local = ActionController::Base.consider_all_requests_local
+        version   = options[:version] || vendor_config['version'] rescue nil
+
+        unless use_local
+          src = vendor_config['remote_url'] rescue nil
+        end
+
+        if src.blank?
+          case vendor
+          when :jquery
+            src = use_local || version.blank? ?
+              "#{['jquery', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
+          else nil
           end
         end
 
-        case vendor
-        when :jquery
-          src = ActionController::Base.consider_all_requests_local ?
-            "#{['jquery', version].compact.join('-')}.min.js" :
-            "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
-        else nil
-        end
         src
       end
     end # module Vendors

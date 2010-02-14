@@ -93,15 +93,22 @@ Additional settings are supported in `config/assets.yml`:
   strongly, try switching each to `weak`. The `weak` engines are much safer,
   but don't save as many bytes.
 
-* `vendors`: Currently only allows for setting the jQuery version number:
+* `vendors`: Manage JS vendor code versions and remote URLs:
 
         js:
           vendors:
             jquery:
-              version: 1.4
+              version: 1.4.1
+              remote_url: http://example.com/cdn/jquery-1.4.1.min.js
 
-  In the future, this will be used for configuring the retrieval of other
-  third-party code.
+  By default, if your environment sets
+  `ActionController::Base.consider_all_requests_local` to `false`, and if you
+  have specified the `version` for that vendor, AssetHat will automatically
+  switch to URLs from
+  [Google's "AJAX Libraries" CDN](http://code.google.com/apis/ajaxlibs/). If
+  you supply a `remote_url` for that vendor, AssetHat will use that instead.
+
+  Currently, the only supported vendor is `jquery`.
 
 
 
