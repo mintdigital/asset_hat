@@ -108,7 +108,10 @@ Additional settings are supported in `config/assets.yml`:
   [Google's "AJAX Libraries" CDN](http://code.google.com/apis/ajaxlibs/). If
   you supply a `remote_url` for that vendor, AssetHat will use that instead.
 
-  Currently, the only supported vendor is `jquery`.
+  Supported vendors:
+
+    - `jquery`
+    - `jquery_ui`
 
 
 

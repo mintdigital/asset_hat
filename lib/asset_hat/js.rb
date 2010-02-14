@@ -74,6 +74,10 @@ module AssetHat
             src = use_local || version.blank? ?
               "#{['jquery', version].compact.join('-')}.min.js" :
               "http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js"
+          when :jquery_ui
+            src = use_local || version.blank? ?
+              "#{['jquery-ui', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/jqueryui/#{version}/jquery-ui.min.js"
           else nil
           end
         end
