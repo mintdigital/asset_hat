@@ -87,4 +87,8 @@ module AssetHat
       filenames.map { |fn| File.join(dir, "#{fn}.#{type}") } : nil
   end
 
+  def self.clear_html_cache
+    html_cache = {}
+  end
+
 end
