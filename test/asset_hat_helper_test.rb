@@ -124,10 +124,29 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal js_tag("jquery.some-plugin.min.js?#{@commit_id}"), output
         end
 
-        should 'include jQuery' do
-          output = include_js(:jquery, :cache => true)
-          assert_equal(js_tag("jquery.min.js?#{@commit_id}"), output)
-        end
+        context 'with vendors' do
+          should 'know where to find each vendor file' do
+            AssetHat::JS::VENDORS.each do |vendor|
+              assert include_js(vendor, :cache => true).present?
+            end
+          end
+
+          should 'include jQuery and jQuery UI' do
+            flexmock(AssetHat).should_receive(:config => @original_config)
+            [:jquery, :jquery_ui].each do |vendor|
+              output = include_js(vendor, :cache => true)
+              assert_equal js_tag("#{vendor.to_s.dasherize}.min.js?#{@commit_id}"), output
+            end
+          end
+
+          should 'include Prototype and script.aculo.us' do
+            [:prototype, :scriptaculous].each do |vendor|
+              output = include_js(vendor, :cache => true)
+              assert_equal js_tag("#{vendor}.js?#{@commit_id}"), output
+                # N.B.: Including only the regular, not minified, version
+            end
+          end
+        end # context 'with vendor JS'
 
         should 'include jQuery by version via helper option' do
           version = '1.4.1'

@@ -21,7 +21,17 @@ module AssetHat
             src = use_local || version.blank? ?
               "#{['jquery-ui', version].compact.join('-')}.min.js" :
               "http://ajax.googleapis.com/ajax/libs/jqueryui/#{version}/jquery-ui.min.js"
-          else nil
+          when :prototype
+            # Prototype currently doesn't provide an official minified version.
+            src = use_local || version.blank? ?
+              "#{['prototype', version].compact.join('-')}.js" :
+              "http://ajax.googleapis.com/ajax/libs/prototype/#{version}/prototype.js"
+          when :scriptaculous
+            # script.aculo.us currently doesn't provide an official minified version.
+            src = use_local || version.blank? ?
+              "#{['scriptaculous', version].compact.join('-')}.js" :
+              "http://ajax.googleapis.com/ajax/libs/scriptaculous/#{version}/scriptaculous.js"
+          else nil # TODO: Write to log
           end
         end
 

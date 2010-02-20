@@ -22,6 +22,10 @@ unless defined?(Rails)
   end
 end
 
+@original_config = AssetHat.config
+  # Use this when FlexMock refuses to teardown automatically. (Yes,
+  # this is ugly.)
+
 class ActionView::TestCase
   teardown :clear_html_cache
 
