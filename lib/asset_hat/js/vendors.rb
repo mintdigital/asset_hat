@@ -1,6 +1,8 @@
 module AssetHat
   module JS
     module Vendors
+      VENDORS = [:jquery, :jquery_ui, :prototype, :scriptaculous]
+
       def self.source_for(vendor, options={})
         vendor_config =
           AssetHat.config['js']['vendors'][vendor.to_s] rescue nil

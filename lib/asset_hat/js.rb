@@ -6,7 +6,7 @@ require File.join(File.dirname(__FILE__), 'js', 'vendors')
 module AssetHat
   module JS
     ENGINES = [:weak, :jsmin]
-    VENDORS = [:jquery, :jquery_ui, :prototype, :scriptaculous]
+    VENDORS = Vendors::VENDORS
 
     def self.min_filepath(filepath)
       AssetHat.min_filepath(filepath, 'js')
