@@ -1,7 +1,15 @@
 module AssetHat
   module JS
     module Vendors
-      VENDORS = [:jquery, :jquery_ui, :prototype, :scriptaculous]
+      VENDORS = [
+        :jquery, :jquery_ui,
+        :prototype, :scriptaculous,
+        :mootools,
+        :dojo,
+        :swfobject,
+        :yui,
+        :ext_core
+      ]
 
       def self.source_for(vendor, options={})
         vendor_config =
@@ -33,6 +41,26 @@ module AssetHat
             src = use_local || version.blank? ?
               "#{['scriptaculous', version].compact.join('-')}.js" :
               "http://ajax.googleapis.com/ajax/libs/scriptaculous/#{version}/scriptaculous.js"
+          when :mootools
+            src = use_local || version.blank? ?
+              "#{['mootools', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/mootools/#{version}/mootools-yui-compressed.js"
+          when :dojo
+            src = use_local || version.blank? ?
+              "#{['dojo', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/dojo/#{version}/dojo/dojo.xd.js"
+          when :swfobject
+            src = use_local || version.blank? ?
+              "#{['swfobject', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/swfobject/#{version}/swfobject.js"
+          when :yui
+            src = use_local || version.blank? ?
+              "#{['yui', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/yui/#{version}/build/yuiloader/yuiloader-min.js"
+          when :ext_core
+            src = use_local || version.blank? ?
+              "#{['ext_core', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/ext-core/#{version}/ext-core.js"
           else nil # TODO: Write to log
           end
         end
