@@ -7,7 +7,7 @@ class AssetHatTest < ActiveSupport::TestCase
                     AssetHat::CSS.min_filepath('foo/bar/baz.css')
     end
 
-    should 'add asset commit IDs' do
+    should 'add image asset commit IDs' do
       commit_id = 111
       flexmock(AssetHat).should_receive(:last_commit_id => commit_id)
       flexmock(Rails).should_receive(:public_path => '')
@@ -17,12 +17,31 @@ class AssetHatTest < ActiveSupport::TestCase
                       'p{background:url(/images/foo.png)}')
     end
 
-    should 'add asset hosts' do
+    should 'add .htc asset commit IDs' do
+      commit_id = 111
+      flexmock(AssetHat).should_receive(:last_commit_id => commit_id)
+      flexmock(Rails).should_receive(:public_path => '')
+
+      assert_equal  "p{background:url(/htc/iepngfix.htc?#{commit_id})}",
+                    AssetHat::CSS.add_asset_commit_ids(
+                      'p{background:url(/htc/iepngfix.htc)}')
+    end
+
+    should 'add image asset hosts' do
       asset_host = 'http://media%d.example.com'
       assert_match(
         /^p\{background:url\(http:\/\/media[\d]\.example\.com\/images\/foo.png\)\}$/,
         AssetHat::CSS.add_asset_hosts(
           'p{background:url(/images/foo.png)}', asset_host)
+      )
+    end
+
+    should 'add .htc asset hosts' do
+      asset_host = 'http://media%d.example.com'
+      assert_match(
+        /^p\{background:url\(http:\/\/media[\d]\.example\.com\/htc\/iepngfix.htc\)\}$/,
+        AssetHat::CSS.add_asset_hosts(
+          'p{background:url(/htc/iepngfix.htc)}', asset_host)
       )
     end
   end # context 'AssetHat::CSS'

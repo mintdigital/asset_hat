@@ -25,7 +25,7 @@ module AssetHat
     end
 
     # def self.add_asset_mtimes(css)
-    #   css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
+    #   css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
     #     src = $1
     #     mtime = File.mtime(File.join(Rails.public_path, src))
     #     "url(#{src}?#{mtime.to_i})"
@@ -33,7 +33,7 @@ module AssetHat
     # end
 
     def self.add_asset_commit_ids(css)
-      css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
+      css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
         src = $1
         filepath = File.join(Rails.public_path, src)
         commit_id = AssetHat.last_commit_id(filepath)
@@ -43,7 +43,7 @@ module AssetHat
 
     def self.add_asset_hosts(css, asset_host)
       return if asset_host.blank?
-      css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
+      css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
         src = $1
         "url(#{(asset_host =~ /%d/) ? asset_host % (src.hash % 4) : asset_host}#{src})"
       end
