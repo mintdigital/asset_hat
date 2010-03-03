@@ -1,6 +1,32 @@
 require 'test_helper'
 
 class AssetHatTest < ActiveSupport::TestCase
+  context 'AssetHat' do
+    context 'with caching enabled' do
+      setup do
+        flexmock(AssetHat).should_receive(:cache? => true)
+      end
+
+      should 'memoize config' do
+        AssetHat.config
+        flexmock(YAML).should_receive(:load).never
+        3.times { AssetHat.config }
+      end
+    end # context 'with caching enabled'
+
+    context 'with caching disabled' do
+      setup do
+        flexmock(AssetHat).should_receive(:cache? => false)
+      end
+
+      should 'not memoize config' do
+        AssetHat.config
+        flexmock(YAML).should_receive(:load).times(3)
+        3.times { AssetHat.config }
+      end
+    end # context 'with caching disabled'
+  end # context 'AssetHat'
+
   context 'AssetHat::CSS' do
     should 'return path to minified file' do
       assert_equal  'foo/bar/baz.min.css',

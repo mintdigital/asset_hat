@@ -11,11 +11,14 @@ module AssetHat
   CONFIG_FILEPATH = File.join(RAILS_ROOT, 'config', 'assets.yml')
 
   class << self
-    attr_accessor :html_cache
+    attr_accessor :config, :asset_exists, :html_cache
   end
 
   def self.config
-    @@config ||= YAML.load(File.open(CONFIG_FILEPATH, 'r'))
+    if !cache? || @config.blank?
+      @config = YAML.load(File.open(CONFIG_FILEPATH, 'r'))
+    end
+    @config
   end
 
   def self.assets_dir(type)
@@ -34,14 +37,14 @@ module AssetHat
       return
     end
 
-    @@asset_exists ||= TYPES.inject({}) do |hsh, known_type|
+    @asset_exists ||= TYPES.inject({}) do |hsh, known_type|
       hsh.merge!(known_type => {})
     end
-    if @@asset_exists[type][filename].nil?
-      @@asset_exists[type][filename] =
+    if @asset_exists[type][filename].nil?
+      @asset_exists[type][filename] =
         File.exist?(File.join(self.assets_dir(type), filename))
     end
-    @@asset_exists[type][filename]
+    @asset_exists[type][filename]
   end
 
   def self.cache? ; ActionController::Base.perform_caching ; end

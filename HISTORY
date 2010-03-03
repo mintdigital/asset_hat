@@ -5,6 +5,9 @@ Version 0.1.3 (2010-03-03)
 --------------------------
 * Allowed adding commit IDs and asset hosts to `url(/htc/...)` URLs (e.g.,
   `/htc/iepngfix.htc`) in CSS, not just images.
+* Changed `AssetHat.config` to memoize only if `cache?` is true. In
+  development environments, this means the config file will be reread with
+  every request.
 
 Version 0.1.2 (2010-01-27)
 --------------------------
