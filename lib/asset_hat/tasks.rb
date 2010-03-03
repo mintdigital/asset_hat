@@ -30,9 +30,9 @@ namespace :asset_hat do
 
   desc 'Prepare configuration file'
   task :config do
-    template_filepath =
-      File.join(File.dirname(__FILE__), '..', '..', AssetHat::CONFIG_FILEPATH)
-    target_filepath = File.join(RAILS_ROOT, AssetHat::CONFIG_FILEPATH)
+    template_filepath = File.join(File.dirname(__FILE__), '..', '..',
+      AssetHat::RELATIVE_CONFIG_FILEPATH)
+    target_filepath = AssetHat::CONFIG_FILEPATH
 
     if File.exists?(target_filepath)
       print "Replace #{target_filepath}? (y/n) "

@@ -8,7 +8,8 @@ module AssetHat
   ASSETS_DIR      = defined?(Rails.public_path) ? Rails.public_path : 'public'
   JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
   STYLESHEETS_DIR = "#{ASSETS_DIR}/stylesheets"
-  CONFIG_FILEPATH = File.join(RAILS_ROOT, 'config', 'assets.yml')
+  RELATIVE_CONFIG_FILEPATH = File.join('config', 'assets.yml')
+  CONFIG_FILEPATH = File.join(RAILS_ROOT, RELATIVE_CONFIG_FILEPATH)
 
   class << self
     attr_accessor :config, :asset_exists, :html_cache
