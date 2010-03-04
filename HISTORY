@@ -1,6 +1,10 @@
 HISTORY
 =======
 
+Version 0.1.4 (2010-03-03)
+--------------------------
+* Fixed config filepaths in `asset_hat:config` task.
+
 Version 0.1.3 (2010-03-03)
 --------------------------
 * Allowed adding commit IDs and asset hosts to `url(/htc/...)` URLs (e.g.,
