@@ -35,7 +35,13 @@ module AssetHat
     def self.add_asset_commit_ids(css)
       css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
         src = $1
-        filepath = File.join(Rails.public_path, src)
+
+        # Get absolute path
+        filepath = File.join(ASSETS_DIR, src)
+
+        # Convert to relative path
+        filepath.sub!(/^#{FileUtils.pwd}#{File::SEPARATOR}/, '')
+
         commit_id = AssetHat.last_commit_id(filepath)
         commit_id.present? ? "url(#{src}?#{commit_id})" : "url(#{src})"
       end

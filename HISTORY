@@ -1,6 +1,10 @@
 HISTORY
 =======
 
+* Fixed fetching asset commit IDs in some environments. The bug was possibly
+  caused by older versions of Git, which fail to read logs properly when given
+  absolute paths, rather than relative paths.
+
 Version 0.1.4 (2010-03-03)
 --------------------------
 * Fixed config filepaths in `asset_hat:config` task.
