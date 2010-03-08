@@ -4,19 +4,18 @@ require 'action_controller'
 require 'action_view'
 require File.join(File.dirname(__FILE__), %w[.. asset_hat])
 
-
-
 unless defined?(RAILS_ROOT)
   RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
 end
 
+
+
 task :default => :test
 
-desc 'Run tests'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib' << 'test'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = false
+  t.pattern = 'test/*_test.rb'
+  t.verbose = true
 end
 
 
