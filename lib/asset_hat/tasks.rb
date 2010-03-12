@@ -4,19 +4,18 @@ require 'action_controller'
 require 'action_view'
 require File.join(File.dirname(__FILE__), %w[.. asset_hat])
 
-
-
 unless defined?(RAILS_ROOT)
   RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
 end
 
+
+
 task :default => :test
 
-desc 'Run tests'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib' << 'test'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = false
+  t.pattern = 'test/*_test.rb'
+  t.verbose = true
 end
 
 
@@ -30,9 +29,9 @@ namespace :asset_hat do
 
   desc 'Prepare configuration file'
   task :config do
-    template_filepath =
-      File.join(File.dirname(__FILE__), '..', '..', AssetHat::CONFIG_FILEPATH)
-    target_filepath = File.join(RAILS_ROOT, AssetHat::CONFIG_FILEPATH)
+    template_filepath = File.join(File.dirname(__FILE__), '..', '..',
+      AssetHat::RELATIVE_CONFIG_FILEPATH)
+    target_filepath = AssetHat::CONFIG_FILEPATH
 
     if File.exists?(target_filepath)
       print "Replace #{target_filepath}? (y/n) "

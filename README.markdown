@@ -54,7 +54,7 @@ Installation
         begin
           require 'asset_hat/tasks'
         rescue LoadError
-          puts %q{Could not load AssetHat tasks: 'asset_hat' not found.}
+          puts "Could not load AssetHat tasks: 'asset_hat' not found."
         end
 
 
@@ -140,14 +140,15 @@ These turn into:
 
 If your environment has `config.action_controller.perform_caching` set to
 `true` (e.g., in production), the layout/view will include minified bundle
-files. Otherwise, the separate, unminified files will be included.
+files. Otherwise, the separate, unminified files will be included, based on
+the bundle contents you define in `config/assets.yml`.
 
 ### Advanced usage ###
 
 You can also include single files as expected:
 
     <%= include_css 'reset', 'application' %>
-    <%= include_js 'plugin.min', 'application' %>
+    <%= include_js  'plugin.min', 'application' %>
 
 Or include multiple bundles at once:
 
