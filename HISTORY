@@ -1,6 +1,8 @@
 HISTORY
 =======
 
+Version 0.1.5 (2010-03-11)
+--------------------------
 * Fixed fetching asset commit IDs in some environments. The bug was possibly
   caused by older versions of Git, which fail to read logs properly when given
   absolute paths, rather than relative paths.
