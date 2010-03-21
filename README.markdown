@@ -2,21 +2,24 @@ AssetHat
 ========
 Your assets are covered.
 
-* Minify CSS and JS with one command. (Can be done on deploy instead of
-  at runtime.)
-* Bundle CSS and JS to reduce HTTP requests.
-* Reuse CSS and JS bundles across layouts without repetition.
-* Bust image caches by changing CSS URLs whenever an image is modified.
+With Rails' default asset caching, CSS and JS are concatenated (not even
+minified) the first time that bundle is requested. Not good enough. AssetHat
+lets you automatically:
+
+* Easily minify and bundle CSS and JS on deploy to reduce file sizes and HTTP
+  requests.
+* Add an image's last Git commit ID to its CSS URLs to bust browser caches
+  (e.g., `/images/foo.png?abcd789`).
 * Force image URLs in your CSS to use CDN subdomains, not just the current
   host.
 
 After setup, you can use these in your layouts and views:
 
-    include_css :bundle => 'application'
+    <%= include_css :bundle => 'application' %>
       # => <link href="/stylesheets/bundles/application.min.css"
       #          media="screen,projection" rel="stylesheet" type="text/css" />
 
-    include_js :bundles => ['plugins', 'common']
+    <%= include_js :bundles => ['plugins', 'common'] %>
       # => <script src="/javascripts/bundles/plugins.min.js"
       #            type="text/javascript"></script>
       #    <script src="/javascripts/bundles/common.min.js"
@@ -26,7 +29,7 @@ And this in your deploy script:
 
     rake asset_hat:minify
 
-Works with Rails 2.3.4 and above.
+Tested with Rails 2.3.x.
 
 
 
@@ -39,11 +42,11 @@ Installation
 
 2. Configure the gem:
 
-    * Using [Bundler](http://github.com/wycats/bundler):
+    * Using [Bundler 0.9+](http://github.com/carlhuda/bundler):
 
         1.  Add to your app's Gemfile: `gem 'asset_hat', '0.x.x'`
 
-        2.  Command-line: `gem bundle`
+        2.  Command-line: `bundle install`
 
     * Using Rails' `config.gem`, add to your app's `config/environment.rb`:
 
@@ -66,8 +69,8 @@ Configuration
 
         rake asset_hat:config
 
-2.  In your app, open the new config file at `config/assets.yml`, and set up
-    your CSS/JS bundles according to that file's example.
+2.  In your app, open the new file at `config/assets.yml`, and set up your
+    CSS/JS bundles according to that file's example.
 
 3.  Minify your bundles:
 
