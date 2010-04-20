@@ -1,6 +1,6 @@
 require 'cssmin'
   # - http://github.com/rgrove/cssmin
-  # - http://gemcutter.org/gems/cssmin
+  # - http://rubygems.org/gems/cssmin
 
 module AssetHat
   module CSS

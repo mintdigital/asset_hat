@@ -92,7 +92,13 @@ Configuration
 Additional settings are supported in `config/assets.yml`:
 
 * `engine`: Indicates how CSS and JS are minified; omit this setting to use
-  the defaults. If the default engines cause problems by minifying too
+  the defaults. By default, CSS is minified with
+  [rgrove/cssmin](http://github.com/rgrove/cssmin) (a Ruby port of Lecomte's
+  YUI Compressor and Schlueter's PHP cssmin), and JS is minified with
+  [rgrove/jsmin](http://github.com/rgrove/jsmin) (a Ruby port of Crockford's
+  JSMin).
+
+  If the default engines cause problems by minifying too
   strongly, try switching each to `weak`. The `weak` engines are much safer,
   but don't save as many bytes.
 

@@ -1,6 +1,6 @@
 require 'jsmin'
   # - http://github.com/rgrove/jsmin
-  # - http://gemcutter.org/gems/jsmin
+  # - http://rubygems.org/gems/jsmin
 
 module AssetHat
   module JS
