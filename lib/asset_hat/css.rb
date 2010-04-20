@@ -1,6 +1,4 @@
 require 'cssmin'
-  # - http://github.com/rgrove/cssmin
-  # - http://rubygems.org/gems/cssmin
 
 module AssetHat
   module CSS
@@ -23,14 +21,6 @@ module AssetHat
 
       AssetHat::CSS::Engines.send(engine, input_string)
     end
-
-    # def self.add_asset_mtimes(css)
-    #   css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
-    #     src = $1
-    #     mtime = File.mtime(File.join(Rails.public_path, src))
-    #     "url(#{src}?#{mtime.to_i})"
-    #   end
-    # end
 
     def self.add_asset_commit_ids(css)
       css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
@@ -55,7 +45,11 @@ module AssetHat
       end
     end
 
+    # Collection of swappable CSS minification engines.
     module Engines
+      # Barebones CSS minification engine that only strips whitespace from the
+      # start and end of every line, including linebreaks. For safety, doesn't
+      # attempt to parse the CSS itself.
       def self.weak(input_string)
         input   = StringIO.new(input_string)
         output  = StringIO.new
@@ -72,6 +66,10 @@ module AssetHat
         output.read
       end
 
+      # CSS minification engine that simply uses the CSSMin gem, a Ruby port
+      # of Lecomte's YUI Compressor and Schlueter's PHP cssmin. Sources:
+      # - http://github.com/rgrove/cssmin
+      # - http://rubygems.org/gems/cssmin
       def self.cssmin(input_string)
         CSSMin.minify(input_string)
       end

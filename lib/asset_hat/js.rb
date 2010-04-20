@@ -1,6 +1,4 @@
 require 'jsmin'
-  # - http://github.com/rgrove/jsmin
-  # - http://rubygems.org/gems/jsmin
 
 module AssetHat
   module JS
@@ -26,7 +24,12 @@ module AssetHat
       AssetHat::JS::Engines.send(engine, input_string)
     end
 
+    # Collection of swappable CSS minification engines.
     module Engines
+      # Barebones JS minification engine that:
+      # - Skips leading/trailing whitespace for each line, excluding line
+      #   breaks; and
+      # - Removes one-line comments that had no actual code on that line.
       def self.weak(input_string)
         input   = StringIO.new(input_string)
         output  = StringIO.new
@@ -52,6 +55,10 @@ module AssetHat
         output.read
       end
 
+      # JS minification engine that simply uses the JSMin gem, a Ruby port
+      # of Crockford's JSMin. Sources:
+      # - http://github.com/rgrove/jsmin
+      # - http://rubygems.org/gems/jsmin
       def self.jsmin(input_string)
         JSMin.minify(input_string)
       end

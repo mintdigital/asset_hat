@@ -95,7 +95,8 @@ module AssetHatHelper
     end.join("\n")
   end # def include_assets
 
-  # +include_css+ is a better version of Rails' +stylesheet_link_tag+.
+  # +include_css+ is a better version of Rails' +stylesheet_link_tag+. The
+  # two can be used together while migrating to AssetHat.
   #
   # Include a single stylesheet:
   #   include_css 'diagnostics'
@@ -131,7 +132,8 @@ module AssetHatHelper
     html
   end
 
-  # +include_js+ is a better version of Rails' +javascript_include_tag+.
+  # +include_js+ is a better version of Rails' +javascript_include_tag+. The
+  # two can be used together while migrating to AssetHat.
   #
   # Include a single JS file:
   #   include_js 'application'
