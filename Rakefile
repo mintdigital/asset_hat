@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[lib asset_hat tasks])
+require 'rake/testtask'
 
 begin
   require 'jeweler'
@@ -20,3 +20,11 @@ begin
 rescue LoadError
   puts 'Jeweler is not available. Install it with: `gem install jeweler`'
 end
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib' << 'test'
+  t.pattern = 'test/*_test.rb'
+  t.verbose = true
+end
+
+task :default => :test
