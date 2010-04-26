@@ -3,12 +3,24 @@
 end
 
 module AssetHat
-  RAILS_ROOT      = File.join(File.dirname(__FILE__), '..') unless defined?(RAILS_ROOT)
-  TYPES           = [:css, :js]
-  ASSETS_DIR      = defined?(Rails.public_path) ? Rails.public_path : 'public'
-  JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
+  RAILS_ROOT = File.join(File.dirname(__FILE__), '..') unless defined?(RAILS_ROOT) #:nodoc:
+
+  # Types of supported assets; currently <tt>[:css, :js]</tt>.
+  TYPES = [:css, :js]
+
+  # Base directory in which all assets are kept, e.g., 'public/'.
+  ASSETS_DIR = defined?(Rails.public_path) ? Rails.public_path : 'public'
+
+  # Directory in which all stylesheets are kept, e.g., 'public/stylesheets/'.
   STYLESHEETS_DIR = "#{ASSETS_DIR}/stylesheets"
+
+  # Directory in which all JavaScripts are kept, e.g., 'public/javascripts/'.
+  JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
+
+  # Relative path for the config file; currently <tt>config/assets.yml</tt>.
   RELATIVE_CONFIG_FILEPATH = File.join('config', 'assets.yml')
+
+  # Absolute path for the config file; see RELATIVE_CONFIG_FILEPATH.
   CONFIG_FILEPATH = File.join(RAILS_ROOT, RELATIVE_CONFIG_FILEPATH)
 
   class << self
@@ -72,7 +84,7 @@ module AssetHat
 
   # Returns the expected path for the minified version of an asset:
   #
-  #     AssetHat.min_filepath('public/stylesheets/bundles/application.css')
+  #     AssetHat.min_filepath('public/stylesheets/bundles/application.css', 'css')
   #       # => 'public/stylesheets/bundles/application.min.css'
   #
   # See also <tt>AssetHat::CSS.min_filepath</tt> and
