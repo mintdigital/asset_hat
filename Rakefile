@@ -1,4 +1,6 @@
 require 'rake/testtask'
+# require 'rake/rdoctask'
+require 'hanna/rdoctask'
 
 begin
   require 'jeweler'
@@ -11,8 +13,9 @@ begin
     gemspec.authors     = ['Ron DeVera', 'Mint Digital']
     gemspec.email       = %q{ronald.devera@gmail.com}
 
-    gemspec.add_development_dependency  'shoulda',  '>= 2.10.2'
     gemspec.add_development_dependency  'flexmock', '>= 0.8.6'
+    gemspec.add_development_dependency  'hanna',    '>= 0.1.12'
+    gemspec.add_development_dependency  'shoulda',  '>= 2.10.2'
     gemspec.add_runtime_dependency      'cssmin',   '>= 1.0.2'
     gemspec.add_runtime_dependency      'jsmin',    '>= 1.0.1'
   end
@@ -28,3 +31,14 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task :default => :test
+
+desc 'Generate documentation'
+Rake::RDocTask.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'doc'
+  rdoc.title    = 'AssetHat'
+  rdoc.main     = 'README.rdoc'
+  rdoc.options  += %w[--line-numbers --inline-source]
+  %w[README.rdoc HISTORY LICENSE app/* lib/*].each do |path|
+    rdoc.rdoc_files.include(path)
+  end
+end
