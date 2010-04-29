@@ -5,8 +5,8 @@ module AssetHatHelper
     RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
   end
 
-  # Includes CSS or JS files. +include_css+ and +include_js+ are recommended
-  # instead.
+  # Includes CSS or JS files. <code>include_css</code> and
+  # <code>include_js</code> are recommended instead.
   def include_assets(type, *args) #:nodoc:
     type = type.to_sym
     allowed_types = AssetHat::TYPES
@@ -95,8 +95,9 @@ module AssetHatHelper
     end.join("\n")
   end # def include_assets
 
-  # +include_css+ is a better version of Rails' +stylesheet_link_tag+. The
-  # two can be used together while migrating to AssetHat.
+  # <code>include_css</code> is a smart wrapper for Rails'
+  # <code>stylesheet_link_tag</code>. The two can be used together while
+  # migrating to AssetHat.
   #
   # Include a single stylesheet:
   #   include_css 'diagnostics'
@@ -132,8 +133,9 @@ module AssetHatHelper
     html
   end
 
-  # +include_js+ is a better version of Rails' +javascript_include_tag+. The
-  # two can be used together while migrating to AssetHat.
+  # <code>include_js</code> is a smart wrapper for Rails'
+  # <code>javascript_include_tag</code>. The two can be used together while
+  # migrating to AssetHat.
   #
   # Include a single JS file:
   #   include_js 'application'

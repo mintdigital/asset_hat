@@ -2,10 +2,41 @@
   require File.join(File.dirname(__FILE__), 'asset_hat', x)
 end
 
+# Your assets are covered.
+#
+# With Rails' default asset caching, CSS and JS are concatenated (not even
+# minified) the first time that bundle is requested. Not good enough. AssetHat
+# can automatically:
+#
+# * Easily minify and bundle CSS and JS on deploy to reduce file sizes and HTTP
+#   requests.
+# * Add an image's last Git[http://git-scm.com/] commit ID to its
+#   CSS URLs to bust browser caches (e.g.,
+#   <code>/images/foo.png?ab12cd34e</code>).
+# * Force image URLs in your CSS to use CDN subdomains, not just the current
+#   host.
+#
+# After setup, you can use these in your layouts and views:
+#
+#     <%= include_css :bundle => 'application' %>
+#       # => <link href="/stylesheets/bundles/application.min.css"
+#       #          media="screen,projection" rel="stylesheet" type="text/css" />
+#
+#     <%= include_js :bundles => ['plugins', 'common'] %>
+#       # => <script src="/javascripts/bundles/plugins.min.js"
+#       #            type="text/javascript"></script>
+#       #    <script src="/javascripts/bundles/common.min.js"
+#       #            type="text/javascript"></script>
+#
+# And this in your deploy script:
+#
+#     rake asset_hat:minify
+#
+# See README.rdoc for more.
 module AssetHat
   RAILS_ROOT = File.join(File.dirname(__FILE__), '..') unless defined?(RAILS_ROOT) #:nodoc:
 
-  # Types of supported assets; currently <tt>[:css, :js]</tt>.
+  # Types of supported assets; currently <code>[:css, :js]</code>.
   TYPES = [:css, :js]
 
   # Base directory in which all assets are kept, e.g., 'public/'.
@@ -17,17 +48,17 @@ module AssetHat
   # Directory in which all JavaScripts are kept, e.g., 'public/javascripts/'.
   JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
 
-  # Relative path for the config file; currently <tt>config/assets.yml</tt>.
+  # Relative path for the config file.
   RELATIVE_CONFIG_FILEPATH = File.join('config', 'assets.yml')
 
-  # Absolute path for the config file; see RELATIVE_CONFIG_FILEPATH.
+  # Absolute path for the config file.
   CONFIG_FILEPATH = File.join(RAILS_ROOT, RELATIVE_CONFIG_FILEPATH)
 
   class << self
     attr_accessor :config, :asset_exists, :html_cache #:nodoc:
   end
 
-  # Nested-hash version of <tt>config/assets.yml</tt>.
+  # Nested-hash version of <code>config/assets.yml</code>.
   def self.config
     if !cache? || @config.blank?
       @config = YAML.load(File.open(CONFIG_FILEPATH, 'r'))
@@ -35,7 +66,7 @@ module AssetHat
     @config
   end
 
-  # Argument: <tt>:css</tt> or <tt>:js</tt>
+  # Argument: <code>:css</code> or <code>:js</code>
   #
   # Returns the path to the directory where CSS or JS files are stored.
   def self.assets_dir(type)
@@ -49,14 +80,12 @@ module AssetHat
   # Returns true if the specified asset exists in the file system:
   #
   #     AssetHat.asset_exists?('application', :css)
-  #       # =>  <tt>true</tt> if <tt>/public/stylesheets/application.css</tt>
-  #             exists
+  #       # => true if /public/stylesheets/application.css exists
   #     AssetHat.asset_exists?('some-plugin', :js)
-  #       # =>  <tt>true</tt> if <tt>/public/javascripts/some-plugin.js</tt>
-  #             exists
+  #       # => true if /public/javascripts/some-plugin.js exists
   #
-  # See also <tt>AssetHat::STYLESHEETS_DIR</tt> and
-  # <tt>AssetHat::JAVASCRIPTS_DIR</tt>.
+  # See also <code>AssetHat::STYLESHEETS_DIR</code> and
+  # <code>AssetHat::JAVASCRIPTS_DIR</code>.
   def self.asset_exists?(filename, type)
     # Process arguments
     type = type.to_sym
@@ -75,11 +104,11 @@ module AssetHat
     @asset_exists[type][filename]
   end
 
-  # Returns +true+ if bundles should be included as single minified files
-  # (e.g., in production), or +false+ if bundles should be included as
-  # separate, unminified files (e.g., in development). To modify this value,
-  # set <tt>config.action_controller.perform_caching = true</tt> in your
-  # environment.
+  # Returns <code>true</code> if bundles should be included as single minified
+  # files (e.g., in production), or <code>false</code> if bundles should be
+  # included as separate, unminified files (e.g., in development). To modify
+  # this value, set <code>config.action_controller.perform_caching = true</code>
+  # in your environment.
   def self.cache? ; ActionController::Base.perform_caching ; end
 
   # Returns the expected path for the minified version of an asset:
@@ -87,8 +116,8 @@ module AssetHat
   #     AssetHat.min_filepath('public/stylesheets/bundles/application.css', 'css')
   #       # => 'public/stylesheets/bundles/application.min.css'
   #
-  # See also <tt>AssetHat::CSS.min_filepath</tt> and
-  # <tt>AssetHat::JS.min_filepath</tt>.
+  # See also <code>AssetHat::CSS.min_filepath</code> and
+  # <code>AssetHat::JS.min_filepath</code>.
   def self.min_filepath(filepath, extension)
     filepath.sub(/([^\.]*).#{extension}$/, "\\1.min.#{extension}")
   end

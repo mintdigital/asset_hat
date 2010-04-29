@@ -22,7 +22,7 @@ module AssetHat
 
     # Accepts a string of JS, and returns that JS minified. Options:
     #
-    # [engine]  Default is +jsmin+; see
+    # [engine]  Default is <code>:jsmin</code>; see
     #           <a href=JS/Engines.html#method-c-jsmin>Engines.jsmin</a>.
     #           Allowed values are in ENGINES.
     def self.minify(input_string, options={})
@@ -39,9 +39,9 @@ module AssetHat
       AssetHat::JS::Engines.send(engine, input_string)
     end
 
-    # Swappable CSS minification engines.
+    # Swappable JavaScript minification engines.
     module Engines
-      # Barebones JS minification engine that:
+      # Barebones JavaScript minification engine that:
       # - Skips leading/trailing whitespace for each line, excluding line
       #   breaks; and
       # - Removes one-line comments that had no actual code on that line.
@@ -70,8 +70,8 @@ module AssetHat
         output.read
       end
 
-      # JS minification engine that simply uses the JSMin gem, a Ruby port
-      # of Crockford's JSMin.
+      # JavaScript minification engine that simply uses the JSMin gem, a Ruby
+      # port of Crockford's JSMin.
       #
       # Sources:
       # - http://github.com/rgrove/jsmin

@@ -1,6 +1,7 @@
 = HISTORY
 
 * Cleaned up existing docs, and generated RDoc docs.
+* Added example integration script for Capistrano deployments.
 
 == Version 0.1.5 (2010-03-11)
 * Fixed fetching asset commit IDs in some environments. The bug was possibly

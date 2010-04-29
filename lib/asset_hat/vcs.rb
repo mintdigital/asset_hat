@@ -14,7 +14,7 @@ module AssetHat
   # commit. If the file(s) cannot be found, `nil` is returned. Options:
   #
   # [vcs] Version control system. Currently, the only supported value is
-  #       +:git+.
+  #       <code>:git</code>.
   def self.last_commit_id(*args)
     # Process arguments
     options = args.extract_options!

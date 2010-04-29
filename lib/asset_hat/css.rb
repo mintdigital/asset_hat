@@ -17,7 +17,7 @@ module AssetHat
 
     # Accepts a string of CSS, and returns that CSS minified. Options:
     #
-    # [engine]  Default is +cssmin+; see
+    # [engine]  Default is <code>:cssmin</code>; see
     #           <a href=CSS/Engines.html#method-c-cssmin>Engines.cssmin</a>.
     #           Allowed values are in ENGINES.
     def self.minify(input_string, options={})
@@ -36,8 +36,8 @@ module AssetHat
 
     # Given a string containing CSS, appends each referenced asset's last
     # commit ID to its URL, e.g.,
-    # <tt>background: url(/images/foo.png?ab12cd34e)</tt>. This enables cache
-    # busting: If the user's browser has cached a copy of foo.png from a
+    # <code>background: url(/images/foo.png?ab12cd34e)</code>. This enables
+    # cache busting: If the user's browser has cached a copy of foo.png from a
     # previous deployment, this new URL forces the browser to ignore that
     # cache and request the latest version.
     def self.add_asset_commit_ids(css)
@@ -59,14 +59,14 @@ module AssetHat
     #
     # - A string containing CSS;
     # - A string containing the app's asset host, e.g.,
-    #   'http://assets%d.example.com'. This value is typically taken from
-    #   <tt>config.action_controller.asset_host</tt> in
-    #   the app's <tt>config/environments/production.rb</tt>.
+    #   'http\://assets%d.example.com'. This value is typically taken from
+    #   <code>config.action_controller.asset_host</code> in
+    #   the app's <code>config/environments/production.rb</code>.
     #
     # An asset host is added to every asset URL in the CSS, e.g.,
-    # <tt>background: url(http://assets2.example.com/images/foo.png)</tt>;
-    # if +%d+ in the asset host, it is replaced with an arbitrary number in
-    # 0-3, inclusive.
+    # <code>background: url(http\://assets2.example.com/images/foo.png)</code>;
+    # if <code>%d</code> in the asset host, it is replaced with an arbitrary
+    # number in 0-3, inclusive.
     def self.add_asset_hosts(css, asset_host)
       return if asset_host.blank?
       css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
