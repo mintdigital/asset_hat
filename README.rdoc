@@ -138,8 +138,8 @@ These turn into:
     <script src="/javascripts/bundles/application.min.js"
       type="text/javascript"></script>
 
-The built-in helpers can be used with AssetHat's helpers as you migrate the
-entire app to AssetHat.
+Have an enormous app? You can integrate gradually, using AssetHat alongside
+Rails' default asset caching.
 
 If your environment has <code>config.action_controller.perform_caching</code>
 set to <code>true</code> (e.g., in production), the layout/view will include
