@@ -3,20 +3,18 @@ layout: default
 title: AssetHat by Mint Digital
 ---
 
-## _AssetHat_ ##
-
-Your assets are covered.
+## _Your assets are covered._ ##
 
 With Rails' default asset caching, CSS and JS are concatenated (not even
 minified) the first time that bundle is requested. Not good enough. AssetHat
 can automatically:
 
-* Easily minify and bundle CSS and JS on deploy to reduce file sizes and HTTP
-  requests.
+* Easily **minify** (strip whitespace/comments) and **bundle** (combine into a
+  single file) CSS and JS on deploy to reduce file sizes and HTTP requests.
 * Add an image's last [Git](http://git-scm.com/) commit ID to its
-  CSS URLs to bust browser caches (e.g.,
+  CSS URLs to **bust browser caches** (e.g.,
   <code>/images/foo.png?ab12cd34e</code>).
-* Force image URLs in your CSS to use CDN subdomains, not just the current
+* Force image URLs in your CSS to use **CDN subdomains**, not just the current
   host.
 
 After setup, you can use these in your layouts and views:
