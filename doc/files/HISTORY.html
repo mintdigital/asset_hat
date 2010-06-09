@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: HISTORY [AssetHat]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <div class='name'>HISTORY</div>
+        <div class='paths'>
+          HISTORY
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Thu Apr 29 22:42:15 -0400 2010</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h1><a href="HISTORY.html">HISTORY</a></h1>
+            <ul>
+            <li>Expanded to recognize the most popular third-party JS &#8212; not just
+            jQuery, but also Prototype, swfobject, MooTools, and more. These are
+            automatically loaded from Google&#8217;s CDN (or a custom CDN URL) in
+            production, or locally in development.
+            
+            </li>
+            <li>Cleaned up existing docs, and generated RDoc docs.
+            
+            </li>
+            <li>Added example integration script for Capistrano deployments.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.5 (2010-03-11)</h2>
+            <ul>
+            <li>Fixed fetching asset commit IDs in some environments. The bug was possibly
+            caused by older versions of Git, which fail to read logs properly when
+            given absolute paths, rather than relative paths.
+            
+            </li>
+            <li>Stopped app tests from running twice in some environments.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.4 (2010-03-03)</h2>
+            <ul>
+            <li>Fixed config filepaths in `asset_hat:config` task.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.3 (2010-03-03)</h2>
+            <ul>
+            <li>Allowed adding commit IDs and asset hosts to `url(/htc/...)` URLs (e.g.,
+            `/htc/iepngfix.htc`) in CSS, not just images.
+            
+            </li>
+            <li>Changed `<a href="../classes/AssetHat.html#M000004">AssetHat.config</a>` to
+            memoize only if `cache?` is true. In development environments, this means
+            the config file will be reread with every request.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.2 (2010-01-27)</h2>
+            <ul>
+            <li>Memoized HTML output from `include_css` and `include_js` when `<a
+            href="../classes/AssetHat.html#M000007">AssetHat.cache?</a>` is true.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.1 (2010-01-20)</h2>
+            <ul>
+            <li>Rewrote `AssetHat::VERSION` to be based on `VERSION.yml`.
+            
+            </li>
+            <li>Prefixed `AssetHat::CONFIG_FILEPATH` with `RAILS_ROOT`, which fixes ability
+            to run an app&#8217;s individual test files.
+            
+            </li>
+            </ul>
+            <h2>Version 0.1.0 (2010-01-19)</h2>
+            <ul>
+            <li>Initial release.
+            
+            </li>
+            </ul>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

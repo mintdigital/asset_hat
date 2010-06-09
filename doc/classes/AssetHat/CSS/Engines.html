@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>: AssetHat::CSS::Engines [AssetHat]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>Module</span>
+          AssetHat::CSS::Engines
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a href="../../../files/lib/asset_hat/css_rb.html">lib/asset_hat/css.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <p>
+            Swappable <a href="../CSS.html">CSS</a> minification engines.
+            </p>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public class</h3>
+            <ol>
+              <li><a href="#M000017">cssmin</a></li>
+              <li><a href="#M000016">weak</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public class methods</h2>
+              <div class='method public-class' id='method-M000017'>
+                <a name='M000017'></a>
+                <div class='synopsis'>
+                  <span class='name'>cssmin</span>
+                  <span class='arguments'>(input_string)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  <a href="../CSS.html">CSS</a> minification engine that simply uses the
+                  CSSMin gem, a Ruby port of Lecomte&#8217;s YUI Compressor and
+                  Schlueter&#8217;s PHP cssmin.
+                  </p>
+                  <p>
+                  Sources:
+                  </p>
+                  <ul>
+                  <li><a href="http://github.com/rgrove/cssmin">github.com/rgrove/cssmin</a>
+                  
+                  </li>
+                  <li><a href="http://rubygems.org/gems/cssmin">rubygems.org/gems/cssmin</a>
+                  
+                  </li>
+                  </ul>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000017-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000017-source'>     <span class="ruby-comment cmt"># File lib/asset_hat/css.rb, line 105</span>&#x000A;105:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cssmin</span>(<span class="ruby-identifier">input_string</span>)&#x000A;106:         <span class="ruby-constant">CSSMin</span>.<span class="ruby-identifier">minify</span>(<span class="ruby-identifier">input_string</span>)&#x000A;107:       <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-M000016'>
+                <a name='M000016'></a>
+                <div class='synopsis'>
+                  <span class='name'>weak</span>
+                  <span class='arguments'>(input_string)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Barebones <a href="../CSS.html">CSS</a> minification engine that only
+                  strips whitespace from the start and end of every line, including
+                  linebreaks. For safety, doesn&#8217;t attempt to parse the <a
+                  href="../CSS.html">CSS</a> itself.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000016-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000016-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/css.rb, line 83</span>&#x000A;83:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">weak</span>(<span class="ruby-identifier">input_string</span>)&#x000A;84:         <span class="ruby-identifier">input</span>   = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">input_string</span>)&#x000A;85:         <span class="ruby-identifier">output</span>  = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>&#x000A;86: &#x000A;87:         <span class="ruby-identifier">input</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;88:           <span class="ruby-comment cmt"># Remove indentation and trailing whitespace (including line breaks)</span>&#x000A;89:           <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip!</span>&#x000A;90:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">blank?</span>&#x000A;91: &#x000A;92:           <span class="ruby-identifier">output</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">line</span>&#x000A;93:         <span class="ruby-keyword kw">end</span>&#x000A;94: &#x000A;95:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">rewind</span>&#x000A;96:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">read</span>&#x000A;97:       <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
