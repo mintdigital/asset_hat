@@ -9,12 +9,13 @@ Coming soon.
 
 ## More Information
 
-For more information, check out the complete [README][].
+For more information, check out the [README][] or the complete [RDoc][].
 
 Having trouble or found a bug? Open an [issue][]. Attach a patch or
 [fork away][].
 
 [README]:     http://github.com/mintdigital/asset_hat#readme
+[RDoc]:       /asset_hat/doc/index.html
 [issue]:      http://github.com/mintdigital/asset_hat/issues
 [fork away]:  http://github.com/mintdigital/asset_hat/fork
 

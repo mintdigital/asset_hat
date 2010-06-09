@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>: AssetHat::JS::Vendors [AssetHat]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>Module</span>
+          AssetHat::JS::Vendors
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a href="../../../files/lib/asset_hat/js/vendors_rb.html">lib/asset_hat/js/vendors.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <p>
+            For working with supported 3rd-party JavaScript plugin/framework/library
+            vendors.
+            </p>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public class</h3>
+            <ol>
+              <li><a href="#M000020">source_for</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='constants-list'>
+              <h2>Constants</h2>
+              <div class='name-list'>
+                <table summary='Constants'>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>VENDORS</td>
+                    <td>=</td>
+                    <td class='context-item-value'>[         :jquery, :jquery_ui,         :prototype, :scriptaculous,         :mootools,         :dojo,         :swfobject,         :yui,         :ext_core       ]</td>
+                    <td>&nbsp;</td>
+                    <td class='context-item-desc'>
+                      
+                      A list of supported 3rd-party JavaScript plugin/vendor names.
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id='methods'>
+              <h2>Public class methods</h2>
+              <div class='method public-class' id='method-M000020'>
+                <a name='M000020'></a>
+                <div class='synopsis'>
+                  <span class='name'>source_for</span>
+                  <span class='arguments'>(vendor, options={})</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Accepts an item from VENDORS, and returns the URL at which that vendor
+                  asset can be found. The URL is either local (relative) or external
+                  depending on the environment configuration. Options:
+                  </p>
+                  <dl>
+                  <dt>version</dt><dd>The vendor version, e.g., &#8216;1.4.0&#8217; for jQuery 1.4. By default,
+                  each vendor version is taken from <tt>config/assets.yml</tt>; use this
+                  option to override the configuration.
+                  
+                  </dd>
+                  </dl>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000020-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000020-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js/vendors.rb, line 25</span>&#x000A;25:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">source_for</span>(<span class="ruby-identifier">vendor</span>, <span class="ruby-identifier">options</span>={})&#x000A;26:         <span class="ruby-identifier">vendor_config</span> =&#x000A;27:           <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-value str">'js'</span>][<span class="ruby-value str">'vendors'</span>][<span class="ruby-identifier">vendor</span>.<span class="ruby-identifier">to_s</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;28:         <span class="ruby-identifier">use_local</span> = <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">consider_all_requests_local</span>&#x000A;29:         <span class="ruby-identifier">version</span>   = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:version</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'version'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;30: &#x000A;31:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">use_local</span>&#x000A;32:           <span class="ruby-identifier">src</span> = <span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'remote_url'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;33:         <span class="ruby-keyword kw">end</span>&#x000A;34: &#x000A;35:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">src</span>.<span class="ruby-identifier">blank?</span>&#x000A;36:           <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">vendor</span>&#x000A;37:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:jquery</span>&#x000A;38:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;39: </span>              <span class="ruby-node">&quot;#{['jquery', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;40:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js&quot;</span>&#x000A;41:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:jquery_ui</span>&#x000A;42:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;43: </span>              <span class="ruby-node">&quot;#{['jquery-ui', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;44:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/#{version}/jquery-ui.min.js&quot;</span>&#x000A;45:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:prototype</span>&#x000A;46:             <span class="ruby-comment cmt"># Prototype currently doesn't provide an official minified version.</span>&#x000A;47:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;48: </span>              <span class="ruby-node">&quot;#{['prototype', version].compact.join('-')}.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;49:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/prototype/#{version}/prototype.js&quot;</span>&#x000A;50:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:scriptaculous</span>&#x000A;51:             <span class="ruby-comment cmt"># script.aculo.us currently doesn't provide an official minified version.</span>&#x000A;52:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;53: </span>              <span class="ruby-node">&quot;#{['scriptaculous', version].compact.join('-')}.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;54:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/scriptaculous/#{version}/scriptaculous.js&quot;</span>&#x000A;55:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:mootools</span>&#x000A;56:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;57: </span>              <span class="ruby-node">&quot;#{['mootools', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;58:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/mootools/#{version}/mootools-yui-compressed.js&quot;</span>&#x000A;59:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:dojo</span>&#x000A;60:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;61: </span>              <span class="ruby-node">&quot;#{['dojo', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;62:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/dojo/#{version}/dojo/dojo.xd.js&quot;</span>&#x000A;63:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:swfobject</span>&#x000A;64:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;65: </span>              <span class="ruby-node">&quot;#{['swfobject', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;66:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/swfobject/#{version}/swfobject.js&quot;</span>&#x000A;67:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:yui</span>&#x000A;68:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;69: </span>              <span class="ruby-node">&quot;#{['yui', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;70:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/yui/#{version}/build/yuiloader/yuiloader-min.js&quot;</span>&#x000A;71:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:ext_core</span>&#x000A;72:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;73: </span>              <span class="ruby-node">&quot;#{['ext_core', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;74:               <span class="ruby-node">&quot;http://ajax.googleapis.com/ajax/libs/ext-core/#{version}/ext-core.js&quot;</span>&#x000A;75:           <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-comment cmt"># TODO: Write to log</span>&#x000A;76:           <span class="ruby-keyword kw">end</span>&#x000A;77:         <span class="ruby-keyword kw">end</span>&#x000A;78: &#x000A;79:         <span class="ruby-identifier">src</span>&#x000A;80:       <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
