@@ -1,11 +1,13 @@
+# Helpers for use in layouts for global includes, and in views for
+# view-specific includes.
 module AssetHatHelper
   unless defined?(RAILS_ROOT)
     RAILS_ROOT = File.join(File.dirname(__FILE__), '..', '..')
   end
 
-  def include_assets(type, *args)
-    # `include_css` and `include_js` are recommended instead.
-
+  # Includes CSS or JS files. <code>include_css</code> and
+  # <code>include_js</code> are recommended instead.
+  def include_assets(type, *args) #:nodoc:
     type = type.to_sym
     allowed_types = AssetHat::TYPES
     unless allowed_types.include?(type)
@@ -93,30 +95,31 @@ module AssetHatHelper
       else nil
       end
     end.join("\n")
-  end
+  end # def include_assets
 
+  # <code>include_css</code> is a smart wrapper for Rails'
+  # <code>stylesheet_link_tag</code>. The two can be used together while
+  # migrating to AssetHat.
+  #
+  # Include a single stylesheet:
+  #   include_css 'diagnostics'
+  #   =>  <link href="/stylesheets/diagnostics.min.css" media="screen,projection" rel="stylesheet" type="text/css" />
+  #
+  # Include a single unminified stylesheet:
+  #   include_css 'diagnostics.css'
+  #   =>  <link href="/stylesheets/diagnostics.css" media="screen,projection" rel="stylesheet" type="text/css" />
+  #
+  # Include a bundle of stylesheets (i.e., a concatenated set of
+  # stylesheets; configure in config/assets.yml):
+  #   include_css :bundle => 'application'
+  #   =>  <link href="/stylesheets/bundles/application.min.css" ... />
+  #
+  # Include multiple stylesheets separately (not as cool):
+  #   include_css 'reset', 'application', 'clearfix'
+  #   =>  <link href="/stylesheets/reset.min.css" ... />
+  #       <link href="/stylesheets/application.min.css" ... />
+  #       <link href="/stylesheets/clearfix.min.css" ... />
   def include_css(*args)
-    # Usage:
-    #
-    # Include a single stylesheet:
-    #   include_css 'diagnostics'
-    #   =>  <link href="/stylesheets/diagnostics.min.css" media="screen,projection" rel="stylesheet" type="text/css" />
-    #
-    # Include a single unminified stylesheet:
-    #   include_css 'diagnostics.css'
-    #   =>  <link href="/stylesheets/diagnostics.css" media="screen,projection" rel="stylesheet" type="text/css" />
-    #
-    # Include a bundle of stylesheets (i.e., a concatenated set of
-    # stylesheets; configure in config/assets.yml):
-    #   include_css :bundle => 'application'
-    #   =>  <link href="/stylesheets/bundles/application.min.css" ... />
-    #
-    # Include multiple stylesheets separately (not as cool):
-    #   include_css 'reset', 'application', 'clearfix'
-    #   =>  <link href="/stylesheets/reset.min.css" ... />
-    #       <link href="/stylesheets/application.min.css" ... />
-    #       <link href="/stylesheets/clearfix.min.css" ... />
-
     return if args.blank?
 
     AssetHat.html_cache       ||= {}
@@ -132,41 +135,42 @@ module AssetHatHelper
     html
   end
 
+  # <code>include_js</code> is a smart wrapper for Rails'
+  # <code>javascript_include_tag</code>. The two can be used together while
+  # migrating to AssetHat.
+  #
+  # Include a single JS file:
+  #   include_js 'application'
+  #   =>  <script src="/javascripts/application.min.js" type="text/javascript"></script>
+  #
+  # Include a single JS unminified file:
+  #   include_js 'application.js'
+  #   =>  <script src="/javascripts/application.js" type="text/javascript"></script>
+  #
+  # Include jQuery:
+  #   include_js :jquery  # Development/test environment
+  #   =>  <script src="/javascripts/jquery-VERSION.min.js" ...></script>
+  #   include_js :jquery  # Staging/production environment
+  #   =>  <script src="http://ajax.googleapis.com/.../jquery.min.js" ...></script>
+  #     # Set jQuery versions either in `config/assets.yml`, or by using
+  #     # `include_js :jquery, :version => '1.4'`.
+  #
+  # Include a bundle of JS files (i.e., a concatenated set of files;
+  # configure in config/assets.yml):
+  #   include_js :bundle => 'application'
+  #   =>  <script src="/javascripts/bundles/application.min.js" ...></script>
+  #
+  # Include multiple bundles of JS files:
+  #   include_js :bundles => %w[plugins common]
+  #   =>  <script src="/javascripts/bundles/plugins.min.js" ...></script>
+  #       <script src="/javascripts/bundles/common.min.js" ...></script>
+  #
+  # Include multiple JS files separately (not as cool):
+  #   include_js 'bloombox', 'jquery.cookie', 'jquery.json.min'
+  #   =>  <script src="/javascripts/bloombox.min.js" ...></script>
+  #       <script src="/javascripts/jquery.cookie.min.js" ...></script>
+  #       <script src="/javascripts/jquery.json.min.js" ...></script>
   def include_js(*args)
-    # Usage:
-    #
-    # Include a single JS file:
-    #   include_js 'application'
-    #   =>  <script src="/javascripts/application.min.js" type="text/javascript"></script>
-    #
-    # Include a single JS unminified file:
-    #   include_js 'application.js'
-    #   =>  <script src="/javascripts/application.js" type="text/javascript"></script>
-    #
-    # Include jQuery:
-    #   include_js :jquery  # Development/test environment
-    #   =>  <script src="/javascripts/jquery-VERSION.min.js" ...></script>
-    #   include_js :jquery  # Staging/production environment
-    #   =>  <script src="http://ajax.googleapis.com/.../jquery.min.js" ...></script>
-    #     # Set jQuery versions either in `config/assets.yml`, or by using
-    #     # `include_js :jquery, :version => '1.4'`.
-    #
-    # Include a bundle of JS files (i.e., a concatenated set of files;
-    # configure in config/assets.yml):
-    #   include_js :bundle => 'application'
-    #   =>  <script src="/javascripts/bundles/application.min.js" ...></script>
-    #
-    # Include multiple bundles of JS files:
-    #   include_js :bundles => %w[plugins common]
-    #   =>  <script src="/javascripts/bundles/plugins.min.js" ...></script>
-    #       <script src="/javascripts/bundles/common.min.js" ...></script>
-    #
-    # Include multiple JS files separately (not as cool):
-    #   include_js 'bloombox', 'jquery.cookie', 'jquery.json.min'
-    #   =>  <script src="/javascripts/bloombox.min.js" ...></script>
-    #       <script src="/javascripts/jquery.cookie.min.js" ...></script>
-    #       <script src="/javascripts/jquery.json.min.js" ...></script>
-
     return if args.blank?
 
     AssetHat.html_cache       ||= {}
