@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu Apr 29 23:13:52 -0400 2010</span>
+          <span class='datetime'>Wed Jun 09 16:56:27 -0400 2010</span>
         </div>
       </div>
       <div id='content'>
@@ -58,11 +58,6 @@
             </li>
             <li>Force image URLs in your CSS to use CDN subdomains, not just the current
             host.
-            
-            </li>
-            <li>In production, automatically switch to <a
-            href="http://code.google.com/apis/ajaxlibs/">Google's JS CDN</a> (or any
-            third party) for jQuery, Prototype, and others.
             
             </li>
             </ul>
@@ -124,9 +119,9 @@
             
             <pre>rake asset_hat:minify</pre>
             <p>
-            This minifies all CSS/JS files listed in <tt>config/assets.yml</tt>,
-            concatenates them into bundle files, and adds CDN asset hosts and
-            cache-busting commit IDs to image URLs in your CSS.
+            This minifies all of the CSS/JS files listed in <tt>config/assets.yml</tt>,
+            concatenates the minified code into bundle files, and adds CDN asset hosts
+            and cache-busting commit IDs to image URLs in your CSS.
             </p>
             <p>
             Bundles are created as new files in <tt>public/stylesheets/bundles/</tt>
@@ -151,8 +146,8 @@
             Additional settings are supported in <tt>config/assets.yml</tt>:
             </p>
             <ul>
-            <li><tt>engine</tt>: Indicates how CSS and JS are minified; omit to use the
-            defaults. By default, CSS is minified with <a
+            <li><tt>engine</tt>: Indicates how CSS and JS are minified; omit this setting
+            to use the defaults. By default, CSS is minified with <a
             href="http://github.com/rgrove/cssmin">rgrove/cssmin</a> (a Ruby port of
             Lecomte&#8217;s YUI Compressor and Schlueter&#8217;s PHP cssmin), and JS is
             minified with <a href="http://github.com/rgrove/jsmin">rgrove/jsmin</a> (a
@@ -164,70 +159,29 @@
             but don&#8217;t save as many bytes.
             </p>
             </li>
-            <li><tt>vendors</tt>: Manage JS vendor code versions and remote URLs:
+            <li><tt>vendors</tt>: Currently only allows for setting the jQuery version
+            number:
             
-            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version: 1.4.0&#x000A;    jquery_ui:&#x000A;      version: 1.8.0&#x000A;      remote_url: http://my-cdn.example.com/jquery-ui-1.8.0.min.js</pre>
+            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version: 1.4</pre>
             <p>
-            Loading third-party JS is simple:
+            In the future, this will be used for configuring the retrieval of other
+            third-party code.
             </p>
-            <pre>&lt;%= include_js :jquery, :jquery_ui %&gt;</pre>
-            <p>
-            By default, if your environment sets
-            <tt>config.action_controller.consider_all_requests_local</tt> to
-            <tt>false</tt> (e.g., in production), and if you have specified the
-            <tt>version</tt> for that vendor, <a
-            href="../classes/AssetHat.html">AssetHat</a> automatically switches to URLs
-            from <a href="http://code.google.com/apis/ajaxlibs/">Google's "Ajax
-            Libraries" CDN</a>. If you supply a <tt>remote_url</tt> (optional) for that
-            vendor, <a href="../classes/AssetHat.html">AssetHat</a> uses that instead.
-            </p>
-            <p>
-            Supported vendors:
-            </p>
-            <ul>
-            <li><tt>jquery</tt>
-            
-            </li>
-            <li><tt>jquery_ui</tt>
-            
-            </li>
-            <li><tt>prototype</tt>
-            
-            </li>
-            <li><tt>scriptaculous</tt>
-            
-            </li>
-            <li><tt>mootools</tt>
-            
-            </li>
-            <li><tt>dojo</tt>
-            
-            </li>
-            <li><tt>swfobject</tt>
-            
-            </li>
-            <li><tt>yui</tt>
-            
-            </li>
-            <li><tt>ext_core</tt>
-            
-            </li>
-            </ul>
             </li>
             </ul>
             <h2>Usage</h2>
             <p>
             In your layouts and views, instead of these:
             </p>
-            <pre>&lt;%= stylesheet_link_tag 'reset', 'application', 'clearfix',&#x000A;                        :media =&gt; 'screen,projection',&#x000A;                        :cache =&gt; 'bundles/application' %&gt;&#x000A;&lt;%= javascript_include_tag(Rails.env.production? ?&#x000A;      'http://ajax.googleapis.com/.../1.4.0/jquery.min.js' :&#x000A;      'jquery-1.4.0.min.js') %&gt;&#x000A;&lt;%= javascript_include_tag(Rails.env.production? ?&#x000A;      'http://ajax.googleapis.com/.../1.8.0/jquery-ui.min.js' :&#x000A;      'jquery-ui-1.8.0.min.js') %&gt;&#x000A;&lt;%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',&#x000A;                           :cache =&gt; 'bundles/application' %&gt;</pre>
+            <pre>&lt;%= stylesheet_link_tag 'reset', 'application', 'clearfix',&#x000A;                        :media =&gt; 'screen,projection',&#x000A;                        :cache =&gt; 'bundles/application' %&gt;&#x000A;&lt;%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',&#x000A;                           :cache =&gt; 'bundles/application' %&gt;</pre>
             <p>
             <strong>Use these:</strong>
             </p>
-            <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;&lt;%= include_js  :jquery, :jquery_ui, :bundle =&gt; 'application' %&gt;</pre>
+            <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;&lt;%= include_js  :bundle =&gt; 'application' %&gt;</pre>
             <p>
             These turn into:
             </p>
-            <pre>&lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&lt;script src=&quot;/javascripts/jquery-1.4.0.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;&lt;script src=&quot;/javascripts/jquery-ui-1.8.0.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;  &lt;!--  In production, jQuery and jQuery UI are instead loaded from&#x000A;        Google's CDN (http://code.google.com/apis/ajaxlibs/). --&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/application.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
+            <pre>&lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/application.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
             <p>
             The built-in helpers can be used with AssetHat&#8217;s helpers as you
             migrate the entire app to <a href="../classes/AssetHat.html">AssetHat</a>.
@@ -243,14 +197,14 @@
             <p>
             You can also include single files as expected:
             </p>
-            <pre>&lt;%= include_css 'reset', 'application' %&gt;&#x000A;&lt;%= include_css 'mobile', :media =&gt; 'handheld' %&gt;&#x000A;&lt;%= include_js  'plugin.min', 'application' %&gt;</pre>
+            <pre>&lt;%= include_css 'reset', 'application' %&gt;&#x000A;&lt;%= include_js  'plugin.min', 'application' %&gt;</pre>
             <p>
             Or include multiple bundles at once:
             </p>
             <pre>&lt;%= include_js :bundles =&gt; %w[plugins common] %&gt;</pre>
             <p>
-            Including multiple bundles at once yields one <tt>&lt;link&gt;</tt> or
-            <tt>&lt;script&gt;</tt> element per bundle.
+            When including multiple bundles at once, this yields one
+            <tt>&lt;link&gt;</tt> or <tt>&lt;script&gt;</tt> element per bundle.
             </p>
             <p>
             You may want to use multiple bundles to separate plugins (rarely changed)

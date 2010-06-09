@@ -9,27 +9,60 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-03-11}
+  s.date = %q{2010-06-09}
   s.description = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.email = %q{ronald.devera@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.markdown"
+     "README.markdown",
+     "README.rdoc"
   ]
   s.files = [
     ".gitignore",
      "HISTORY",
      "LICENSE",
      "README.markdown",
+     "README.rdoc",
      "Rakefile",
      "VERSION.yml",
      "app/helpers/asset_hat_helper.rb",
      "asset_hat.gemspec",
      "config/assets.yml",
+     "doc/classes/AssetHat.html",
+     "doc/classes/AssetHat/CSS.html",
+     "doc/classes/AssetHat/CSS/Engines.html",
+     "doc/classes/AssetHat/JS.html",
+     "doc/classes/AssetHat/JS/Engines.html",
+     "doc/classes/AssetHat/JS/Vendors.html",
+     "doc/classes/AssetHatHelper.html",
+     "doc/created.rid",
+     "doc/files/HISTORY.html",
+     "doc/files/LICENSE.html",
+     "doc/files/README_rdoc.html",
+     "doc/files/app/helpers/asset_hat_helper_rb.html",
+     "doc/files/lib/asset_hat/capistrano_rb.html",
+     "doc/files/lib/asset_hat/css_rb.html",
+     "doc/files/lib/asset_hat/js/vendors_rb.html",
+     "doc/files/lib/asset_hat/js_rb.html",
+     "doc/files/lib/asset_hat/tasks/css_rb.html",
+     "doc/files/lib/asset_hat/tasks/js_rb.html",
+     "doc/files/lib/asset_hat/tasks_rb.html",
+     "doc/files/lib/asset_hat/vcs_rb.html",
+     "doc/files/lib/asset_hat/version_rb.html",
+     "doc/files/lib/asset_hat_rb.html",
+     "doc/fr_class_index.html",
+     "doc/fr_file_index.html",
+     "doc/fr_method_index.html",
+     "doc/index.html",
+     "doc/rdoc-style.css",
      "lib/asset_hat.rb",
+     "lib/asset_hat/capistrano.rb",
      "lib/asset_hat/css.rb",
      "lib/asset_hat/js.rb",
+     "lib/asset_hat/js/vendors.rb",
      "lib/asset_hat/tasks.rb",
+     "lib/asset_hat/tasks/css.rb",
+     "lib/asset_hat/tasks/js.rb",
      "lib/asset_hat/vcs.rb",
      "lib/asset_hat/version.rb",
      "public/javascripts/bundles/js-bundle-1.min.js",
@@ -65,7 +98,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mintdigital/asset_hat}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Your assets are covered.}
   s.test_files = [
     "test/asset_hat_helper_test.rb",
@@ -78,19 +111,22 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<shoulda>, [">= 2.10.2"])
       s.add_development_dependency(%q<flexmock>, [">= 0.8.6"])
+      s.add_development_dependency(%q<hanna>, [">= 0.1.12"])
+      s.add_development_dependency(%q<shoulda>, [">= 2.10.2"])
       s.add_runtime_dependency(%q<cssmin>, [">= 1.0.2"])
       s.add_runtime_dependency(%q<jsmin>, [">= 1.0.1"])
     else
-      s.add_dependency(%q<shoulda>, [">= 2.10.2"])
       s.add_dependency(%q<flexmock>, [">= 0.8.6"])
+      s.add_dependency(%q<hanna>, [">= 0.1.12"])
+      s.add_dependency(%q<shoulda>, [">= 2.10.2"])
       s.add_dependency(%q<cssmin>, [">= 1.0.2"])
       s.add_dependency(%q<jsmin>, [">= 1.0.1"])
     end
   else
-    s.add_dependency(%q<shoulda>, [">= 2.10.2"])
     s.add_dependency(%q<flexmock>, [">= 0.8.6"])
+    s.add_dependency(%q<hanna>, [">= 0.1.12"])
+    s.add_dependency(%q<shoulda>, [">= 2.10.2"])
     s.add_dependency(%q<cssmin>, [">= 1.0.2"])
     s.add_dependency(%q<jsmin>, [">= 1.0.1"])
   end

@@ -1,6 +1,9 @@
 module AssetHat
   module JS
+    # For working with supported 3rd-party JavaScript
+    # plugin/framework/library vendors.
     module Vendors
+      # A list of supported 3rd-party JavaScript plugin/vendor names.
       VENDORS = [
         :jquery, :jquery_ui,
         :prototype, :scriptaculous,
@@ -11,6 +14,14 @@ module AssetHat
         :ext_core
       ]
 
+      # Accepts an item from VENDORS, and returns the URL at which that vendor
+      # asset can be found. The URL is either local (relative) or external
+      # depending on the environment configuration. Options:
+      #
+      # [version] The vendor version, e.g., '1.4.0' for jQuery 1.4. By
+      #           default, each vendor version is taken from
+      #           <code>config/assets.yml</code>; use this option to override
+      #           the configuration.
       def self.source_for(vendor, options={})
         vendor_config =
           AssetHat.config['js']['vendors'][vendor.to_s] rescue nil
