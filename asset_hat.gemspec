@@ -5,23 +5,21 @@
 
 Gem::Specification.new do |s|
   s.name = %q{asset_hat}
-  s.version = "0.1.5"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-06-09}
+  s.date = %q{2010-06-10}
   s.description = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.email = %q{ronald.devera@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.markdown",
      "README.rdoc"
   ]
   s.files = [
     ".gitignore",
      "HISTORY",
      "LICENSE",
-     "README.markdown",
      "README.rdoc",
      "Rakefile",
      "VERSION.yml",
