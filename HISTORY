@@ -1,6 +1,8 @@
 = HISTORY
 
-* Cleaned up existing docs, and generated RDoc docs.
+* Added support for loading many more JS vendors from Google's CDN, including
+  Prototype, MooTools, and SWFObject.
+* Cleaned up existing docs, and added complete RDoc documentation.
 * Added example integration script for Capistrano deployments.
 
 == Version 0.1.5 (2010-03-11)

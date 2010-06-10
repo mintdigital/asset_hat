@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Wed Jun 09 16:56:27 -0400 2010</span>
+          <span class='datetime'>Thu Jun 10 10:40:28 -0400 2010</span>
         </div>
       </div>
       <div id='content'>
@@ -51,13 +51,17 @@
             requests.
             
             </li>
-            <li>Add an image&#8217;s last <a href="http://git-scm.com/">Git</a> commit ID
-            to its CSS URLs to bust browser caches (e.g.,
-            <tt>/images/foo.png?ab12cd34e</tt>).
+            <li>Load popular third-party JS (like jQuery and Prototype) from Google&#8217;s
+            CDN when in production, or from localhost in development.
             
             </li>
             <li>Force image URLs in your CSS to use CDN subdomains, not just the current
             host.
+            
+            </li>
+            <li>Add an image&#8217;s last <a href="http://git-scm.com/">Git</a> commit ID
+            to its CSS URLs to bust browser caches (e.g.,
+            <tt>/images/foo.png?ab12cd34e</tt>).
             
             </li>
             </ul>
@@ -183,8 +187,9 @@
             </p>
             <pre>&lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/application.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
             <p>
-            The built-in helpers can be used with AssetHat&#8217;s helpers as you
-            migrate the entire app to <a href="../classes/AssetHat.html">AssetHat</a>.
+            Have an enormous app? You can integrate gradually, using <a
+            href="../classes/AssetHat.html">AssetHat</a> alongside Rails&#8217; default
+            asset caching.
             </p>
             <p>
             If your environment has <tt>config.action_controller.perform_caching</tt>

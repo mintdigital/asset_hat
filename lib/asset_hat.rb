@@ -8,13 +8,15 @@ end
 # minified) the first time that bundle is requested. Not good enough. AssetHat
 # can automatically:
 #
-# * Easily minify and bundle CSS and JS on deploy to reduce file sizes and HTTP
-#   requests.
+# * Easily minify and bundle CSS and JS on deploy to reduce file sizes and
+#   HTTP requests.
+# * Load popular third-party JS (like jQuery and Prototype) from Google's CDN
+#   when in production, or from localhost in development.
+# * Force image URLs in your CSS to use CDN subdomains, not just the current
+#   host.
 # * Add an image's last Git[http://git-scm.com/] commit ID to its
 #   CSS URLs to bust browser caches (e.g.,
 #   <code>/images/foo.png?ab12cd34e</code>).
-# * Force image URLs in your CSS to use CDN subdomains, not just the current
-#   host.
 #
 # After setup, you can use these in your layouts and views:
 #
