@@ -1,5 +1,7 @@
 = HISTORY
 
+* Added WebFont Loader to supported JS vendors.
+
 == Version 0.2.0 (2010-06-10)
 * Added support for loading many more JS vendors from Google's CDN, including
   Prototype, MooTools, and SWFObject.

@@ -4,6 +4,18 @@ module AssetHat
     # plugin/framework/library vendors.
     module Vendors
       # A list of supported 3rd-party JavaScript plugin/vendor names.
+      # Homepages:
+      #
+      # * {jQuery}[http://jquery.com/]
+      # * {jQuery UI}[http://jqueryui.com/]
+      # * {Prototype}[http://www.prototypejs.org/]
+      # * {script.aculo.us}[http://script.aculo.us/]
+      # * {MooTools}[http://mootools.net/]
+      # * {Dojo}[http://dojotoolkit.org/]
+      # * {SWFObject}[http://code.google.com/p/swfobject/]
+      # * {YUI}[http://developer.yahoo.com/yui/]
+      # * {Ext Core}[http://extjs.com/products/extcore/]
+      # * {WebFont Loader}[http://code.google.com/apis/webfonts/docs/webfont_loader.html]
       VENDORS = [
         :jquery, :jquery_ui,
         :prototype, :scriptaculous,
@@ -11,12 +23,15 @@ module AssetHat
         :dojo,
         :swfobject,
         :yui,
-        :ext_core
+        :ext_core,
+        :webfont
       ]
 
       # Accepts an item from VENDORS, and returns the URL at which that vendor
       # asset can be found. The URL is either local (relative) or external
-      # depending on the environment configuration. Options:
+      # depending on the environment configuration. If external, the URL
+      # points to {Google's CDN}[http://code.google.com/apis/ajaxlibs/].
+      # Options:
       #
       # [version] The vendor version, e.g., '1.4.0' for jQuery 1.4. By
       #           default, each vendor version is taken from
@@ -72,6 +87,10 @@ module AssetHat
             src = use_local || version.blank? ?
               "#{['ext_core', version].compact.join('-')}.min.js" :
               "http://ajax.googleapis.com/ajax/libs/ext-core/#{version}/ext-core.js"
+          when :webfont
+            src = use_local || version.blank? ?
+              "#{['webfont', version].compact.join('-')}.min.js" :
+              "http://ajax.googleapis.com/ajax/libs/webfont/#{version}/webfont.js"
           else nil # TODO: Write to log
           end
         end

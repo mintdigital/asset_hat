@@ -3,8 +3,8 @@
 Your assets are covered.
 
 With Rails' default asset caching, CSS and JS are concatenated (not even
-minified) the first time that bundle is requested. Not good enough. AssetHat
-can automatically:
+minified) at runtime when that bundle is first requested. Not good enough.
+AssetHat can automatically:
 
 * Easily *minify* and *bundle* CSS and JS on deploy to reduce file sizes and
   HTTP requests.
