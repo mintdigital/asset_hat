@@ -34,10 +34,10 @@
             <a href="../files/lib/asset_hat/css_rb.html">lib/asset_hat/css.rb</a>
           </li>
           <li class='other'>
-            <a href="../files/lib/asset_hat/js/vendors_rb.html">lib/asset_hat/js/vendors.rb</a>
+            <a href="../files/lib/asset_hat/js_rb.html">lib/asset_hat/js.rb</a>
           </li>
           <li class='other'>
-            <a href="../files/lib/asset_hat/js_rb.html">lib/asset_hat/js.rb</a>
+            <a href="../files/lib/asset_hat/js/vendors_rb.html">lib/asset_hat/js/vendors.rb</a>
           </li>
           <li class='other'>
             <a href="../files/lib/asset_hat/vcs_rb.html">lib/asset_hat/vcs.rb</a>
@@ -62,8 +62,9 @@
             <p>
             With Rails&#8217; default asset caching, <a
             href="AssetHat/CSS.html">CSS</a> and <a href="AssetHat/JS.html">JS</a> are
-            concatenated (not even minified) the first time that bundle is requested.
-            Not good enough. <a href="AssetHat.html">AssetHat</a> can automatically:
+            concatenated (not even minified) at runtime when that bundle is first
+            requested. Not good enough. <a href="AssetHat.html">AssetHat</a> can
+            automatically:
             </p>
             <ul>
             <li>Easily <b>minify</b> and <b>bundle</b> <a href="AssetHat/CSS.html">CSS</a>
