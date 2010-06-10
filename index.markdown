@@ -11,11 +11,15 @@ can automatically:
 
 * Easily **minify** (strip whitespace/comments) and **bundle** (combine into a
   single file) CSS and JS on deploy to reduce file sizes and HTTP requests.
-* Add an image's last [Git](http://git-scm.com/) commit ID to its
-  CSS URLs to **bust browser caches** (e.g.,
-  <code>/images/foo.png?ab12cd34e</code>).
+* Load popular **third-party JS** (like jQuery and Prototype) from **[Google's
+  CDN]** when in production, or from localhost in development.
 * Force image URLs in your CSS to use **CDN subdomains**, not just the current
   host.
+* Add an image's last [Git][] commit ID to its CSS URLs to **bust browser
+  caches** (e.g., <code>/images/foo.png?ab12cd34e</code>).
+
+[Git]:          http://git-scm.com/
+[Google's CDN]: http://code.google.com/apis/ajaxlibs/
 
 After setup, you can use these in your layouts and views:
 
