@@ -62,10 +62,10 @@ class AssetHatTest < ActiveSupport::TestCase
       )
     end
 
-    should 'add .htc asset hosts' do
+    should 'not add .htc asset hosts' do
       asset_host = 'http://media%d.example.com'
       assert_match(
-        /^p\{background:url\(http:\/\/media[\d]\.example\.com\/htc\/iepngfix.htc\)\}$/,
+        /^p\{background:url\(\/htc\/iepngfix.htc\)\}$/,
         AssetHat::CSS.add_asset_hosts(
           'p{background:url(/htc/iepngfix.htc)}', asset_host)
       )

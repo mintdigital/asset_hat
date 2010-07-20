@@ -69,7 +69,10 @@ module AssetHat
     # number in 0-3, inclusive.
     def self.add_asset_hosts(css, asset_host)
       return if asset_host.blank?
-      css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
+      css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
+        # N.B.: The `/htc/` directory is excluded because IE 6 refuses to run
+        # .htc files (e.g., TwinHelix's iepngfix.htc) from other domains,
+        # including CDN subdomains.
         src = $1
         "url(#{(asset_host =~ /%d/) ? asset_host % (src.hash % 4) : asset_host}#{src})"
       end
