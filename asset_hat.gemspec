@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{asset_hat}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-06-10}
+  s.date = %q{2010-07-21}
   s.description = %q{Minify, bundle, and optimize CSS/JS assets.}
   s.email = %q{ronald.devera@gmail.com}
   s.extra_rdoc_files = [
@@ -93,7 +93,7 @@ Gem::Specification.new do |s|
      "test/asset_hat_test.rb",
      "test/test_helper.rb"
   ]
-  s.homepage = %q{http://mintdigital.github.com/asset_hat/}
+  s.homepage = %q{http://github.com/mintdigital/asset_hat}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
