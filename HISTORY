@@ -1,6 +1,9 @@
 = HISTORY
 
+== Version 0.2.1 (2010-07-21)
 * Added WebFont Loader to supported JS vendors.
+* Stopped adding asset hosts to `url(/htc/...)` URLs because IE 6, by default,
+  refuses to run .htc files from other domains, including CDN subdomains.
 
 == Version 0.2.0 (2010-06-10)
 * Added support for loading many more JS vendors from Google's CDN, including

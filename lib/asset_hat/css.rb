@@ -63,16 +63,16 @@ module AssetHat
     #   <code>config.action_controller.asset_host</code> in
     #   the app's <code>config/environments/production.rb</code>.
     #
-    # An asset host is added to every asset URL in the CSS, e.g.,
+    # An asset host is added to every image URL in the CSS, e.g.,
     # <code>background: url(http\://assets2.example.com/images/foo.png)</code>;
     # if <code>%d</code> in the asset host, it is replaced with an arbitrary
     # number in 0-3, inclusive.
     def self.add_asset_hosts(css, asset_host)
       return if asset_host.blank?
       css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
-        # N.B.: The `/htc/` directory is excluded because IE 6 refuses to run
-        # .htc files (e.g., TwinHelix's iepngfix.htc) from other domains,
-        # including CDN subdomains.
+        # N.B.: The `/htc/` directory is excluded because IE 6, by default,
+        # refuses to run .htc files (e.g., TwinHelix's iepngfix.htc) from
+        # other domains, including CDN subdomains.
         src = $1
         "url(#{(asset_host =~ /%d/) ? asset_host % (src.hash % 4) : asset_host}#{src})"
       end
