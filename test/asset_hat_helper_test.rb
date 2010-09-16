@@ -8,11 +8,11 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with minified versions' do
         setup do
           @commit_id = '111'
-          flexmock(AssetHat).should_receive(:last_commit_id => @commit_id)
+          flexmock(AssetHat, :last_commit_id => @commit_id)
         end
 
         should 'include one file by name, and automatically use minified version' do
-          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
+          flexmock(AssetHat, :asset_exists? => true)
           output = include_css('foo', :cache => true)
           assert_equal css_tag("foo.min.css?#{@commit_id}"), output
         end
@@ -28,7 +28,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple files by name' do
-          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
+          flexmock(AssetHat, :asset_exists? => true)
           expected = %w[foo bar].map do |source|
             css_tag("#{source}.min.css?#{@commit_id}")
           end.join("\n")
@@ -102,14 +102,14 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with minified versions' do
         setup do
           @commit_id = '111'
-          flexmock(AssetHat).should_receive(
+          flexmock(AssetHat,
             :last_commit_id => @commit_id,
             :last_bundle_commit_id => @commit_id
           )
         end
 
         should 'include one file by name, and automatically use minified version' do
-          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
+          flexmock(AssetHat, :asset_exists? => true)
           output = include_js('jquery.some-plugin', :cache => true)
           assert_equal js_tag("jquery.some-plugin.min.js?#{@commit_id}"), output
         end
@@ -132,7 +132,7 @@ class AssetHatHelperTest < ActionView::TestCase
           end
 
           should 'include jQuery and jQuery UI' do
-            flexmock(AssetHat).should_receive(:config => @original_config)
+            flexmock(AssetHat, :config => @original_config)
             [:jquery, :jquery_ui].each do |vendor|
               output = include_js(vendor, :cache => true)
               assert_equal js_tag("#{vendor.to_s.dasherize}.min.js?#{@commit_id}"), output
@@ -165,7 +165,7 @@ class AssetHatHelperTest < ActionView::TestCase
                 'remote_url' => 'http://example.com/cdn/jquery.min.js'
               }
             }
-            flexmock(AssetHat).should_receive(:config => config)
+            flexmock(AssetHat, :config => config)
           end
 
           should 'include jQuery by version via config file' do
@@ -178,7 +178,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
           context 'with remote requests' do
             setup do
-              flexmock(ActionController::Base).should_receive(
+              flexmock(ActionController::Base,
                 :consider_all_requests_local => false)
             end
 
@@ -193,7 +193,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end # context 'with a mock config'
 
         should 'include multiple files by name' do
-          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
+          flexmock(AssetHat, :asset_exists? => true)
           expected = %w[foo jquery.bar].map do |source|
             js_tag("#{source}.min.js?#{@commit_id}")
           end.join("\n")
@@ -208,7 +208,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple bundles' do
-          flexmock(AssetHat).should_receive(:asset_exists?).and_return(true)
+          flexmock(AssetHat, :asset_exists? => true)
           expected = %w[foo bar].map do |bundle|
             js_tag("bundles/#{bundle}.min.js?#{@commit_id}")
           end.join("\n")

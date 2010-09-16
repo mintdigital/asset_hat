@@ -4,7 +4,7 @@ class AssetHatTest < ActiveSupport::TestCase
   context 'AssetHat' do
     context 'with caching enabled' do
       setup do
-        flexmock(AssetHat).should_receive(:cache? => true)
+        flexmock(AssetHat, :cache? => true)
       end
 
       should 'memoize config' do
@@ -16,7 +16,7 @@ class AssetHatTest < ActiveSupport::TestCase
 
     context 'with caching disabled' do
       setup do
-        flexmock(AssetHat).should_receive(:cache? => false)
+        flexmock(AssetHat, :cache? => false)
       end
 
       should 'not memoize config' do
@@ -35,8 +35,8 @@ class AssetHatTest < ActiveSupport::TestCase
 
     should 'add image asset commit IDs' do
       commit_id = 111
-      flexmock(AssetHat).should_receive(:last_commit_id => commit_id)
-      flexmock(Rails).should_receive(:public_path => '')
+      flexmock(AssetHat, :last_commit_id => commit_id)
+      flexmock(Rails, :public_path => '')
 
       assert_equal  "p{background:url(/images/foo.png?#{commit_id})}",
                     AssetHat::CSS.add_asset_commit_ids(
@@ -45,8 +45,8 @@ class AssetHatTest < ActiveSupport::TestCase
 
     should 'add .htc asset commit IDs' do
       commit_id = 111
-      flexmock(AssetHat).should_receive(:last_commit_id => commit_id)
-      flexmock(Rails).should_receive(:public_path => '')
+      flexmock(AssetHat, :last_commit_id => commit_id)
+      flexmock(Rails, :public_path => '')
 
       assert_equal  "p{background:url(/htc/iepngfix.htc?#{commit_id})}",
                     AssetHat::CSS.add_asset_commit_ids(
