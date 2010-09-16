@@ -1,5 +1,7 @@
 = HISTORY
 
+* FEATURE: Added support for loading remote JS via SSL. Includes loading
+  popular JS from `https://ajax.googleapis.com` or your own CDN.
 * FEATURE: Added non-verbose mode when minifying. Useful for shortening output
   from deployment scripts.
 * FEATURE: Added ERB support in `config/assets.yml`.

@@ -98,6 +98,11 @@ class AssetHatHelperTest < ActionView::TestCase
   end # context 'include_css'
 
   context 'include_js' do
+    setup do
+      @request = ActionController::TestRequest.new
+      flexmock(controller, :request => @request)
+    end
+
     context 'with caching enabled' do
       context 'with minified versions' do
         setup do
@@ -146,6 +151,23 @@ class AssetHatHelperTest < ActionView::TestCase
                 # N.B.: Including only the regular, not minified, version
             end
           end
+
+          context 'with remote requests via SSL' do
+            setup do
+              flexmock(ActionController::Base,
+                :consider_all_requests_local => false)
+              flexmock(@request, :ssl? => true)
+            end
+
+            should 'include JS via https://ajax.googleapis.com' do
+              AssetHat::JS::VENDORS.each do |vendor|
+                assert_match(
+                  %r{src="https://ajax.googleapis.com/},
+                  include_js(vendor, :version => '1', :cache => true)
+                )
+              end
+            end
+          end # context 'via SSL'
         end # context 'with vendor JS'
 
         should 'include jQuery by version via helper option' do
@@ -162,7 +184,8 @@ class AssetHatHelperTest < ActionView::TestCase
             config['js']['vendors'] = {
               'jquery' => {
                 'version' => version,
-                'remote_url' => 'http://example.com/cdn/jquery.min.js'
+                'remote_url' => 'http://example.com/cdn/jquery.min.js',
+                'remote_ssl_url' => 'https://secure.example.com/cdn/jquery.min.js'
               }
             }
             flexmock(AssetHat, :config => config)
@@ -184,6 +207,18 @@ class AssetHatHelperTest < ActionView::TestCase
 
             should 'use specified remote URL for jQuery' do
               src = AssetHat.config['js']['vendors']['jquery']['remote_url']
+              assert_equal(
+                %Q{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true)
+              )
+            end
+
+            should 'use specified remote SSL URL for jQuery' do
+              flexmock(ActionController::Base,
+                :consider_all_requests_local => false)
+              flexmock(@request, :ssl? => true)
+              src = AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
+
               assert_equal(
                 %Q{<script src="#{src}" type="text/javascript"></script>},
                 include_js(:jquery, :cache => true)

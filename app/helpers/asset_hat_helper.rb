@@ -183,13 +183,17 @@ module AssetHatHelper
 
       html = []
       options = args.extract_options!
+      options.reverse_merge!(:ssl => controller.request.ssl?)
 
       included_vendors = (args & AssetHat::JS::VENDORS)
       included_vendors.each do |vendor|
         args.delete vendor
-        src = AssetHat::JS::Vendors.source_for(vendor, options.slice(:version))
+        src = AssetHat::JS::Vendors.source_for(
+                vendor, options.slice(:ssl, :version))
         html << include_assets(:js, src, :cache => true)
       end
+
+      options.except! :ssl, :version
 
       html << include_assets(:js, *(args + [options]))
       html = html.join("\n").strip
