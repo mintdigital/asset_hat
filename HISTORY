@@ -1,40 +1,44 @@
 = HISTORY
 
+* FEATURE: Improved default CSS minification engine to remove rules that have
+  empty declaration blocks.
+
 == Version 0.2.1 (2010-07-21)
-* Added WebFont Loader to supported JS vendors.
-* Stopped adding asset hosts to `url(/htc/...)` URLs because IE 6, by default,
-  refuses to run .htc files from other domains, including CDN subdomains.
+* FEATURE: Added WebFont Loader to supported JS vendors.
+* FIX: Stopped adding asset hosts to `url(/htc/...)` URLs because IE 6, by
+  default, refuses to run .htc files from other domains, including CDN
+  subdomains.
 
 == Version 0.2.0 (2010-06-10)
-* Added support for loading many more JS vendors from Google's CDN, including
-  Prototype, MooTools, and SWFObject.
-* Cleaned up existing docs, and added complete RDoc documentation.
-* Added example integration script for Capistrano deployments.
+* FEATURE: Added support for loading many more JS vendors from Google's CDN,
+  including Prototype, MooTools, and SWFObject.
+* FEATURE: Cleaned up existing docs, and added complete RDoc documentation.
+* FEATURE: Added example integration script for Capistrano deployments.
 
 == Version 0.1.5 (2010-03-11)
-* Fixed fetching asset commit IDs in some environments. The bug was possibly
-  caused by older versions of Git, which fail to read logs properly when given
-  absolute paths, rather than relative paths.
-* Stopped app tests from running twice in some environments.
+* FIX: Fixed fetching asset commit IDs in some environments. The bug was
+  possibly caused by older versions of Git, which fail to read logs properly
+  when given absolute paths, rather than relative paths.
+* FIX: Stopped app tests from running twice in some environments.
 
 == Version 0.1.4 (2010-03-03)
-* Fixed config filepaths in `asset_hat:config` task.
+* FIX: Fixed config filepaths in `asset_hat:config` task.
 
 == Version 0.1.3 (2010-03-03)
-* Allowed adding commit IDs and asset hosts to `url(/htc/...)` URLs (e.g.,
-  `/htc/iepngfix.htc`) in CSS, not just images.
-* Changed `AssetHat.config` to memoize only if `cache?` is true. In
+* FIX: Allowed adding commit IDs and asset hosts to `url(/htc/...)` URLs
+  (e.g., `/htc/iepngfix.htc`) in CSS, not just images.
+* FIX: Changed `AssetHat.config` to memoize only if `cache?` is true. In
   development environments, this means the config file will be reread with
   every request.
 
 == Version 0.1.2 (2010-01-27)
-* Memoized HTML output from `include_css` and `include_js` when
+* FEATURE: Memoized HTML output from `include_css` and `include_js` when
   `AssetHat.cache?` is true.
 
 == Version 0.1.1 (2010-01-20)
-* Rewrote `AssetHat::VERSION` to be based on `VERSION.yml`.
-* Prefixed `AssetHat::CONFIG_FILEPATH` with `RAILS_ROOT`, which fixes ability
-  to run an app's individual test files.
+* FIX: Rewrote `AssetHat::VERSION` to be based on `VERSION.yml`.
+* FIX: Prefixed `AssetHat::CONFIG_FILEPATH` with `RAILS_ROOT`, which fixes
+  ability to run an app's individual test files.
 
 == Version 0.1.0 (2010-01-19)
 * Initial release.

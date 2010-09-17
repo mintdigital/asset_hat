@@ -78,7 +78,7 @@ module AssetHat
       end
     end
 
-    # Swappable CSS minification engines.
+    # Swappable CSS minification engines. Each accepts and returns a string.
     module Engines
       # Barebones CSS minification engine that only strips whitespace from the
       # start and end of every line, including linebreaks. For safety, doesn't
@@ -99,14 +99,19 @@ module AssetHat
         output.read
       end
 
-      # CSS minification engine that simply uses the CSSMin gem, a Ruby port
+      # CSS minification engine that mostly uses the CSSMin gem, a Ruby port
       # of Lecomte's YUI Compressor and Schlueter's PHP cssmin.
       #
       # Sources:
       # - http://github.com/rgrove/cssmin
       # - http://rubygems.org/gems/cssmin
       def self.cssmin(input_string)
-        CSSMin.minify(input_string)
+        output = CSSMin.minify(input_string)
+
+        # Remove rules that have empty declaration blocks
+        output.gsub!(/\}([^\}]+\{;\}){1,}/, '}')
+
+        output
       end
     end
 

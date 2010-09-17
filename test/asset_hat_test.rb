@@ -70,6 +70,27 @@ class AssetHatTest < ActiveSupport::TestCase
           'p{background:url(/htc/iepngfix.htc)}', asset_host)
       )
     end
+
+    context 'when minifying' do
+      setup do
+        @input = %q{
+          .foo { width: 1px; }
+          .bar {}
+          .baz{  width  :  2px;  }
+          .qux {}
+          .quux { }
+          .corge {/* ! */}
+        }
+      end
+
+      context 'with cssmin engine' do
+        should 'remove rules that have empty declaration blocks' do
+          assert_equal '.foo{width:1px;}.baz{width:2px;}',
+            AssetHat::CSS.minify(@input, :engine => :cssmin)
+        end
+      end
+    end # context 'when minifying'
+
   end # context 'AssetHat::CSS'
 
   context 'AssetHat::JS' do
