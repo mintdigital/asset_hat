@@ -74,7 +74,8 @@ module AssetHat
         # refuses to run .htc files (e.g., TwinHelix's iepngfix.htc) from
         # other domains, including CDN subdomains.
         src = $1
-        "url(#{(asset_host =~ /%d/) ? asset_host % (src.hash % 4) : asset_host}#{src})"
+        asset_host %= (src.hash % 4) if asset_host =~ /%d/
+        "url(#{asset_host}#{src})"
       end
     end
 

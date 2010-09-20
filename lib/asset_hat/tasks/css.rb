@@ -2,42 +2,42 @@ namespace :asset_hat do
   namespace :css do
 
     # desc 'Adds mtimes to asset URLs in CSS'
-    # task :add_asset_mtimes, :filename, :verbose do |t, args|
+    # task :add_asset_mtimes, :filename do |t, args|
     #   if args.filename.blank?
     #     raise 'Usage: rake asset_hat:css:add_asset_mtimes[filename.css]' and return
     #   end
     #
-    #   args.with_defaults :verbose => true
+    #   verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
     #
     #   css = File.open(args.filename, 'r') { |f| f.read }
     #   css = AssetHat::CSS.add_asset_mtimes(css)
     #   File.open(args.filename, 'w') { |f| f.write css }
     #
-    #   puts "- Added asset mtimes to #{args.filename}" if args.verbose
+    #   puts "- Added asset mtimes to #{args.filename}" if verbose
     # end
 
     desc 'Adds commit IDs to asset URLs in CSS for cache busting'
-    task :add_asset_commit_ids, :filename, :verbose, :needs => :environment do |t, args|
+    task :add_asset_commit_ids, :filename, :needs => :environment do |t, args|
       if args.filename.blank?
         raise 'Usage: rake asset_hat:css:add_asset_commit_ids[filename.css]' and return
       end
 
-      args.with_defaults :verbose => true
+      verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
 
       css = File.open(args.filename, 'r') { |f| f.read }
       css = AssetHat::CSS.add_asset_commit_ids(css)
       File.open(args.filename, 'w') { |f| f.write css }
 
-      puts "- Added asset commit IDs to #{args.filename}" if args.verbose
+      puts "- Added asset commit IDs to #{args.filename}" if verbose
     end
 
     desc 'Adds hosts to asset URLs in CSS'
-    task :add_asset_hosts, :filename, :verbose, :needs => :environment do |t, args|
+    task :add_asset_hosts, :filename, :needs => :environment do |t, args|
       if args.filename.blank?
         raise 'Usage: rake asset_hat:css:add_asset_hosts[filename.css]' and return
       end
 
-      args.with_defaults :verbose => true
+      verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
 
       asset_host = ActionController::Base.asset_host
       if asset_host.blank?
@@ -49,16 +49,16 @@ namespace :asset_hat do
       css = AssetHat::CSS.add_asset_hosts(css, asset_host)
       File.open(args.filename, 'w') { |f| f.write css }
 
-      puts "- Added asset hosts to #{args.filename}" if args.verbose
+      puts "- Added asset hosts to #{args.filename}" if verbose
     end
 
     desc 'Minifies one CSS file'
-    task :minify_file, :filepath, :verbose, :needs => :environment do |t, args|
+    task :minify_file, :filepath, :needs => :environment do |t, args|
       if args.filepath.blank?
         raise 'Usage: rake asset_hat:css:minify_file[path/to/filename.css]' and return
       end
 
-      args.with_defaults :verbose => false
+      verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
       min_options = {
         :engine => AssetHat.config['css']['engine']
       }.reject { |k,v| v.blank? }
@@ -71,7 +71,7 @@ namespace :asset_hat do
       File.open(target_filepath, 'w') { |f| f.write output }
 
       # Print results
-      puts "- Minified to #{target_filepath}" if args.verbose
+      puts "- Minified to #{target_filepath}" if verbose
     end
 
     desc 'Minifies one CSS bundle'
@@ -81,6 +81,7 @@ namespace :asset_hat do
       end
 
       config = AssetHat.config
+      verbose = ENV['VERBOSE'] != 'false' # Defaults to `true`
       old_bundle_size = 0.0
       new_bundle_size = 0.0
       min_options = {
@@ -119,14 +120,19 @@ namespace :asset_hat do
       File.open(bundle_filepath, 'w') { |f| f.write output }
 
       # Print results
-      percent_saved = 1 - (new_bundle_size / old_bundle_size)
-      puts "\nWrote CSS bundle: #{bundle_filepath}"
-      filepaths.each do |filepath|
-        puts "        contains: #{filepath}"
-      end
-      if old_bundle_size > 0
-        engine = "(Engine: #{min_options[:engine]})"
-        puts "        MINIFIED: #{'%.1f' % (percent_saved * 100)}% #{engine}"
+      percent_saved =
+        "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
+      if verbose
+        puts "\nWrote CSS bundle: #{bundle_filepath}"
+        filepaths.each do |filepath|
+          puts "        contains: #{filepath}"
+        end
+        if old_bundle_size > 0
+          engine = "(Engine: #{min_options[:engine]})"
+          puts "        MINIFIED: #{percent_saved} #{engine}"
+        end
+      else # Not verbose
+        puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
       end
     end
 

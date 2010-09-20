@@ -117,6 +117,9 @@ Additional settings are supported in <code>config/assets.yml</code>:
   In the future, this will be used for configuring the retrieval of other
   third-party code.
 
+If you want shorter output during deployments, you can use
+`rake asset_hat:minify VERBOSE=false` in your deploy script.
+
 
 
 == Usage
