@@ -45,12 +45,13 @@ Tested with Rails 2.3.x.
 
 2.  Configure the gem:
 
-    * If you're using {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
+    * If you're using Rails 3 and/or
+      {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
 
       1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
       2.  Command-line: <code>bundle install</code>
 
-    * If you're using Rails' <code>config.gem</code>, add to your app's
+    * If you're using Rails 2.x's <code>config.gem</code>, add to your app's
       <code>config/environment.rb</code>:
 
         config.gem 'asset_hat', :version => '0.x.x'

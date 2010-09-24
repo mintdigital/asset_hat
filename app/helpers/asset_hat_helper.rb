@@ -46,6 +46,7 @@ module AssetHatHelper
       filenames = args
     end
 
+    # Add extensions if needed, using minified file if it already exists
     filenames.each do |filename|
       if filename.match(/\.#{type}$/)
         sources << filename
