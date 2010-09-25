@@ -3,11 +3,12 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   namespace :deploy do
     namespace :asset_hat do
-      desc 'Minify all CSS/JS with Asset Hat'
+      desc 'Minify all CSS/JS with AssetHat'
       task :minify, :roles => :assets, :except => {:no_release => true} do
         rake = fetch(:rake, "rake")
-        env = fetch(:environment, fetch(:rails_env, "production"))
-        run "cd #{current_path} ; #{rake} RAILS_ENV=#{env} asset_hat:minify"
+        env  = fetch(:environment, fetch(:rails_env, "production"))
+        run "cd #{current_path} ; " +
+            "#{rake} RAILS_ENV=#{env} VERBOSE=false asset_hat:minify"
       end
     end
   end
