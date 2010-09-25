@@ -120,6 +120,11 @@ module AssetHatHelper
   #   =>  <link href="/stylesheets/reset.min.css" ... />
   #       <link href="/stylesheets/application.min.css" ... />
   #       <link href="/stylesheets/clearfix.min.css" ... />
+  #
+  # Include a stylesheet with extra media types:
+  #   include_css 'mobile', :media => 'handheld,screen,projection'
+  #   =>  <link href="/stylesheets/mobile.min.css"
+  #             media="handheld,screen,projection" ... />
   def include_css(*args)
     return if args.blank?
 
@@ -149,15 +154,18 @@ module AssetHatHelper
   #   =>  <script src="/javascripts/application.js" type="text/javascript"></script>
   #
   # Include jQuery:
-  #   include_js :jquery  # Development/test environment
+  #   # Development/test environment:
+  #   include_js :jquery
   #   =>  <script src="/javascripts/jquery-VERSION.min.js" ...></script>
-  #   include_js :jquery  # Staging/production environment
+  #
+  #   # Staging/production environment:
+  #   include_js :jquery
   #   =>  <script src="http://ajax.googleapis.com/.../jquery.min.js" ...></script>
   #     # Set jQuery versions either in `config/assets.yml`, or by using
   #     # `include_js :jquery, :version => '1.4'`.
   #
   # Include a bundle of JS files (i.e., a concatenated set of files;
-  # configure in config/assets.yml):
+  # configure in <code>config/assets.yml</code>):
   #   include_js :bundle => 'application'
   #   =>  <script src="/javascripts/bundles/application.min.js" ...></script>
   #

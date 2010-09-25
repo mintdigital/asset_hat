@@ -36,7 +36,7 @@ module AssetHat
 
     # Given a string containing CSS, appends each referenced asset's last
     # commit ID to its URL, e.g.,
-    # <code>background: url(/images/foo.png?ab12cd34e)</code>. This enables
+    # <code>background: url(/images/foo.png?ab12cd3)</code>. This enables
     # cache busting: If the user's browser has cached a copy of foo.png from a
     # previous deployment, this new URL forces the browser to ignore that
     # cache and request the latest version.
