@@ -17,7 +17,7 @@ end
 #   just the current host.
 # * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
 #   <strong>bust browser caches</strong> (e.g.,
-#   <code>/images/foo.png?ab12cd34e</code>).
+#   <code>/images/foo.png?ab12cd3</code>).
 #
 # After setup, you can use these in your layouts and views:
 #

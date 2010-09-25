@@ -15,7 +15,7 @@ AssetHat can automatically:
   just the current host.
 * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
   <strong>bust browser caches</strong> (e.g.,
-  <code>/images/foo.png?ab12cd34e</code>).
+  <code>/images/foo.png?ab12cd3</code>).
 
 After setup, you can use these in your layouts and views:
 
@@ -39,11 +39,7 @@ Tested with Rails 2.3.x.
 
 == Installation
 
-1.  Install the gem:
-
-      gem install asset_hat
-
-2.  Configure the gem:
+1.  Configure the gem:
 
     * If you're using Rails 3 and/or
       {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
@@ -51,14 +47,13 @@ Tested with Rails 2.3.x.
       1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
       2.  Command-line: <code>bundle install</code>
 
-    * If you're using Rails 2.x's <code>config.gem</code>, add to your app's
-      <code>config/environment.rb</code>:
+    * If you're using Rails 2.x's <code>config.gem</code>:
 
-        config.gem 'asset_hat', :version => '0.x.x'
+      1.  Add to your app's <code>config/environment.rb</code>:
+          <code>config.gem 'asset_hat', :version => '0.x.x'</code>
+      2.  Command-line: <code>gem install asset_hat</code>
 
-3.  Add to your app's Rakefile:
-
-      require 'asset_hat/tasks'
+2.  Add to your app's Rakefile: <code>require 'asset_hat/tasks'</code>
 
 
 
@@ -83,16 +78,20 @@ Tested with Rails 2.3.x.
     Bundles are created as new files in
     <code>public/stylesheets/bundles/</code> and
     <code>public/javascripts/bundles/</code>. Your original CSS/JS files
-    remain intact.
+    remain untouched.
 
 4.  Set your deployment script to run <code>rake asset_hat:minify</code> after
     deploying your latest CSS/JS. This overwrites previously minified bundles,
-    and leaves your original CSS/JS files intact.
+    and leaves your original CSS/JS files untouched.
 
 === Advanced configuration
 
 If you manage deployments with Capistrano[http://www.capify.org/], see the
 gem's packaged example at <code>lib/asset_hat/capistrano.rb</code>.
+
+If you want shorter output during deployments, you can use
+`rake asset_hat:minify FORMAT=short` (one output line per bundle) or
+`FORMAT=dot` (one output line total) in your deploy script.
 
 Additional settings are supported in <code>config/assets.yml</code>:
 
@@ -107,26 +106,41 @@ Additional settings are supported in <code>config/assets.yml</code>:
   strongly, try switching each to <code>weak</code>. The <code>weak</code>
   engines are much safer, but don't save as many bytes.
 
-* <code>vendors</code>: Currently only allows for setting the jQuery version
-  number:
+* <code>vendors</code>: Configures third-party JS that's loaded from a CDN or
+  other external source. The following example configures jQuery and jQuery UI
+  for use throughout the app:
 
         js:
           vendors:
             jquery:
-              version: 1.4
+              version:        1.4.2
+            jquery_ui:
+              version:        1.8.5
+              remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js
+              remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js
 
-  In the future, this will be used for configuring the retrieval of other
-  third-party code.
+  Configuration keys per vendor:
 
-If you want shorter output during deployments, you can use
-`rake asset_hat:minify FORMAT=short` (one output line per bundle) or
-`FORMAT=dot` (one output line total) in your deploy script.
+  * <code>version</code>: Sets the default version across the app. In the
+    example above, <code><%= include_js :jquery %></code> uses version 1.4.2
+    by default. You can override this for special layouts/views with
+    <code><%= include_js :jquery, :version => '1.3.2' %></code>.
+  * <code>remote_url</code>, <code>remote_ssl_url</code>: By default, vendor
+    JS will load from {Google's CDN}[http://code.google.com/apis/ajaxlibs/]
+    in production (or any environment where
+    <code>config.action_controller.consider_all_requests_local</code> is set
+    to <code>true</code>). If the original request to your app used SSL, the
+    vendor JS will also load from Google's CDN via SSL. If you prefer to use a
+    different CDN, specify its SSL/non-SSL URLs, and the appropriate URL will
+    be used per request.
+
+  A full list of supported vendors is in the AssetHat::JS::Vendors module.
 
 
 
 == Usage
 
-In your layouts and views, instead of these:
+In your layouts and views, <strong>instead of these</strong>:
 
     <%= stylesheet_link_tag 'reset', 'application', 'clearfix',
                             :media => 'screen,projection',
@@ -172,5 +186,13 @@ When including multiple bundles at once, this yields one
 You may want to use multiple bundles to separate plugins (rarely changed) from
 application code (frequently changed). If all code is in one huge bundle, then
 whenever there's a change, browsers have to re-download the whole bundle. By
-using multiple bundles based on change frequency, browsers cache the rarely
-changed code, and only re-download the frequently changed code.
+using multiple bundles based on update frequency, browsers cache the rarely
+updated code, and only re-download the frequently updated code.
+
+
+
+== {What is best in AssetHat?}[http://www.youtube.com/watch?v=V30tyaXv6EI]
+
+* To crush your assets;
+* See them bundled before you; and
+* Hear no more lamentation about slow page loads.
