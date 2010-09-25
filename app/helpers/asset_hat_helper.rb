@@ -176,15 +176,15 @@ module AssetHatHelper
 
     AssetHat.html_cache       ||= {}
     AssetHat.html_cache[:js]  ||= {}
-    cache_key = args.inspect
+
+    options = args.extract_options!
+    options.reverse_merge!(:ssl => controller.request.ssl?)
+    cache_key = (args + [options]).inspect
 
     if !AssetHat.cache? || AssetHat.html_cache[:js][cache_key].blank?
       # Generate HTML and write to cache
 
       html = []
-      options = args.extract_options!
-      options.reverse_merge!(:ssl => controller.request.ssl?)
-
       included_vendors = (args & AssetHat::JS::VENDORS)
       included_vendors.each do |vendor|
         args.delete vendor

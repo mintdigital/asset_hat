@@ -153,18 +153,53 @@ class AssetHatHelperTest < ActionView::TestCase
           end
 
           context 'with remote requests via SSL' do
-            setup do
-              flexmock(ActionController::Base,
-                :consider_all_requests_local => false)
-              flexmock(@request, :ssl? => true)
-            end
-
             should 'include JS via https://ajax.googleapis.com' do
               AssetHat::JS::VENDORS.each do |vendor|
+                AssetHat.html_cache[:js] = {}
+                helper_opts = {:version => '1', :cache => true}
+
+                flexmock_teardown
+                flexmock(AssetHat, :cache? => true)
+                flexmock(ActionController::Base,
+                  :consider_all_requests_local => false)
+                flexmock(@request, :ssl? => true)
+                flexmock(@controller, :request => @request)
+                assert @controller.request.ssl?,
+                  'Precondition: Request should use SSL'
+
+                https_html = include_js(vendor, helper_opts.dup)
                 assert_match(
-                  %r{src="https://ajax.googleapis.com/},
-                  include_js(vendor, :version => '1', :cache => true)
-                )
+                  %r{src="https://ajax\.googleapis\.com/}, https_html)
+                assert_equal 1, AssetHat.html_cache[:js].size
+                assert_equal https_html, AssetHat.html_cache[:js].first[1],
+                  'SSL HTML should be cached'
+                http_cache_key = AssetHat.html_cache[:js].first[0]
+
+                flexmock_teardown
+                flexmock(AssetHat, :cache? => true)
+                flexmock(ActionController::Base,
+                  :consider_all_requests_local => false)
+                flexmock(@request, :ssl? => false)
+                flexmock(@controller, :request => @request)
+                assert !@controller.request.ssl?,
+                  'Precondition: Request should not use SSL'
+                assert_equal 1, AssetHat.html_cache[:js].size
+                assert_equal https_html,
+                  AssetHat.html_cache[:js][http_cache_key],
+                  'SSL HTML should be still be cached'
+
+                http_html = include_js(vendor, helper_opts)
+                assert_match(
+                  %r{src="http://ajax\.googleapis\.com/},
+                  http_html,
+                  'Should not use same cached HTML for SSL and non-SSL')
+                assert_equal 2, AssetHat.html_cache[:js].size
+                assert_equal https_html,
+                  AssetHat.html_cache[:js][http_cache_key],
+                  'SSH HTML should still be cached'
+                assert_equal http_html,
+                  AssetHat.html_cache[:js].except(http_cache_key).first[1],
+                  'Non-SSL HTML should be cached'
               end
             end
           end # context 'via SSL'
