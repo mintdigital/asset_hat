@@ -4,6 +4,7 @@
   empty declaration blocks.
 * FEATURE: Added non-verbose mode when minifying. Useful for shortening output
   from deployment scripts.
+* FEATURE: Added ERB support in `config/assets.yml`.
 * FIX: Fixed adding asset commit IDs to URLs containing "?" in stylesheets.
 
 == Version 0.2.1 (2010-07-21)

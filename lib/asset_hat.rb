@@ -64,7 +64,7 @@ module AssetHat
   # Nested-hash version of <code>config/assets.yml</code>.
   def self.config
     if !cache? || @config.blank?
-      @config = YAML.load(File.open(CONFIG_FILEPATH, 'r'))
+      @config = YAML.load(ERB.new(File.read(CONFIG_FILEPATH)).result)
     end
     @config
   end
