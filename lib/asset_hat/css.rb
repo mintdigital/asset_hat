@@ -31,7 +31,7 @@ module AssetHat
         }.strip.gsub(/\s+/, ' ') and return
       end
 
-      AssetHat::CSS::Engines.send(engine, input_string)
+      AssetHat::CSS::Engines.send(engine, input_string).strip
     end
 
     # Given a string containing CSS, appends each referenced asset's last

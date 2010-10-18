@@ -36,7 +36,7 @@ module AssetHat
         }.strip.gsub(/\s+/, ' ') and return
       end
 
-      AssetHat::JS::Engines.send(engine, input_string)
+      AssetHat::JS::Engines.send(engine, input_string).strip
     end
 
     # Swappable JavaScript minification engines.
