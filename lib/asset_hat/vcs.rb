@@ -69,4 +69,23 @@ module AssetHat
     @last_commit_ids
   end
 
+  # Precomputes and caches the last commit ID for all bundles. Your web server
+  # process(es) should run this at boot to avoid overhead during user runtime.
+  def self.cache_last_commit_ids
+    AssetHat::TYPES.each do |type|
+      next if AssetHat.config[type.to_s].blank? ||
+              AssetHat.config[type.to_s]['bundles'].blank?
+
+      AssetHat.config[type.to_s]['bundles'].keys.each do |bundle|
+        # Memoize commit ID for this bundle
+        AssetHat.last_bundle_commit_id(bundle, type) if AssetHat.cache?
+
+        # Memoize commit IDs for each file in this bundle
+        AssetHat.bundle_filepaths(bundle, type).each do |filepath|
+          AssetHat.last_commit_id(filepath)
+        end
+      end
+    end
+  end
+
 end

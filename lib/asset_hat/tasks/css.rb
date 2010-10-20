@@ -1,25 +1,11 @@
 namespace :asset_hat do
   namespace :css do
 
-    # desc 'Adds mtimes to asset URLs in CSS'
-    # task :add_asset_mtimes, :filename do |t, args|
-    #   if args.filename.blank?
-    #     raise 'Usage: rake asset_hat:css:add_asset_mtimes[filename.css]' and return
-    #   end
-    #
-    #   verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
-    #
-    #   css = File.open(args.filename, 'r') { |f| f.read }
-    #   css = AssetHat::CSS.add_asset_mtimes(css)
-    #   File.open(args.filename, 'w') { |f| f.write css }
-    #
-    #   puts "- Added asset mtimes to #{args.filename}" if verbose
-    # end
-
     desc 'Adds commit IDs to asset URLs in CSS for cache busting'
     task :add_asset_commit_ids, :filename, :needs => :environment do |t, args|
       if args.filename.blank?
-        raise 'Usage: rake asset_hat:css:add_asset_commit_ids[filename.css]' and return
+        raise 'Usage: rake asset_hat:css:' +
+          'add_asset_commit_ids[filename.css]' and return
       end
 
       verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
@@ -34,15 +20,16 @@ namespace :asset_hat do
     desc 'Adds hosts to asset URLs in CSS'
     task :add_asset_hosts, :filename, :needs => :environment do |t, args|
       if args.filename.blank?
-        raise 'Usage: rake asset_hat:css:add_asset_hosts[filename.css]' and return
+        raise 'Usage: rake asset_hat:css:' +
+          'add_asset_hosts[filename.css]' and return
       end
 
       verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
 
       asset_host = ActionController::Base.asset_host
       if asset_host.blank?
-        raise "This environment (#{ENV['RAILS_ENV']}) doesn't have an `asset_host` configured."
-        return
+        raise "This environment (#{ENV['RAILS_ENV']}) " +
+          "doesn't have an `asset_host` configured." and return
       end
 
       css = File.open(args.filename, 'r') { |f| f.read }
@@ -54,13 +41,16 @@ namespace :asset_hat do
 
     desc 'Minifies one CSS file'
     task :minify_file, :filepath, :needs => :environment do |t, args|
+      type = 'css'
+
       if args.filepath.blank?
-        raise 'Usage: rake asset_hat:css:minify_file[path/to/filename.css]' and return
+        raise "Usage: rake asset_hat:#{type}:" +
+          "minify_file[path/to/filename.#{type}]" and return
       end
 
       verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
       min_options = {
-        :engine => AssetHat.config['css']['engine']
+        :engine => AssetHat.config[type]['engine']
       }.reject { |k,v| v.blank? }
 
       input   = File.open(args.filepath, 'r').read
@@ -76,32 +66,42 @@ namespace :asset_hat do
 
     desc 'Minifies one CSS bundle'
     task :minify_bundle, :bundle, :needs => :environment do |t, args|
+      type = 'css'
+
       if args.bundle.blank?
-        raise 'Usage: rake asset_hat:css:minify_bundle[application]' and return
+        raise "Usage: rake asset_hat:#{type}:" +
+          "minify_bundle[application]" and return
       end
 
-      config = AssetHat.config
+      config  = AssetHat.config[type]
       verbose = ENV['VERBOSE'] != 'false' # Defaults to `true`
-      old_bundle_size = 0.0
-      new_bundle_size = 0.0
       min_options = {
-        :engine => config['css']['engine']
+        :engine => config['engine']
       }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
-      filenames = config['css']['bundles'][args.bundle]
+      filenames = config['bundles'][args.bundle].select(&:present?)
       if filenames.empty?
-        raise "No CSS files are specified for the #{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}."
-        return
+        raise "No #{type.upcase} files are specified for the " +
+          "#{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
       end
       filepaths = filenames.map do |filename|
-        File.join('public', 'stylesheets', "#{filename}.css")
+        parts = filename.split(File::SEPARATOR)
+        parts.last << '.' << type
+        File.join(
+          (parts.first.present? ?
+            AssetHat.assets_dir(type) : # Given path was relative
+            AssetHat::ASSETS_DIR),      # Given path was absolute
+          parts
+        )
       end
       bundle_filepath = AssetHat::CSS.min_filepath(File.join(
-        'public', 'stylesheets', 'bundles', "#{args.bundle}.css"))
+        AssetHat.assets_dir(type), 'bundles', "#{args.bundle}.#{type}"))
 
       # Concatenate and process output
       output = ''
+      old_bundle_size = 0.0
+      new_bundle_size = 0.0
       asset_host = ActionController::Base.asset_host
       filepaths.each do |filepath|
         file_output = File.open(filepath, 'r').read
@@ -122,14 +122,16 @@ namespace :asset_hat do
       # Print results
       percent_saved =
         "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
+      bundle_filepath.sub!(/^#{Rails.root}\//, '')
       if verbose
-        puts "\nWrote CSS bundle: #{bundle_filepath}"
+        puts "\nWrote #{type.upcase} bundle: #{bundle_filepath}"
         filepaths.each do |filepath|
-          puts "        contains: #{filepath}"
+          puts "        contains: #{filepath.sub(/^#{Rails.root}\//, '')}"
         end
         if old_bundle_size > 0
-          engine = "(Engine: #{min_options[:engine]})"
-          puts "        MINIFIED: #{percent_saved} #{engine}"
+          puts "        MINIFIED: #{percent_saved}" +
+                        (" (empty!)" if new_bundle_size == 0).to_s +
+                        " (Engine: #{min_options[:engine]})"
         end
       else # Not verbose
         puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
@@ -138,18 +140,21 @@ namespace :asset_hat do
 
     desc 'Concatenates and minifies all CSS bundles'
     task :minify, :needs => :environment do
+      type = 'css'
+
       # Get input bundles
-      config = AssetHat.config
-      if config['css'].blank? || config['css']['bundles'].blank?
-        puts "You need to set up CSS bundles in #{AssetHat::CONFIG_FILEPATH}."
-        exit
+      config = AssetHat.config[type]
+      if config.blank? || config['bundles'].blank?
+        raise "You need to set up #{type.upcase} bundles " +
+          "in #{AssetHat::CONFIG_FILEPATH}." and return
       end
-      bundles = config['css']['bundles'].keys
+      bundles = config['bundles'].keys
 
       # Minify bundles
       bundles.each do |bundle|
-        Rake::Task['asset_hat:css:minify_bundle'].reenable
-        Rake::Task['asset_hat:css:minify_bundle'].invoke(bundle)
+        task = Rake::Task["asset_hat:#{type}:minify_bundle"]
+        task.reenable
+        task.invoke(bundle)
       end
     end
 

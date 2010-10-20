@@ -96,7 +96,7 @@ module AssetHat
       return
     end
 
-    @asset_exists ||= TYPES.inject({}) { |hsh, type| hsh.merge!(type => {}) }
+    @asset_exists ||= TYPES.inject({}) { |hsh, t| hsh.merge(t => {}) }
     if @asset_exists[type][filename].nil?
       @asset_exists[type][filename] =
         File.exist?(File.join(self.assets_dir(type), filename))

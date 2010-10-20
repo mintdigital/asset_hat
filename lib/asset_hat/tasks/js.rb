@@ -3,18 +3,20 @@ namespace :asset_hat do
 
     desc 'Minifies one JS file'
     task :minify_file, :filepath, :needs => :environment do |t, args|
+      type = 'js'
+
       if args.filepath.blank?
-        raise 'Usage: rake asset_hat:js:minify_file[filepath.js]' and return
+        raise "Usage: rake asset_hat:#{type}:" +
+          "minify_file[filepath.#{type}]" and return
       end
 
       verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
       min_options = {
-        :engine => AssetHat.config['js']['engine']
+        :engine => AssetHat.config[type]['engine']
       }.reject { |k,v| v.blank? }
 
-      if verbose && args.filepath.match(/\.min\.js$/)
-        puts "#{args.filepath} is already minified."
-        exit 1
+      if verbose && args.filepath.match(/\.min\.#{type}$/)
+        raise "#{args.filepath} is already minified." and return
       end
 
       input   = File.open(args.filepath, 'r').read
@@ -30,36 +32,46 @@ namespace :asset_hat do
 
     desc 'Minifies one JS bundle'
     task :minify_bundle, :bundle, :needs => :environment do |t, args|
+      type = 'js'
+
       if args.bundle.blank?
-        raise 'Usage: rake asset_hat:js:minify_bundle[application]' and return
+        raise "Usage: rake asset_hat:#{type}:" +
+          "minify_bundle[application]" and return
       end
 
-      config = AssetHat.config
+      config  = AssetHat.config[type]
       verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
-      old_bundle_size = 0.0
-      new_bundle_size = 0.0
       min_options = {
-        :engine => config['js']['engine']
+        :engine => config['engine']
       }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
-      filenames = config['js']['bundles'][args.bundle]
+      filenames = config['bundles'][args.bundle].select(&:present?)
       if filenames.empty?
-        raise "No JS files are specified for the #{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}."
-        return
+        raise "No #{type.upcase} files are specified for the " +
+          "#{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
       end
       filepaths = filenames.map do |filename|
-        File.join('public', 'javascripts', "#{filename}.js")
+        parts = filename.split(File::SEPARATOR)
+        parts.last << '.' << type
+        File.join(
+          (parts.first.present? ?
+            AssetHat.assets_dir(type) : # Given path was relative
+            AssetHat::ASSETS_DIR),      # Given path was absolute
+          parts
+        )
       end
       bundle_filepath = AssetHat::JS.min_filepath(File.join(
-        'public', 'javascripts', 'bundles', "#{args.bundle}.js"))
+        AssetHat.assets_dir(type), 'bundles', "#{args.bundle}.#{type}"))
 
       # Concatenate and process output
       output = ''
+      old_bundle_size = 0.0
+      new_bundle_size = 0.0
       filepaths.each do |filepath|
         file_output = File.open(filepath, 'r').read
         old_bundle_size += file_output.size
-        unless filepath =~ /\.min\.js$/ # Already minified
+        unless filepath =~ /\.min\.#{type}$/ # Already minified
           file_output = AssetHat::JS.minify(file_output, min_options)
         end
         new_bundle_size += file_output.size
@@ -71,14 +83,16 @@ namespace :asset_hat do
       # Print results
       percent_saved =
         "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
+      bundle_filepath.sub!(/^#{Rails.root}\//, '')
       if verbose
-        puts "\n Wrote JS bundle: #{bundle_filepath}"
+        puts "\n Wrote #{type.upcase} bundle: #{bundle_filepath}"
         filepaths.each do |filepath|
-          puts "        contains: #{filepath}"
+          puts "        contains: #{filepath.sub(/^#{Rails.root}\//, '')}"
         end
         if old_bundle_size > 0
-          engine = "(Engine: #{min_options[:engine]})"
-          puts "        MINIFIED: #{percent_saved} #{engine}"
+          puts "        MINIFIED: #{percent_saved}" +
+                        (" (empty!)" if new_bundle_size == 0).to_s +
+                        " (Engine: #{min_options[:engine]})"
         end
       else # Not verbose
         puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
@@ -87,18 +101,21 @@ namespace :asset_hat do
 
     desc 'Concatenates and minifies all JS bundles'
     task :minify, :needs => :environment do
+      type = 'js'
+
       # Get input bundles
-      config = AssetHat.config
-      if config['js'].blank? || config['js']['bundles'].blank?
-        puts "You need to set up JS bundles in #{AssetHat::CONFIG_FILEPATH}."
-        exit
+      config = AssetHat.config[type]
+      if config.blank? || config['bundles'].blank?
+        raise "You need to set up #{type.upcase} bundles " +
+          "in #{AssetHat::CONFIG_FILEPATH}." and return
       end
-      bundles = config['js']['bundles'].keys
+      bundles = config['bundles'].keys
 
       # Minify bundles
       bundles.each do |bundle|
-        Rake::Task['asset_hat:js:minify_bundle'].reenable
-        Rake::Task['asset_hat:js:minify_bundle'].invoke(bundle)
+        task = Rake::Task["asset_hat:#{type}:minify_bundle"]
+        task.reenable
+        task.invoke(bundle)
       end
     end
 
