@@ -1,7 +1,5 @@
 = HISTORY
 
-* FEATURE: Improved default CSS minification engine to remove rules that have
-  empty declaration blocks.
 * FEATURE: Added non-verbose mode when minifying. Useful for shortening output
   from deployment scripts.
 * FEATURE: Added ERB support in `config/assets.yml`.
@@ -9,6 +7,9 @@
   pointing to assets directly inside `public/`.
 * FEATURE: Added `asset_hat:minify:css` and `asset_hat:minify:js` Rake task
   aliases.
+* IMPROVEMENT: Updated default CSS minification engine to remove rules that
+  have empty declaration blocks.
+* IMPROVEMENT: Stopped pre-caching asset commit IDs when launching console.
 * FIX: Fixed adding asset commit IDs to URLs containing "?" in stylesheets.
 
 == Version 0.2.1 (2010-07-21)
@@ -40,7 +41,7 @@
   every request.
 
 == Version 0.1.2 (2010-01-27)
-* FEATURE: Memoized HTML output from `include_css` and `include_js` when
+* IMPROVEMENT: Memoized HTML output from `include_css` and `include_js` when
   `AssetHat.cache?` is true.
 
 == Version 0.1.1 (2010-01-20)
