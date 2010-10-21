@@ -6,6 +6,13 @@ namespace :asset_hat do
   desc 'Minifies all CSS and JS bundles'
   task :minify => ['asset_hat:css:minify', 'asset_hat:js:minify']
 
+  namespace :minify do
+    %w[css js].each do |type|
+      desc "Alias for asset_hat:#{type}:minify"
+      task type.to_sym => "asset_hat:#{type}:minify"
+    end
+  end
+
   desc 'Prepare configuration file'
   task :config do
     template_filepath = File.join(File.dirname(__FILE__), '..', '..',

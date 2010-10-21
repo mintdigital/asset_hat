@@ -7,6 +7,8 @@
 * FEATURE: Added ERB support in `config/assets.yml`.
 * FEATURE: Added support for absolute paths in `config/assets.yml`. Allows
   pointing to assets directly inside `public/`.
+* FEATURE: Added `asset_hat:minify:css` and `asset_hat:minify:js` Rake task
+  aliases.
 * FIX: Fixed adding asset commit IDs to URLs containing "?" in stylesheets.
 
 == Version 0.2.1 (2010-07-21)
