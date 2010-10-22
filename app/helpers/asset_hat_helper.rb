@@ -19,10 +19,7 @@ module AssetHatHelper
       return
     end
 
-    options = args.extract_options!
-    options.symbolize_keys!
-    options.reverse_merge!(:media => 'screen,projection') if type == :css
-
+    options   = args.extract_options!.symbolize_keys
     filenames = []
     sources   = [] # The URLs that are ultimately included via HTML
     source_commit_ids = {} # Last commit ID for each source
@@ -36,7 +33,10 @@ module AssetHatHelper
       bundles = [options.delete(:bundle), options.delete(:bundles)].
                   flatten.reject(&:blank?)
       if use_caching
-        sources += bundles.map { |b| "bundles/#{b}.min.#{type}" }
+        sources += bundles.map do |bundle|
+          File.join(AssetHat.bundles_dir(options.slice(:ssl)),
+                    "#{bundle}.min.#{type}")
+        end
       else
         config = AssetHat.config
         filenames = bundles.map { |b| AssetHat.bundle_filenames(b, type) }.
@@ -70,9 +70,11 @@ module AssetHatHelper
       sources.map! do |src|
         if src =~ %r{^http(s?)://} || src =~ %r{^//}
           # Absolute URL; do nothing
-        elsif src =~ /^bundles\//
+        elsif src =~ /^#{AssetHat.bundles_dir}\//
           # Get commit ID of bundle file with most recently committed update
-          bundle = src.match(/^bundles\/(.*)\.min\.#{type}$/)[1]
+          bundle = src.
+            match(/^#{AssetHat.bundles_dir}\/(ssl\/)?(.*)\.min\.#{type}$/).
+            to_a.last
           commit_id = AssetHat.last_bundle_commit_id(bundle, type)
         else
           # Get commit ID of file's most recently committed update
@@ -87,12 +89,11 @@ module AssetHatHelper
     end
 
     # Build output HTML
+    options.delete :ssl
     sources.map do |src|
       case type
-      when :css
-        stylesheet_link_tag(src, options)
-      when :js
-        javascript_include_tag(src, options)
+      when :css ; stylesheet_link_tag(src, options)
+      when :js  ; javascript_include_tag(src, options)
       else nil
       end
     end.join("\n")
@@ -130,11 +131,16 @@ module AssetHatHelper
 
     AssetHat.html_cache       ||= {}
     AssetHat.html_cache[:css] ||= {}
-    cache_key = args.inspect
+
+    options = args.extract_options!
+    options.symbolize_keys!.reverse_merge!(
+      :media => 'screen,projection', :ssl => controller.request.ssl?)
+    cache_key = (args + [options]).inspect
 
     if !AssetHat.cache? || AssetHat.html_cache[:css][cache_key].blank?
       # Generate HTML and write to cache
-      html = AssetHat.html_cache[:css][cache_key] = include_assets(:css, *args)
+      html = AssetHat.html_cache[:css][cache_key] =
+        include_assets(:css, *(args + [options]))
     end
 
     html ||= AssetHat.html_cache[:css][cache_key]
@@ -186,7 +192,7 @@ module AssetHatHelper
     AssetHat.html_cache[:js]  ||= {}
 
     options = args.extract_options!
-    options.reverse_merge!(:ssl => controller.request.ssl?)
+    options.symbolize_keys!.reverse_merge!(:ssl => controller.request.ssl?)
     cache_key = (args + [options]).inspect
 
     if !AssetHat.cache? || AssetHat.html_cache[:js][cache_key].blank?
@@ -201,7 +207,7 @@ module AssetHatHelper
         html << include_assets(:js, src, :cache => true)
       end
 
-      options.except! :ssl, :version
+      options.except! :version
 
       html << include_assets(:js, *(args + [options]))
       html = html.join("\n").strip

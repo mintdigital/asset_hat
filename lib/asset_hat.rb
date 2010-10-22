@@ -195,6 +195,32 @@ module AssetHat
       filenames.map { |fn| File.join(dir, "#{fn}.#{type}") } : nil
   end
 
+  # Reads <code>ActionController::Base.asset_host</code>, which can be a
+  # String or Proc, and returns a String. Should behave just like Rails
+  # 2.3.x's private `compute_asset_host` method, but with a simulated request.
+  #
+  # Options:
+  #
+  # [ssl] Set to <code>true</code> to simulate a request via SSL. Defaults to
+  #       <code>false</code>.
+  def self.compute_asset_host(asset_host, source, options={})
+    host = asset_host
+    if host.is_a?(Proc) || host.respond_to?(:call)
+      case host.is_a?(Proc) ?
+           host.arity : host.method(:call).arity
+      when 2
+        request = ActionController::Request.new(
+          'HTTPS' => options[:ssl] ? 'on' : 'off')
+        host = host.call(source, request)
+      else
+        host = host.call(source)
+      end
+    else
+      host %= (source.hash % 4) if host =~ /%d/
+    end
+    host
+  end
+
   def self.clear_html_cache
     html_cache = {}
   end
