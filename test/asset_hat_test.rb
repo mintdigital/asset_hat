@@ -2,6 +2,20 @@ require 'test_helper'
 
 class AssetHatTest < ActiveSupport::TestCase
   context 'AssetHat' do
+    should 'know where to store assets' do
+      assert_equal 'public/stylesheets', AssetHat.assets_dir(:css)
+      assert_equal 'public/javascripts', AssetHat.assets_dir(:js)
+
+      assert_equal 'bundles', AssetHat.bundles_dir
+      assert_equal 'bundles/ssl', AssetHat.bundles_dir(:ssl => true)
+      assert_equal 'public/stylesheets/bundles', AssetHat.bundles_dir(:css)
+      assert_equal 'public/javascripts/bundles', AssetHat.bundles_dir(:js)
+      assert_equal 'public/stylesheets/bundles/ssl',
+        AssetHat.bundles_dir(:css, :ssl => true)
+      assert_equal 'public/javascripts/bundles/ssl',
+        AssetHat.bundles_dir(:js, :ssl => true)
+    end
+
     context 'with caching enabled' do
       setup do
         flexmock(AssetHat, :cache? => true)

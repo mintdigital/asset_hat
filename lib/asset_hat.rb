@@ -46,10 +46,10 @@ module AssetHat
   ASSETS_DIR = defined?(Rails.public_path) ? Rails.public_path : 'public'
 
   # Directory in which all stylesheets are kept, e.g., 'public/stylesheets/'.
-  STYLESHEETS_DIR = "#{ASSETS_DIR}/stylesheets"
+  STYLESHEETS_DIR = File.join(ASSETS_DIR, 'stylesheets')
 
   # Directory in which all JavaScripts are kept, e.g., 'public/javascripts/'.
-  JAVASCRIPTS_DIR = "#{ASSETS_DIR}/javascripts"
+  JAVASCRIPTS_DIR = File.join(ASSETS_DIR, 'javascripts')
 
   # Relative path for the config file.
   RELATIVE_CONFIG_FILEPATH = File.join('config', 'assets.yml')
@@ -69,15 +69,51 @@ module AssetHat
     @config
   end
 
-  # Argument: <code>:css</code> or <code>:js</code>
+  # Returns the relative path to the directory where the original CSS or JS
+  # files are stored.
   #
-  # Returns the path to the directory where CSS or JS files are stored.
+  # <code>type</code> argument: <code>:css</code> or <code>:js</code>
   def self.assets_dir(type)
-    case type.to_sym
+    type = type.to_sym
+
+    unless TYPES.include?(type)
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      return
+    end
+
+    case type
     when :css ; STYLESHEETS_DIR
     when :js  ; JAVASCRIPTS_DIR
     else nil
     end
+  end
+
+  # Returns the relative path to the directory where CSS or JS bundles are
+  # stored.
+  #
+  # Usage:
+  #
+  #     AssetHat.bundles_dir
+  #       # => 'bundles'
+  #     AssetHat.bundles_dir(:ssl => true)
+  #       # => 'bundles/ssl'
+  #     AssetHat.bundles_dir(:css)
+  #       # => 'public/stylesheets/bundles'
+  #     AssetHat.bundles_dir(:js, :ssl => true)
+  #       # => 'public/javascripts/bundles/ssl
+  #
+  # Options:
+  #
+  # [ssl] Set this to <code>true</code> if the stylesheet references images
+  #       via SSL. Defaults to <code>false</code>.
+  def self.bundles_dir(*args)
+    options = args.extract_options!
+    options.symbolize_keys!.reverse_merge!(:ssl => false)
+    type = args.first
+
+    dir = type.present? ? File.join(assets_dir(type), 'bundles') : 'bundles'
+    dir = File.join(dir, 'ssl') if options[:ssl]
+    dir
   end
 
   # Returns true if the specified asset exists in the file system:
