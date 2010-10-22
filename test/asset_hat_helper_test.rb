@@ -11,7 +11,8 @@ class AssetHatHelperTest < ActionView::TestCase
           flexmock(AssetHat, :last_commit_id => @commit_id)
         end
 
-        should 'include one file by name, and automatically use minified version' do
+        should 'include one file by name, and ' +
+               'automatically use minified version' do
           flexmock(AssetHat, :asset_exists? => true)
           output = include_css('foo', :cache => true)
           assert_equal css_tag("foo.min.css?#{@commit_id}"), output
@@ -39,12 +40,33 @@ class AssetHatHelperTest < ActionView::TestCase
         should 'include multiple files as a bundle' do
           bundle = 'css-bundle-1'
           output = include_css(:bundle => bundle, :cache => true)
-          assert_equal css_tag("bundles/#{bundle}.min.css?#{@commit_id}"), output
+          assert_equal(
+            css_tag("bundles/#{bundle}.min.css?#{@commit_id}"), output)
         end
+
+        context 'via SSL' do
+          setup do
+            @request = ActionController::TestRequest.new
+            flexmock(controller, :request => @request)
+            flexmock(@request, :ssl? => true)
+            flexmock(@controller, :request => @request)
+            assert @controller.request.ssl?,
+              'Precondition: Request should use SSL'
+          end
+
+          should 'include multiple files as a bundle' do
+            bundle = 'css-bundle-1'
+            output = include_css(:bundle => bundle, :cache => true)
+            assert_equal(
+              css_tag("bundles/ssl/#{bundle}.min.css?#{@commit_id}"), output)
+          end
+        end # context 'via SSL'
+
       end # context 'with minified versions'
 
       context 'without minified versions' do
-        should 'include one file by name, and automatically use original version' do
+        should 'include one file by name, and ' +
+               'automatically use original version' do
           output = include_css('foo')
           assert_equal css_tag('foo.css'), output
         end
@@ -52,7 +74,8 @@ class AssetHatHelperTest < ActionView::TestCase
     end # context 'with caching enabled'
 
     context 'with caching disabled' do
-      should 'include one file by name, and automatically use original version' do
+      should 'include one file by name, and ' +
+             'automatically use original version' do
         output = include_css('foo', :cache => false)
         assert_equal css_tag('foo.css'), output
       end
@@ -63,7 +86,8 @@ class AssetHatHelperTest < ActionView::TestCase
       end
 
       should 'include multiple files by name' do
-        expected = %w[foo bar.min].map { |src| css_tag("#{src}.css") }.join("\n")
+        expected = %w[foo bar.min].
+          map { |src| css_tag("#{src}.css") }.join("\n")
         output = include_css('foo', 'bar.min', :cache => false)
         assert_equal expected, output
       end
@@ -113,10 +137,12 @@ class AssetHatHelperTest < ActionView::TestCase
           )
         end
 
-        should 'include one file by name, and automatically use minified version' do
+        should 'include one file by name, and ' +
+               'automatically use minified version' do
           flexmock(AssetHat, :asset_exists? => true)
           output = include_js('jquery.some-plugin', :cache => true)
-          assert_equal js_tag("jquery.some-plugin.min.js?#{@commit_id}"), output
+          assert_equal js_tag("jquery.some-plugin.min.js?#{@commit_id}"),
+            output
         end
 
         should 'include one unminified file by name and extension' do
@@ -126,7 +152,8 @@ class AssetHatHelperTest < ActionView::TestCase
 
         should 'include one minified file by name and extension' do
           output = include_js('jquery.some-plugin.min.js', :cache => true)
-          assert_equal js_tag("jquery.some-plugin.min.js?#{@commit_id}"), output
+          assert_equal(
+            js_tag("jquery.some-plugin.min.js?#{@commit_id}"), output)
         end
 
         context 'with vendors' do
@@ -140,7 +167,9 @@ class AssetHatHelperTest < ActionView::TestCase
             flexmock(AssetHat, :config => @original_config)
             [:jquery, :jquery_ui].each do |vendor|
               output = include_js(vendor, :cache => true)
-              assert_equal js_tag("#{vendor.to_s.dasherize}.min.js?#{@commit_id}"), output
+              assert_equal(
+                js_tag("#{vendor.to_s.dasherize}.min.js?#{@commit_id}"),
+                output)
             end
           end
 
@@ -252,7 +281,8 @@ class AssetHatHelperTest < ActionView::TestCase
               flexmock(ActionController::Base,
                 :consider_all_requests_local => false)
               flexmock(@request, :ssl? => true)
-              src = AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
+              src =
+                AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
 
               assert_equal(
                 %Q{<script src="#{src}" type="text/javascript"></script>},
@@ -274,7 +304,8 @@ class AssetHatHelperTest < ActionView::TestCase
         should 'include multiple files as a bundle' do
           bundle = 'js-bundle-1'
           output = include_js(:bundle => bundle, :cache => true)
-          assert_equal js_tag("bundles/#{bundle}.min.js?#{@commit_id}"), output
+          assert_equal(
+            js_tag("bundles/#{bundle}.min.js?#{@commit_id}"), output)
         end
 
         should 'include multiple bundles' do
@@ -285,10 +316,12 @@ class AssetHatHelperTest < ActionView::TestCase
           output = include_js(:bundles => %w[foo bar], :cache => true)
           assert_equal expected, output
         end
+
       end # context 'with minified versions'
 
       context 'without minified versions' do
-        should 'include one file by name, and automatically use original version' do
+        should 'include one file by name, and ' +
+               'automatically use original version' do
           output = include_js('jquery.some-plugin', :cache => true)
           assert_equal js_tag('jquery.some-plugin.js'), output
         end
@@ -296,7 +329,8 @@ class AssetHatHelperTest < ActionView::TestCase
     end # context 'with caching enabled'
 
     context 'with caching disabled' do
-      should 'include one file by name, and automatically use original version' do
+      should 'include one file by name, and ' +
+             'automatically use original version' do
         output = include_js('foo', :cache => false)
         assert_equal js_tag('foo.js'), output
       end
@@ -312,7 +346,8 @@ class AssetHatHelperTest < ActionView::TestCase
       end
 
       should 'include multiple files by name' do
-        expected = %w[foo bar.min].map { |src| js_tag("#{src}.js") }.join("\n")
+        expected = %w[foo bar.min].
+          map { |src| js_tag("#{src}.js") }.join("\n")
         output = include_js('foo', 'bar.min', :cache => false)
         assert_equal expected, output
       end
@@ -327,7 +362,8 @@ class AssetHatHelperTest < ActionView::TestCase
         should 'include a bundle as separate files' do
           bundle = 'js-bundle-1'
           sources = @config['js']['bundles'][bundle]
-          expected = sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
+          expected = sources.
+            map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
           output = include_js(:bundle => bundle, :cache => false)
           assert_equal expected, output
         end
@@ -351,7 +387,10 @@ class AssetHatHelperTest < ActionView::TestCase
   private
 
   def css_tag(filename)
-    %Q{<link href="/stylesheets/#{filename}" media="screen,projection" rel="stylesheet" type="text/css" />}
+    %Q{
+      <link href="/stylesheets/#{filename}"
+            media="screen,projection" rel="stylesheet" type="text/css" />
+    }.strip.gsub(/\s+/, ' ')
   end
 
   def js_tag(filename)

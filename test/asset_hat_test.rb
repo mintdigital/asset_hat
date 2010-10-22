@@ -56,6 +56,31 @@ class AssetHatTest < ActiveSupport::TestCase
       expected = [1,2,3].map { |i| "public/stylesheets/css-file-1-#{i}.css" }
       assert_equal expected, AssetHat.bundle_filepaths('css-bundle-1', :css)
     end
+
+    context 'with asset host' do
+      should 'compute asset host from a String' do
+        asset_host = 'http://cdn%d.example.com'
+        flexmock(ActionController::Base, :asset_host => asset_host)
+        assert_match /http:\/\/cdn\d\.example\.com/,
+          AssetHat.compute_asset_host(asset_host, 'x.png')
+      end
+
+      should 'compute asset host from a Proc' do
+        asset_host = Proc.new do |source, request|
+          if request.ssl?
+            "#{request.protocol}ssl.cdn#{source.hash % 4}.example.com"
+          else
+            "#{request.protocol}cdn#{source.hash % 4}.example.com"
+          end
+        end
+        flexmock(ActionController::Base, :asset_host => asset_host)
+
+        assert_match /http:\/\/cdn\d\.example\.com/,
+          AssetHat.compute_asset_host(asset_host, 'x.png')
+        assert_match /https:\/\/ssl\.cdn\d\.example\.com/,
+          AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
+      end
+    end # context 'with asset host'
   end # context 'AssetHat'
 
   context 'AssetHat::CSS' do
