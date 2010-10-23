@@ -1,11 +1,12 @@
 = HISTORY
 
+* FEATURE: Added ERb support in `config/assets.yml`.
+* FEATURE: Added support for auto-creating SSL versions of every stylesheet.
+* FEATURE: Added support for loading remote JS via SSL. Includes loading
+  popular JS from `https://ajax.googleapis.com` or your own CDN.
 * FEATURE: Added support for `FORMAT=long|short|dot` flags for
   `rake asset_hat:minify`. Useful for shortening output from deployment
   scripts.
-* FEATURE: Added ERb support in `config/assets.yml`.
-* FEATURE: Added support for loading remote JS via SSL. Includes loading
-  popular JS from `https://ajax.googleapis.com` or your own CDN.
 * FEATURE: Added support for absolute paths in `config/assets.yml`. Allows
   pointing to assets directly inside `public/`.
 * FEATURE: Added `asset_hat:minify:css` and `asset_hat:minify:js` Rake task

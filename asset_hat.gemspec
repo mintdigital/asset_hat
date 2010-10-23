@@ -78,6 +78,9 @@ Gem::Specification.new do |s|
      "public/stylesheets/bundles/css-bundle-1.min.css",
      "public/stylesheets/bundles/css-bundle-2.min.css",
      "public/stylesheets/bundles/css-bundle-3.min.css",
+     "public/stylesheets/bundles/ssl/css-bundle-1.min.css",
+     "public/stylesheets/bundles/ssl/css-bundle-2.min.css",
+     "public/stylesheets/bundles/ssl/css-bundle-3.min.css",
      "public/stylesheets/css-file-1-1.css",
      "public/stylesheets/css-file-1-2.css",
      "public/stylesheets/css-file-1-3.css",
@@ -96,7 +99,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mintdigital/asset_hat}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Your assets are covered.}
   s.test_files = [
     "test/asset_hat_helper_test.rb",
@@ -108,7 +111,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.4.0"])
