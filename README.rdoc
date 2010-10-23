@@ -11,8 +11,8 @@ AssetHat can automatically:
 * Load popular <strong>third-party JS</strong> (like jQuery and Prototype)
   from {<strong>Google's CDN</strong>}[http://code.google.com/apis/ajaxlibs/]
   when in production, or from localhost in development.
-* Force image URLs in your CSS to use <strong>CDN subdomains</strong>, not
-  just the current host.
+* Force image URLs in your CSS to use <strong>CDN subdomains</strong>
+  (including SSL support), not just the current host.
 * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
   <strong>bust browser caches</strong> (e.g.,
   <code>/images/foo.png?ab12cd3</code>).
@@ -101,9 +101,9 @@ Additional settings are supported in <code>config/assets.yml</code>:
   rgrove/jsmin[http://github.com/rgrove/jsmin] (a Ruby port of Crockford's
   JSMin).
 
-  If the default engines cause problems by minifying too
-  strongly, try switching each to <code>weak</code>. The <code>weak</code>
-  engines are much safer, but don't save as many bytes.
+  If you'd prefer to have slightly more readable code for debugging purposes,
+  you can switch both the CSS and JS engines to <code>weak</code>. However,
+  the <code>weak</code> engines don't save as many bytes.
 
 * <code>vendors</code>: Configures third-party JS that's loaded from a CDN or
   other external source. The following example configures jQuery and jQuery UI
@@ -112,7 +112,7 @@ Additional settings are supported in <code>config/assets.yml</code>:
         js:
           vendors:
             jquery:
-              version:        1.4.2
+              version:        1.4.3
             jquery_ui:
               version:        1.8.5
               remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js
@@ -134,6 +134,25 @@ Additional settings are supported in <code>config/assets.yml</code>:
     be used per request.
 
   A full list of supported vendors is in the AssetHat::JS::Vendors module.
+
+=== SSL configuration
+
+When you request a page via SSL, some browsers (euphemism for "IE 6") show
+errors if any assets -- stylesheets, JS files, images -- are served _without_
+SSL.
+
+AssetHat plays well with SSL pages that load assets from a CDN. Put this in
+<code>config/environments/production.rb</code> or similar:
+
+    config.action_controller.asset_host = Proc.new do |source, request|
+      "#{request.protocol}cdn#{source.hash % 4}.example.com"
+        # => 'http://cdn0.example.com', 'https://cdn1.example.com', etc.
+    end
+
+This switches to a different CDN URL if the request used SSL. When you run
+<code>rake asset_hat:minify</code> at deploy time, AssetHat detects this
+configuration, and generates special SSL versions of each stylesheet that also
+load images from CDN via SSL. (Non-SSL pages still get non-SSL stylesheets.)
 
 
 
@@ -167,6 +186,11 @@ set to <code>true</code> (e.g., in production), the layout/view will include
 minified bundle files. Otherwise, the separate, unminified files will be
 included, based on the bundle contents you define in
 <code>config/assets.yml</code>.
+
+If your environment has <code>config.action_controller.asset_host</code>
+pointing to a CDN, your CSS/JS files will load from there. If your
+configuration supports using the CDN via SSL (see the section "SSL
+configuration"), SSL requests will also load CSS/JS files via SSL.
 
 === Advanced usage
 

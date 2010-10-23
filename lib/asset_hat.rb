@@ -199,6 +199,14 @@ module AssetHat
   # String or Proc, and returns a String. Should behave just like Rails
   # 2.3.x's private `compute_asset_host` method, but with a simulated request.
   #
+  # Example environment config for CDN support via SSL:
+  #
+  #     # In config/environments/production.rb:
+  #     config.action_controller.asset_host = Proc.new do |source, request|
+  #       "#{request.protocol}cdn#{source.hash % 4}.example.com"
+  #         # => 'http://cdn0.example.com', 'https://cdn1.example.com', etc.
+  #     end
+  #
   # Options:
   #
   # [ssl] Set to <code>true</code> to simulate a request via SSL. Defaults to
