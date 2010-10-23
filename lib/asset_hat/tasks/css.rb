@@ -95,46 +95,59 @@ namespace :asset_hat do
           parts
         )
       end
-      bundle_filepath = AssetHat::CSS.min_filepath(File.join(
-        AssetHat.bundles_dir(type), "#{args.bundle}.#{type}"))
 
-      # Concatenate and process output
-      output = ''
-      old_bundle_size = 0.0
-      new_bundle_size = 0.0
+      # Check whether app has special SSL asset host
       asset_host = ActionController::Base.asset_host
-      filepaths.each do |filepath|
-        file_output = File.open(filepath, 'r').read
-        old_bundle_size += file_output.size
-
-        file_output = AssetHat::CSS.minify(file_output, min_options)
-        file_output = AssetHat::CSS.add_asset_commit_ids(file_output)
-        if asset_host.present?
-          file_output = AssetHat::CSS.add_asset_hosts(file_output, asset_host)
-        end
-
-        new_bundle_size += file_output.size
-        output << file_output + "\n"
+      output_options_array = [{:ssl => false}]
+      if  AssetHat.compute_asset_host(asset_host, 'x.png') !=
+          AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
+        # The bundle needs a second version, which uses the asset host via SSL
+        output_options_array << {:ssl => true}
       end
-      FileUtils.makedirs(File.dirname(bundle_filepath))
-      File.open(bundle_filepath, 'w') { |f| f.write output }
 
-      # Print results
-      percent_saved =
-        "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
-      bundle_filepath.sub!(/^#{Rails.root}\//, '')
-      if verbose
-        puts "\nWrote #{type.upcase} bundle: #{bundle_filepath}"
+      output_options_array.each do |output_options|
+
+        # Concatenate and process output
+        bundle_filepath = AssetHat::CSS.min_filepath(File.join(
+          AssetHat.bundles_dir(type, output_options.slice(:ssl)),
+          "#{args.bundle}.#{type}"))
+        old_bundle_size = 0.0
+        new_bundle_size = 0.0
+        output     = ''
         filepaths.each do |filepath|
-          puts "        contains: #{filepath.sub(/^#{Rails.root}\//, '')}"
+          file_output = File.open(filepath, 'r').read
+          old_bundle_size += file_output.size
+
+          file_output = AssetHat::CSS.minify(file_output, min_options)
+          file_output = AssetHat::CSS.add_asset_commit_ids(file_output)
+          if asset_host.present?
+            file_output = AssetHat::CSS.add_asset_hosts(
+              file_output, asset_host, output_options.slice(:ssl))
+          end
+
+          new_bundle_size += file_output.size
+          output << file_output + "\n"
         end
-        if old_bundle_size > 0
-          puts "        MINIFIED: #{percent_saved}" +
-                        (" (empty!)" if new_bundle_size == 0).to_s +
-                        " (Engine: #{min_options[:engine]})"
+        FileUtils.makedirs(File.dirname(bundle_filepath))
+        File.open(bundle_filepath, 'w') { |f| f.write output }
+
+        # Print results
+        percent_saved =
+          "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
+        bundle_filepath.sub!(/^#{Rails.root}\//, '')
+        if verbose
+          puts "\nWrote #{type.upcase} bundle: #{bundle_filepath}"
+          filepaths.each do |filepath|
+            puts "        contains: #{filepath.sub(/^#{Rails.root}\//, '')}"
+          end
+          if old_bundle_size > 0
+            puts "        MINIFIED: #{percent_saved}" +
+                          (" (empty!)" if new_bundle_size == 0).to_s +
+                          " (Engine: #{min_options[:engine]})"
+          end
+        else # Not verbose
+          puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
         end
-      else # Not verbose
-        puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
       end
     end
 
