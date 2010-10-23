@@ -71,15 +71,24 @@ module AssetHat
     # <code>background: url(http\://assets2.example.com/images/foo.png)</code>;
     # if <code>%d</code> in the asset host, it is replaced with an arbitrary
     # number in 0-3, inclusive.
-    def self.add_asset_hosts(css, asset_host)
+    #
+    # Options:
+    #
+    # [ssl] Set to <code>true</code> to simulate a request via SSL. Defaults
+    #       to <code>false</code>.
+    def self.add_asset_hosts(css, asset_host, options={})
       return if asset_host.blank?
+
+      options.reverse_merge!(:ssl => false)
+
       css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
         # N.B.: The `/htc/` directory is excluded because IE 6, by default,
         # refuses to run .htc files (e.g., TwinHelix's iepngfix.htc) from
         # other domains, including CDN subdomains.
         src = $1
-        asset_host %= (src.hash % 4) if asset_host =~ /%d/
-        "url(#{asset_host}#{src})"
+        computed_asset_host = AssetHat.compute_asset_host(
+          asset_host, src, options.slice(:ssl))
+        "url(#{computed_asset_host}#{src})"
       end
     end
 
