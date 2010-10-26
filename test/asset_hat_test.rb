@@ -41,6 +41,9 @@ class AssetHatTest < ActiveSupport::TestCase
       assert_equal  "p{background:url(/images/foo.png?#{commit_id})}",
                     AssetHat::CSS.add_asset_commit_ids(
                       'p{background:url(/images/foo.png)}')
+      assert_equal  "p{background:url(/images/?id=foo.png&#{commit_id})}",
+                    AssetHat::CSS.add_asset_commit_ids(
+                      'p{background:url(/images/?id=foo.png)}')
     end
 
     should 'add .htc asset commit IDs' do
@@ -51,6 +54,9 @@ class AssetHatTest < ActiveSupport::TestCase
       assert_equal  "p{background:url(/htc/iepngfix.htc?#{commit_id})}",
                     AssetHat::CSS.add_asset_commit_ids(
                       'p{background:url(/htc/iepngfix.htc)}')
+      assert_equal  "p{background:url(/htc/?id=iepngfix&#{commit_id})}",
+                    AssetHat::CSS.add_asset_commit_ids(
+                      'p{background:url(/htc/?id=iepngfix)}')
     end
 
     should 'add image asset hosts' do

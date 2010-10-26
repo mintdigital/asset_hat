@@ -4,6 +4,7 @@
   empty declaration blocks.
 * FEATURE: Added non-verbose mode when minifying. Useful for shortening output
   from deployment scripts.
+* FIX: Fixed adding asset commit IDs to URLs containing "?" in stylesheets.
 
 == Version 0.2.1 (2010-07-21)
 * FEATURE: Added WebFont Loader to supported JS vendors.

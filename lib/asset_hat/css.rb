@@ -51,7 +51,11 @@ module AssetHat
         filepath.sub!(/^#{FileUtils.pwd}#{File::SEPARATOR}/, '')
 
         commit_id = AssetHat.last_commit_id(filepath)
-        commit_id.present? ? "url(#{src}?#{commit_id})" : "url(#{src})"
+        if commit_id.present?
+          "url(#{src}#{src =~ /\?/ ? '&' : '?'}#{commit_id})"
+        else
+          "url(#{src})"
+        end
       end
     end
 
