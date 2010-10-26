@@ -25,6 +25,23 @@ class AssetHatTest < ActiveSupport::TestCase
         3.times { AssetHat.config }
       end
     end # context 'with caching disabled'
+
+    should 'recognize existing assets' do
+      assert  AssetHat.asset_exists?('css-file-1-1.css', :css)
+      assert !AssetHat.asset_exists?('non-existent-css', :css)
+      assert  AssetHat.asset_exists?('js-file-1-1.js',   :js)
+      assert !AssetHat.asset_exists?('non-existent-js',  :js)
+    end
+
+    should "return a bundle's filenames" do
+      assert_equal  %w[css-file-1-1 css-file-1-2 css-file-1-3],
+                    AssetHat.bundle_filenames('css-bundle-1', :css)
+    end
+
+    should "return a bundle's filepaths" do
+      expected = [1,2,3].map { |i| "public/stylesheets/css-file-1-#{i}.css" }
+      assert_equal expected, AssetHat.bundle_filepaths('css-bundle-1', :css)
+    end
   end # context 'AssetHat'
 
   context 'AssetHat::CSS' do
@@ -106,13 +123,4 @@ class AssetHatTest < ActiveSupport::TestCase
     end
   end # context 'AssetHat::JS'
 
-  should "return a bundle's filenames" do
-    assert_equal  %w[css-file-1-1 css-file-1-2 css-file-1-3],
-                  AssetHat.bundle_filenames('css-bundle-1', :css)
-  end
-
-  should "return a bundle's filepaths" do
-    expected = [1,2,3].map { |i| "public/stylesheets/css-file-1-#{i}.css" }
-    assert_equal expected, AssetHat.bundle_filepaths('css-bundle-1', :css)
-  end
 end

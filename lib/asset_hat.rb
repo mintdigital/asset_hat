@@ -82,13 +82,12 @@ module AssetHat
 
   # Returns true if the specified asset exists in the file system:
   #
-  #     AssetHat.asset_exists?('application', :css)
-  #       # => true if /public/stylesheets/application.css exists
-  #     AssetHat.asset_exists?('some-plugin', :js)
-  #       # => true if /public/javascripts/some-plugin.js exists
+  #     AssetHat.asset_exists?('application.css', :css)
+  #       # => true if public/stylesheets/application.css exists
+  #     AssetHat.asset_exists?('some-plugin.js', :js)
+  #       # => true if public/javascripts/some-plugin.js exists
   #
-  # See also <code>AssetHat::STYLESHEETS_DIR</code> and
-  # <code>AssetHat::JAVASCRIPTS_DIR</code>.
+  # See also <code>AssetHat.assets_dir</code>.
   def self.asset_exists?(filename, type)
     # Process arguments
     type = type.to_sym
@@ -97,9 +96,7 @@ module AssetHat
       return
     end
 
-    @asset_exists ||= TYPES.inject({}) do |hsh, known_type|
-      hsh.merge!(known_type => {})
-    end
+    @asset_exists ||= TYPES.inject({}) { |hsh, type| hsh.merge!(type => {}) }
     if @asset_exists[type][filename].nil?
       @asset_exists[type][filename] =
         File.exist?(File.join(self.assets_dir(type), filename))
