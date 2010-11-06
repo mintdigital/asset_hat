@@ -47,18 +47,28 @@ class AssetHatHelperTest < ActionView::TestCase
         context 'via SSL' do
           setup do
             @request = ActionController::TestRequest.new
-            flexmock(controller, :request => @request)
-            flexmock(@request, :ssl? => true)
             flexmock(@controller, :request => @request)
+            flexmock(@controller.request, :ssl? => true)
             assert @controller.request.ssl?,
               'Precondition: Request should use SSL'
           end
 
           should 'include multiple files as a bundle' do
+            flexmock(AssetHat, :ssl_asset_host_differs? => true)
+
             bundle = 'css-bundle-1'
             output = include_css(:bundle => bundle, :cache => true)
             assert_equal(
               css_tag("bundles/ssl/#{bundle}.min.css?#{@commit_id}"), output)
+          end
+
+          should 'use non-SSL CSS if SSL/non-SSL asset hosts are the same' do
+            flexmock(AssetHat, :ssl_asset_host_differs? => false)
+
+            bundle = 'css-bundle-1'
+            output = include_css(:bundle => bundle, :cache => true)
+            assert_equal(
+              css_tag("bundles/#{bundle}.min.css?#{@commit_id}"), output)
           end
         end # context 'via SSL'
 
@@ -124,7 +134,7 @@ class AssetHatHelperTest < ActionView::TestCase
   context 'include_js' do
     setup do
       @request = ActionController::TestRequest.new
-      flexmock(controller, :request => @request)
+      flexmock(@controller, :request => @request)
     end
 
     context 'with caching enabled' do
@@ -182,7 +192,7 @@ class AssetHatHelperTest < ActionView::TestCase
           end
 
           context 'with remote requests via SSL' do
-            should 'include JS via https://ajax.googleapis.com' do
+            should 'include vendor JS via Google CDN' do
               AssetHat::JS::VENDORS.each do |vendor|
                 AssetHat.html_cache[:js] = {}
                 helper_opts = {:version => '1', :cache => true}
@@ -191,8 +201,7 @@ class AssetHatHelperTest < ActionView::TestCase
                 flexmock(AssetHat, :cache? => true)
                 flexmock(ActionController::Base,
                   :consider_all_requests_local => false)
-                flexmock(@request, :ssl? => true)
-                flexmock(@controller, :request => @request)
+                flexmock(@controller.request, :ssl? => true)
                 assert @controller.request.ssl?,
                   'Precondition: Request should use SSL'
 
@@ -208,8 +217,7 @@ class AssetHatHelperTest < ActionView::TestCase
                 flexmock(AssetHat, :cache? => true)
                 flexmock(ActionController::Base,
                   :consider_all_requests_local => false)
-                flexmock(@request, :ssl? => false)
-                flexmock(@controller, :request => @request)
+                flexmock(@controller.request, :ssl? => false)
                 assert !@controller.request.ssl?,
                   'Precondition: Request should not use SSL'
                 assert_equal 1, AssetHat.html_cache[:js].size
@@ -231,7 +239,7 @@ class AssetHatHelperTest < ActionView::TestCase
                   'Non-SSL HTML should be cached'
               end
             end
-          end # context 'via SSL'
+          end # context 'with remote requests via SSL'
         end # context 'with vendor JS'
 
         should 'include jQuery by version via helper option' do
@@ -272,20 +280,18 @@ class AssetHatHelperTest < ActionView::TestCase
             should 'use specified remote URL for jQuery' do
               src = AssetHat.config['js']['vendors']['jquery']['remote_url']
               assert_equal(
-                %Q{<script src="#{src}" type="text/javascript"></script>},
+                %{<script src="#{src}" type="text/javascript"></script>},
                 include_js(:jquery, :cache => true)
               )
             end
 
             should 'use specified remote SSL URL for jQuery' do
-              flexmock(ActionController::Base,
-                :consider_all_requests_local => false)
-              flexmock(@request, :ssl? => true)
+              flexmock(@controller.request, :ssl? => true)
               src =
                 AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
 
               assert_equal(
-                %Q{<script src="#{src}" type="text/javascript"></script>},
+                %{<script src="#{src}" type="text/javascript"></script>},
                 include_js(:jquery, :cache => true)
               )
             end
@@ -316,7 +322,6 @@ class AssetHatHelperTest < ActionView::TestCase
           output = include_js(:bundles => %w[foo bar], :cache => true)
           assert_equal expected, output
         end
-
       end # context 'with minified versions'
 
       context 'without minified versions' do
@@ -387,14 +392,14 @@ class AssetHatHelperTest < ActionView::TestCase
   private
 
   def css_tag(filename)
-    %Q{
+    %{
       <link href="/stylesheets/#{filename}"
             media="screen,projection" rel="stylesheet" type="text/css" />
     }.strip.gsub(/\s+/, ' ')
   end
 
   def js_tag(filename)
-    %Q{<script src="/javascripts/#{filename}" type="text/javascript"></script>}
+    %{<script src="/javascripts/#{filename}" type="text/javascript"></script>}
   end
 
 end

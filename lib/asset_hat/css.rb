@@ -25,7 +25,7 @@ module AssetHat
 
       engine = options[:engine].to_sym
       unless ENGINES.include?(engine)
-        raise %Q{
+        raise %{
           Unknown CSS minification engine '#{engine}'.
           Allowed: #{ENGINES.map{ |e| "'#{e}'" }.join(', ')}
         }.strip.gsub(/\s+/, ' ') and return

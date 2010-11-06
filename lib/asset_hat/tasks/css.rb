@@ -99,8 +99,7 @@ namespace :asset_hat do
       # Check whether app has special SSL asset host
       asset_host = ActionController::Base.asset_host
       output_options_array = [{:ssl => false}]
-      if  AssetHat.compute_asset_host(asset_host, 'x.png') !=
-          AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
+      if AssetHat.ssl_asset_host_differs?
         # The bundle needs a second version, which uses the asset host via SSL
         output_options_array << {:ssl => true}
       end

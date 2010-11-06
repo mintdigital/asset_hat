@@ -52,7 +52,7 @@ module AssetHat
 
     # Default to `{:css => {}, :js => {}}`
     @last_bundle_commit_ids ||=
-      TYPES.inject({}) { |hsh, t| hsh.merge(t => {}) }
+      TYPES.inject({}) { |hsh, t| hsh.merge!(t => {}) }
 
     if @last_bundle_commit_ids[type][bundle].blank?
       dir = self.assets_dir(type)

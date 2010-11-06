@@ -80,6 +80,24 @@ class AssetHatTest < ActiveSupport::TestCase
         assert_match /https:\/\/ssl\.cdn\d\.example\.com/,
           AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
       end
+
+      should 'know that asset host is same between SSL and non-SSL URLs' do
+        asset_host = 'http://cdn%d.example.com'
+        flexmock(ActionController::Base, :asset_host => asset_host)
+        assert !AssetHat.ssl_asset_host_differs?
+      end
+
+      should 'know that asset host differs between SSL and non-SSL URLs' do
+        asset_host = Proc.new do |source, request|
+          if request.ssl?
+            "#{request.protocol}ssl.cdn#{source.hash % 4}.example.com"
+          else
+            "#{request.protocol}cdn#{source.hash % 4}.example.com"
+          end
+        end
+        flexmock(ActionController::Base, :asset_host => asset_host)
+        assert AssetHat.ssl_asset_host_differs?
+      end
     end # context 'with asset host'
   end # context 'AssetHat'
 
@@ -135,7 +153,7 @@ class AssetHatTest < ActiveSupport::TestCase
 
     context 'when minifying' do
       setup do
-        @input = %q{
+        @input = %{
           .foo { width: 1px; }
           .bar {}
           .baz{  width  :  2px;  }

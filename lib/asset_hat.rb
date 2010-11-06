@@ -132,7 +132,9 @@ module AssetHat
       return
     end
 
+    # Default to `{:css => {}, :js => {}}`
     @asset_exists ||= TYPES.inject({}) { |hsh, t| hsh.merge(t => {}) }
+
     if @asset_exists[type][filename].nil?
       @asset_exists[type][filename] =
         File.exist?(File.join(self.assets_dir(type), filename))
@@ -207,6 +209,13 @@ module AssetHat
   #         # => 'http://cdn0.example.com', 'https://cdn1.example.com', etc.
   #     end
   #
+  # If your CDN doesn't have SSL support, you can instead revert SSL pages to
+  # serving assets from your web server:
+  #
+  #     config.action_controller.asset_host = Proc.new do |source, request|
+  #       request.ssl? ? nil : "http://cdn#{source.hash % 4}.example.com"
+  #     end
+  #
   # Options:
   #
   # [ssl] Set to <code>true</code> to simulate a request via SSL. Defaults to
@@ -227,6 +236,14 @@ module AssetHat
       host %= (source.hash % 4) if host =~ /%d/
     end
     host
+  end
+
+  # Returns <code>true</code> if the asset host differs between SSL and
+  # non-SSL pages, or <code>false</code> if the asset host doesn't change.
+  def self.ssl_asset_host_differs?
+    asset_host = ActionController::Base.asset_host
+    AssetHat.compute_asset_host(asset_host, 'x.png') !=
+      AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
   end
 
   def self.clear_html_cache
