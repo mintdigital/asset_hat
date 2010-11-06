@@ -139,6 +139,7 @@ module AssetHatHelper
 
     if !AssetHat.cache? || AssetHat.html_cache[:css][cache_key].blank?
       # Generate HTML and write to cache
+      options[:ssl] &&= AssetHat.ssl_asset_host_differs?
       html = AssetHat.html_cache[:css][cache_key] =
         include_assets(:css, *(args + [options]))
     end
