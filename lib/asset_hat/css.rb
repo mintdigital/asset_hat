@@ -41,8 +41,15 @@ module AssetHat
     # previous deployment, this new URL forces the browser to ignore that
     # cache and request the latest version.
     def self.add_asset_commit_ids(css)
-      css.gsub(/url[\s]*\((\/(images|htc)\/[^)]+)\)/) do |match|
-        src = $1
+      sub_src = lambda do |match|
+        src   = $1
+        quote = src[0, 1]
+
+        if %w[' "].include?(quote) && quote == src[-1, 1]
+          src = src[1, src.length - 2]
+        else
+          quote = nil
+        end
 
         # Get absolute path
         filepath = File.join(ASSETS_DIR, src)
@@ -52,23 +59,31 @@ module AssetHat
 
         commit_id = AssetHat.last_commit_id(filepath)
         if commit_id.present?
-          "url(#{src}#{src =~ /\?/ ? '&' : '?'}#{commit_id})"
+          "url(#{quote}#{src}#{src =~ /\?/ ? '&' : '?'}#{commit_id}#{quote})"
         else
-          "url(#{src})"
+          "url(#{quote}#{src}#{quote})"
         end
       end
+
+      # Match without quotes
+      css.gsub!(/url[\s]*\((\/(images|htc)\/[^)'"]+)\)/, &sub_src)
+
+      # Match with single/double quotes
+      css.gsub!(/url[\s]*\(((['"])\/(images|htc)\/[^)]+\2)\)/, &sub_src)
+
+      css
     end
 
     # Arguments:
     #
     # - A string containing CSS;
     # - A string containing the app's asset host, e.g.,
-    #   'http\://assets%d.example.com'. This value is typically taken from
+    #   'http\://cdn%d.example.com'. This value is typically taken from
     #   <code>config.action_controller.asset_host</code> in
     #   the app's <code>config/environments/production.rb</code>.
     #
     # An asset host is added to every image URL in the CSS, e.g.,
-    # <code>background: url(http\://assets2.example.com/images/foo.png)</code>;
+    # <code>background: url(http\://cdn2.example.com/images/foo.png)</code>;
     # if <code>%d</code> in the asset host, it is replaced with an arbitrary
     # number in 0-3, inclusive.
     #

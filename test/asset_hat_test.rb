@@ -112,12 +112,67 @@ class AssetHatTest < ActiveSupport::TestCase
       flexmock(AssetHat, :last_commit_id => commit_id)
       flexmock(Rails, :public_path => '')
 
-      assert_equal  "p{background:url(/images/foo.png?#{commit_id})}",
+      # No quotes:
+      assert_equal  %|p{background:url(/images/foo.png?#{commit_id})}|,
                     AssetHat::CSS.add_asset_commit_ids(
-                      'p{background:url(/images/foo.png)}')
-      assert_equal  "p{background:url(/images/?id=foo.png&#{commit_id})}",
+                      %|p{background:url(/images/foo.png)}|)
+      assert_equal  %|p{background:url(/images/?id=foo.png&#{commit_id})}|,
                     AssetHat::CSS.add_asset_commit_ids(
-                      'p{background:url(/images/?id=foo.png)}')
+                      %|p{background:url(/images/?id=foo.png)}|)
+
+      # Single quotes:
+      assert_equal  %|p{background:url('/images/foo.png?#{commit_id}')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/foo.png')}|)
+      assert_equal  %|p{background:url('/images/?id=foo.png&#{commit_id}')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/?id=foo.png')}|)
+
+      # Double quotes:
+      assert_equal  %|p{background:url("/images/foo.png?#{commit_id}")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/foo.png")}|)
+      assert_equal  %|p{background:url("/images/?id=foo.png&#{commit_id}")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/?id=foo.png")}|)
+
+      # Mismatched quotes (should remain untouched):
+      assert_equal  %|p{background:url('/images/foo.png)}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/foo.png)}|)
+      assert_equal  %|p{background:url('/images/?id=foo.png)}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/?id=foo.png)}|)
+      assert_equal  %|p{background:url(/images/foo.png')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url(/images/foo.png')}|)
+      assert_equal  %|p{background:url(/images/?id=foo.png')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url(/images/?id=foo.png')}|)
+      assert_equal  %|p{background:url("/images/foo.png)}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/foo.png)}|)
+      assert_equal  %|p{background:url("/images/?id=foo.png)}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/?id=foo.png)}|)
+      assert_equal  %|p{background:url(/images/foo.png")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url(/images/foo.png")}|)
+      assert_equal  %|p{background:url(/images/?id=foo.png")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url(/images/?id=foo.png")}|)
+      assert_equal  %|p{background:url('/images/foo.png")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/foo.png")}|)
+      assert_equal  %|p{background:url('/images/?id=foo.png")}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url('/images/?id=foo.png")}|)
+      assert_equal  %|p{background:url("/images/foo.png')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/foo.png')}|)
+      assert_equal  %|p{background:url("/images/?id=foo.png')}|,
+                    AssetHat::CSS.add_asset_commit_ids(
+                      %|p{background:url("/images/?id=foo.png')}|)
     end
 
     should 'add .htc asset commit IDs' do
@@ -125,12 +180,12 @@ class AssetHatTest < ActiveSupport::TestCase
       flexmock(AssetHat, :last_commit_id => commit_id)
       flexmock(Rails, :public_path => '')
 
-      assert_equal  "p{background:url(/htc/iepngfix.htc?#{commit_id})}",
+      assert_equal  %|p{background:url(/htc/iepngfix.htc?#{commit_id})}|,
                     AssetHat::CSS.add_asset_commit_ids(
-                      'p{background:url(/htc/iepngfix.htc)}')
-      assert_equal  "p{background:url(/htc/?id=iepngfix&#{commit_id})}",
+                      %|p{background:url(/htc/iepngfix.htc)}|)
+      assert_equal  %|p{background:url(/htc/?id=iepngfix&#{commit_id})}|,
                     AssetHat::CSS.add_asset_commit_ids(
-                      'p{background:url(/htc/?id=iepngfix)}')
+                      %|p{background:url(/htc/?id=iepngfix)}|)
     end
 
     should 'add image asset hosts' do
