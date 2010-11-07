@@ -14,6 +14,8 @@
 * IMPROVEMENT: Updated default CSS minification engine to remove rules that
   have empty declaration blocks.
 * IMPROVEMENT: Stopped pre-caching asset commit IDs when launching console.
+* IMPROVEMENT: Added support for single/double quotation marks in `url()` CSS
+  when adding asset hosts and cache busters
 * FIX: Fixed adding asset commit IDs to URLs containing "?" in stylesheets.
 
 == Version 0.2.1 (2010-07-21)

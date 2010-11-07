@@ -41,16 +41,7 @@ module AssetHat
     # previous deployment, this new URL forces the browser to ignore that
     # cache and request the latest version.
     def self.add_asset_commit_ids(css)
-      sub_src = lambda do |match|
-        src   = $1
-        quote = src[0, 1]
-
-        if %w[' "].include?(quote) && quote == src[-1, 1]
-          src = src[1, src.length - 2] # Strip quotes
-        else
-          quote = nil # No quotes in original CSS
-        end
-
+      update_css_urls(css, %w[images htc]) do |src, quote|
         # Get absolute path
         filepath = File.join(ASSETS_DIR, src)
 
@@ -64,14 +55,6 @@ module AssetHat
           "url(#{quote}#{src}#{quote})"
         end
       end
-
-      # Match without quotes
-      css.gsub!(/url[\s]*\((\/(images|htc)\/[^)'"]+)\)/, &sub_src)
-
-      # Match with single/double quotes
-      css.gsub!(/url[\s]*\(((['"])\/(images|htc)\/[^)]+\2)\)/, &sub_src)
-
-      css
     end
 
     # Arguments:
@@ -92,35 +75,15 @@ module AssetHat
     # [ssl] Set to <code>true</code> to simulate a request via SSL. Defaults
     #       to <code>false</code>.
     def self.add_asset_hosts(css, asset_host, options={})
-      return if asset_host.blank?
+      return css if asset_host.blank?
 
       options.reverse_merge!(:ssl => false)
 
-      sub_src = lambda do |match|
-        src   = $1
-        quote = src[0, 1]
-
-        if %w[' "].include?(quote) && quote == src[-1, 1]
-          src = src[1, src.length - 2] # Strip quotes
-        else
-          quote = nil # No quotes in original CSS
-        end
-
+      update_css_urls(css, %w[images]) do |src, quote|
         computed_asset_host = AssetHat.compute_asset_host(
           asset_host, src, options.slice(:ssl))
         "url(#{quote}#{computed_asset_host}#{src}#{quote})"
       end
-
-      # Match without quotes
-      css.gsub!(/url[\s]*\((\/images\/[^)'"]+)\)/, &sub_src)
-        # N.B.: The `/htc/` directory is excluded because IE 6, by default,
-        # refuses to run .htc files (e.g., TwinHelix's iepngfix.htc) from
-        # other domains, including CDN subdomains.
-
-      # Match with single/double quotes
-      css.gsub!(/url[\s]*\(((['"])\/(images)\/[^)]+\2)\)/, &sub_src)
-
-      css
     end
 
     # Swappable CSS minification engines. Each accepts and returns a string.
@@ -158,6 +121,42 @@ module AssetHat
 
         output
       end
+    end
+
+
+
+    private
+
+    # Strips any balanced quotation marks from `src`. Returns `src` and an
+    # instance of the quotation mark as two separate strings.
+    def self.separate_src_and_quotes(src)
+      quote = src[0, 1]
+
+      if %w[' "].include?(quote) && quote == src[-1, 1]
+        src = src[1, src.length - 2] # Strip quotes
+      else
+        quote = nil # No quotes in original CSS
+      end
+
+      [src, quote]
+    end
+
+    def self.update_css_urls(css, dirs, &css_block)
+      new_css = css.dup
+      dirs    = dirs.join('|')
+
+      gsub_block = lambda do |match|
+        src, quote = separate_src_and_quotes($1)
+        css_block.call(src, quote)
+      end
+
+      # Match without quotes
+      new_css.gsub!(/url[\s]*\((\/(#{dirs})\/[^)'"]+)\)/, &gsub_block)
+
+      # Match with single/double quotes
+      new_css.gsub!(/url[\s]*\(((['"])\/(#{dirs})\/[^)]+\2)\)/, &gsub_block)
+
+      new_css
     end
 
   end
