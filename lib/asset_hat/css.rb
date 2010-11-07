@@ -46,9 +46,9 @@ module AssetHat
         quote = src[0, 1]
 
         if %w[' "].include?(quote) && quote == src[-1, 1]
-          src = src[1, src.length - 2]
+          src = src[1, src.length - 2] # Strip quotes
         else
-          quote = nil
+          quote = nil # No quotes in original CSS
         end
 
         # Get absolute path
