@@ -163,12 +163,33 @@ class AssetHatTest < ActiveSupport::TestCase
     end
 
     should 'add image asset hosts' do
-      asset_host = 'http://media%d.example.com'
-      assert_match(
-        /^p\{background:url\(http:\/\/media[\d]\.example\.com\/images\/foo.png\)\}$/,
-        AssetHat::CSS.add_asset_hosts(
-          'p{background:url(/images/foo.png)}', asset_host)
-      )
+      asset_host       = 'http://cdn%d.example.com'
+      asset_host_regex = 'http://cdn\d\.example\.com'
+
+      # No/single/double quotes:
+      ['', "'", '"'].each do |quote|
+        img = '/images/foo.png'
+        assert_match(
+          Regexp.new("^p\\{background:url\\(#{quote}" +
+            "#{asset_host_regex}#{Regexp.escape(img)}#{quote}\\)\\}$"),
+          AssetHat::CSS.add_asset_hosts(
+            "p{background:url(#{quote}#{img}#{quote})}", asset_host)
+        )
+      end
+
+      # Mismatched quotes (should remain untouched):
+      %w[
+        '/images/foo.png
+        /images/foo.png'
+        "/images/foo.png
+        /images/foo.png"
+        '/images/foo.png"
+        "/images/foo.png'
+      ].each do |bad_url|
+        assert_equal "p{background:url(#{bad_url})}",
+          AssetHat::CSS.add_asset_hosts("p{background:url(#{bad_url})}",
+                                        asset_host)
+      end
     end
 
     should 'not add .htc asset hosts' do

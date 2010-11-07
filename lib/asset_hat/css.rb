@@ -96,15 +96,31 @@ module AssetHat
 
       options.reverse_merge!(:ssl => false)
 
-      css.gsub(/url[\s]*\((\/images\/[^)]+)\)/) do |match|
+      sub_src = lambda do |match|
+        src   = $1
+        quote = src[0, 1]
+
+        if %w[' "].include?(quote) && quote == src[-1, 1]
+          src = src[1, src.length - 2] # Strip quotes
+        else
+          quote = nil # No quotes in original CSS
+        end
+
+        computed_asset_host = AssetHat.compute_asset_host(
+          asset_host, src, options.slice(:ssl))
+        "url(#{quote}#{computed_asset_host}#{src}#{quote})"
+      end
+
+      # Match without quotes
+      css.gsub!(/url[\s]*\((\/images\/[^)'"]+)\)/, &sub_src)
         # N.B.: The `/htc/` directory is excluded because IE 6, by default,
         # refuses to run .htc files (e.g., TwinHelix's iepngfix.htc) from
         # other domains, including CDN subdomains.
-        src = $1
-        computed_asset_host = AssetHat.compute_asset_host(
-          asset_host, src, options.slice(:ssl))
-        "url(#{computed_asset_host}#{src})"
-      end
+
+      # Match with single/double quotes
+      css.gsub!(/url[\s]*\(((['"])\/(images)\/[^)]+\2)\)/, &sub_src)
+
+      css
     end
 
     # Swappable CSS minification engines. Each accepts and returns a string.
