@@ -208,7 +208,7 @@ module AssetHatHelper
         html << include_assets(:js, src, :cache => true)
       end
 
-      options.except! :version
+      options.except! :ssl, :version
 
       html << include_assets(:js, *(args + [options]))
       html = html.join("\n").strip

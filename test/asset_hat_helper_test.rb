@@ -53,7 +53,7 @@ class AssetHatHelperTest < ActionView::TestCase
               'Precondition: Request should use SSL'
           end
 
-          should 'include multiple files as a bundle' do
+          should 'include multiple files as a SSL bundle' do
             flexmock(AssetHat, :ssl_asset_host_differs? => true)
 
             bundle = 'css-bundle-1'
@@ -322,6 +322,34 @@ class AssetHatHelperTest < ActionView::TestCase
           output = include_js(:bundles => %w[foo bar], :cache => true)
           assert_equal expected, output
         end
+
+        context 'via SSL' do
+          setup do
+            @request = ActionController::TestRequest.new
+            flexmock(@controller, :request => @request)
+            flexmock(@controller.request, :ssl? => true)
+            assert @controller.request.ssl?,
+              'Precondition: Request should use SSL'
+          end
+
+          should 'use non-SSL JS if SSL/non-SSL asset hosts differ' do
+            flexmock(AssetHat, :ssl_asset_host_differs? => true)
+
+            bundle = 'js-bundle-1'
+            output = include_js(:bundle => bundle, :cache => true)
+            assert_equal(
+              js_tag("bundles/#{bundle}.min.js?#{@commit_id}"), output)
+          end
+
+          should 'use non-SSL JS if SSL/non-SSL asset hosts are the same' do
+            flexmock(AssetHat, :ssl_asset_host_differs? => false)
+
+            bundle = 'js-bundle-1'
+            output = include_js(:bundle => bundle, :cache => true)
+            assert_equal(
+              js_tag("bundles/#{bundle}.min.js?#{@commit_id}"), output)
+          end
+        end # context 'via SSL'
       end # context 'with minified versions'
 
       context 'without minified versions' do
