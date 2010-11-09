@@ -5,13 +5,19 @@ require 'hanna/rdoctask'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name        = %q{asset_hat}
-    gemspec.summary     = %q{Your assets are covered.}
-    gemspec.description = %q{Minify, bundle, and optimize CSS/JS assets.}
-    gemspec.homepage    = %q{http://github.com/mintdigital/asset_hat}
+    gemspec.name        = 'asset_hat'
+    gemspec.summary     = 'Your assets are covered.'
+    gemspec.description = %{
+      Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on
+      deploy), not at runtime. Loads popular JS frameworks (like jQuery and
+      Prototype) from localhost in development, and auto-switches to Google's
+      CDN in production. Can rewrite stylesheets to use CDN hosts (not just
+      your web server) and cache-busting hashes for updated images.
+    }.strip.gsub(/\s+/, ' ')
+    gemspec.homepage    = 'http://github.com/mintdigital/asset_hat'
 
     gemspec.authors     = ['Ron DeVera', 'Mint Digital']
-    gemspec.email       = %q{ronald.devera@gmail.com}
+    gemspec.email       = 'hello@rondevera.com'
 
     gemspec.add_development_dependency  'flexmock', '~> 0.8.6'
     gemspec.add_development_dependency  'hanna',    '~> 0.1.12'
