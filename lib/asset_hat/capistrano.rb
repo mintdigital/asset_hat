@@ -8,7 +8,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         rake = fetch(:rake, "rake")
         env  = fetch(:environment, fetch(:rails_env, "production"))
         run "cd #{current_path} ; " +
-            "#{rake} RAILS_ENV=#{env} VERBOSE=false asset_hat:minify"
+            "#{rake} RAILS_ENV=#{env} FORMAT=short asset_hat:minify"
       end
     end
   end

@@ -119,7 +119,8 @@ Additional settings are supported in <code>config/assets.yml</code>:
   third-party code.
 
 If you want shorter output during deployments, you can use
-`rake asset_hat:minify VERBOSE=false` in your deploy script.
+`rake asset_hat:minify FORMAT=short` (one output line per bundle) or
+`FORMAT=dot` (one output line total) in your deploy script.
 
 
 
