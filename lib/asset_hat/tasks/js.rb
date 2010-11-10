@@ -39,8 +39,8 @@ namespace :asset_hat do
           "minify_bundle[application]" and return
       end
 
-      config  = AssetHat.config[type]
-      verbose = (ENV['VERBOSE'] != 'false') # Defaults to `true`
+      config = AssetHat.config[type]
+      report_format = ([ENV['FORMAT']] & %w[long short dot])[0] || 'long'
       min_options = {
         :engine => config['engine']
       }.reject { |k,v| v.blank? }
@@ -84,7 +84,12 @@ namespace :asset_hat do
       percent_saved =
         "#{'%.1f' % ((1 - (new_bundle_size / old_bundle_size)) * 100)}%"
       bundle_filepath.sub!(/^#{Rails.root}\//, '')
-      if verbose
+      case report_format
+      when 'dot'
+        print '.'
+      when 'short'
+        puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
+      else # 'long'
         puts "\n Wrote #{type.upcase} bundle: #{bundle_filepath}"
         filepaths.each do |filepath|
           puts "        contains: #{filepath.sub(/^#{Rails.root}\//, '')}"
@@ -94,8 +99,6 @@ namespace :asset_hat do
                         (" (empty!)" if new_bundle_size == 0).to_s +
                         " (Engine: #{min_options[:engine]})"
         end
-      else # Not verbose
-        puts "Minified #{percent_saved.rjust(6)}: #{bundle_filepath}"
       end
     end
 

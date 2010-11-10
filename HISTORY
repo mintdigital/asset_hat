@@ -1,7 +1,8 @@
 = HISTORY
 
-* FEATURE: Added non-verbose mode when minifying. Useful for shortening output
-  from deployment scripts.
+* FEATURE: Added support for `FORMAT=long|short|dot` flags for
+  `rake asset_hat:minify`. Useful for shortening output from deployment
+  scripts.
 * FEATURE: Added ERb support in `config/assets.yml`.
 * FEATURE: Added support for absolute paths in `config/assets.yml`. Allows
   pointing to assets directly inside `public/`.

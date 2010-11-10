@@ -4,7 +4,17 @@ require 'asset_hat/tasks/js'
 namespace :asset_hat do
 
   desc 'Minifies all CSS and JS bundles'
-  task :minify => ['asset_hat:css:minify', 'asset_hat:js:minify']
+  task :minify, :needs => :environment do
+    format = ENV['FORMAT']
+    print 'Minifying CSS/JS...'
+    puts unless format == 'dot'
+
+    %w[css js].each do |type|
+      task = Rake::Task["asset_hat:#{type}:minify"]
+      task.reenable; task.invoke
+    end
+    puts if format == 'dot'
+  end
 
   namespace :minify do
     %w[css js].each do |type|
