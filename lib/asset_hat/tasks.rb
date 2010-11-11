@@ -11,9 +11,11 @@ namespace :asset_hat do
 
     %w[css js].each do |type|
       task = Rake::Task["asset_hat:#{type}:minify"]
-      task.reenable; task.invoke
+      task.reenable
+      task.invoke(:show_intro => false, :show_outro => false)
     end
-    puts if format == 'dot'
+    puts unless format == 'short'
+    puts 'Done.'
   end
 
   namespace :minify do

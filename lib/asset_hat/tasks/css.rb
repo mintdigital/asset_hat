@@ -75,6 +75,7 @@ namespace :asset_hat do
 
       config = AssetHat.config[type]
       report_format = ([ENV['FORMAT']] & %w[long short dot])[0] || 'long'
+      $stdout.sync  = (report_format == 'dot')
       min_options = {
         :engine => config['engine']
       }.reject { |k,v| v.blank? }
@@ -142,8 +143,20 @@ namespace :asset_hat do
     end
 
     desc 'Concatenates and minifies all CSS bundles'
-    task :minify, :needs => :environment do
+    task :minify, :opts, :needs => :environment do |t, args|
+      args.with_defaults(:opts => {})
+      opts = args.opts.reverse_merge(:show_intro => true, :show_outro => true)
       type = 'css'
+      report_format = ENV['FORMAT']
+
+      if opts[:show_intro]
+        print "Minifying #{type.upcase}..."
+        if report_format == 'dot'
+          $stdout.sync = true
+        else
+          puts
+        end
+      end
 
       # Get input bundles
       config = AssetHat.config[type]
@@ -158,6 +171,11 @@ namespace :asset_hat do
         task = Rake::Task["asset_hat:#{type}:minify_bundle"]
         task.reenable
         task.invoke(bundle)
+      end
+
+      if opts[:show_outro]
+        puts unless report_format == 'short'
+        puts 'Done.'
       end
     end
 
