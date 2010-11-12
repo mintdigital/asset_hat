@@ -209,10 +209,11 @@ class AssetHatHelperTest < ActionView::TestCase
                 assert_match(
                   %r{src="https://ajax\.googleapis\.com/}, https_html)
                 assert_equal 1, AssetHat.html_cache[:js].size
-                assert_equal https_html, AssetHat.html_cache[:js].first[1],
+                assert_equal https_html,
+                  AssetHat.html_cache[:js].to_a.first[1],
                   'SSL HTML should be cached'
-                http_cache_key = AssetHat.html_cache[:js].first[0]
 
+                http_cache_key = AssetHat.html_cache[:js].to_a.first[0]
                 flexmock_teardown
                 flexmock(AssetHat, :cache? => true)
                 flexmock(ActionController::Base,
@@ -235,7 +236,8 @@ class AssetHatHelperTest < ActionView::TestCase
                   AssetHat.html_cache[:js][http_cache_key],
                   'SSH HTML should still be cached'
                 assert_equal http_html,
-                  AssetHat.html_cache[:js].except(http_cache_key).first[1],
+                  AssetHat.html_cache[:js].except(http_cache_key).
+                    to_a.first[1],
                   'Non-SSL HTML should be cached'
               end
             end
