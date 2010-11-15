@@ -49,7 +49,7 @@ Tested with Rails 2.3.x.
     gem 'asset_hat', '0.x.x'
 
     # Add to your Rakefile:
-    require 'asset_hat/tasks
+    require 'asset_hat/tasks'
 
 ### Configuration ###
 
