@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{asset_hat}
-  s.version = "0.2.1"
+  s.version = "0.3.0.rc1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-11-09}
+  s.date = %q{2010-11-21}
   s.description = %q{Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular JS frameworks (like jQuery and Prototype) from localhost in development, and auto-switches to Google's CDN in production. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
   s.email = %q{hello@rondevera.com}
   s.extra_rdoc_files = [
