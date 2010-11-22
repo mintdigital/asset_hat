@@ -8,13 +8,13 @@ AssetHat can automatically:
 
 * Easily *minify* and *bundle* CSS and JS on deploy to reduce file sizes and
   HTTP requests.
-* Load popular <strong>third-party JS</strong> (like jQuery and Prototype)
-  from {<strong>Google's CDN</strong>}[http://code.google.com/apis/ajaxlibs/]
+* Load popular <b>third-party JS</b> (like jQuery and Prototype)
+  from {<b>Google's CDN</b>}[http://code.google.com/apis/ajaxlibs/]
   when in production, or from localhost in development.
-* Force image URLs in your CSS to use <strong>CDN subdomains</strong>
+* Force image URLs in your CSS to use <b>CDN subdomains</b>
   (including SSL support), not just the current host.
 * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
-  <strong>bust browser caches</strong> (e.g.,
+  <b>bust browser caches</b> (e.g.,
   <code>/images/foo.png?ab12cd3</code>).
 
 After setup, you can use these in your layouts and views:
@@ -159,7 +159,7 @@ load images from CDN via SSL. (Non-SSL pages still get non-SSL stylesheets.)
 
 == Usage
 
-In your layouts and views, <strong>instead of these</strong>:
+In your layouts and views, <b>instead of these</b>:
 
     <%= stylesheet_link_tag 'reset', 'application', 'clearfix',
                             :media => 'screen,projection',
@@ -167,7 +167,7 @@ In your layouts and views, <strong>instead of these</strong>:
     <%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',
                                :cache => 'bundles/application' %>
 
-<strong>Use these:</strong>
+<b>Use these:</b>
 
     <%= include_css :bundle => 'application' %>
     <%= include_js  :bundle => 'application' %>
