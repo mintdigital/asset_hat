@@ -21,7 +21,7 @@ begin
 
     gemspec.add_development_dependency  'flexmock', '~> 0.8.6'
     gemspec.add_development_dependency  'hanna',    '~> 0.1.12'
-    gemspec.add_development_dependency  'jeweler',  '~> 1.4.0'
+    gemspec.add_development_dependency  'jeweler',  '~> 1.5.1'
     gemspec.add_development_dependency  'shoulda',  '~> 2.10.2'
     gemspec.add_runtime_dependency      'cssmin',   '~> 1.0.2'
     gemspec.add_runtime_dependency      'jsmin',    '~> 1.0.1'
