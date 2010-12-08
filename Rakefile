@@ -14,7 +14,7 @@ begin
       CDN in production. Can rewrite stylesheets to use CDN hosts (not just
       your web server) and cache-busting hashes for updated images.
     }.strip.gsub(/\s+/, ' ')
-    gemspec.homepage    = 'http://github.com/mintdigital/asset_hat'
+    gemspec.homepage    = 'http://mintdigital.github.com/asset_hat'
 
     gemspec.authors     = ['Ron DeVera', 'Mint Digital']
     gemspec.email       = 'hello@rondevera.com'

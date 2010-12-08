@@ -95,7 +95,7 @@ Gem::Specification.new do |s|
     "test/asset_hat_test.rb",
     "test/test_helper.rb"
   ]
-  s.homepage = %q{http://github.com/mintdigital/asset_hat}
+  s.homepage = %q{http://mintdigital.github.com/asset_hat}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Your assets are covered.}
@@ -112,14 +112,14 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.4.0"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
       s.add_development_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_runtime_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_runtime_dependency(%q<jsmin>, ["~> 1.0.1"])
     else
       s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_dependency(%q<hanna>, ["~> 0.1.12"])
-      s.add_dependency(%q<jeweler>, ["~> 1.4.0"])
+      s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
       s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
@@ -127,7 +127,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
     s.add_dependency(%q<hanna>, ["~> 0.1.12"])
-    s.add_dependency(%q<jeweler>, ["~> 1.4.0"])
+    s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
     s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
     s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
     s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
