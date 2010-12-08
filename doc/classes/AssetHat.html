@@ -83,7 +83,7 @@
             </li>
             <li>Add an image&#8217;s last <a href="http://git-scm.com/">Git</a> commit ID
             to its <a href="AssetHat/CSS.html">CSS</a> URLs to <strong>bust browser
-            caches</strong> (e.g., <tt>/images/foo.png?ab12cd34e</tt>).
+            caches</strong> (e.g., <tt>/images/foo.png?ab12cd3</tt>).
             
             </li>
             </ul>
@@ -103,17 +103,21 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000006">asset_exists?</a></li>
-              <li><a href="#M000005">assets_dir</a></li>
-              <li><a href="#M000009">bundle_filenames</a></li>
-              <li><a href="#M000010">bundle_filepaths</a></li>
-              <li><a href="#M000007">cache?</a></li>
-              <li><a href="#M000011">clear_html_cache</a></li>
-              <li><a href="#M000004">config</a></li>
-              <li><a href="#M000003">last_bundle_commit_id</a></li>
+              <li><a href="#M000008">asset_exists?</a></li>
+              <li><a href="#M000006">assets_dir</a></li>
+              <li><a href="#M000011">bundle_filenames</a></li>
+              <li><a href="#M000012">bundle_filepaths</a></li>
+              <li><a href="#M000007">bundles_dir</a></li>
+              <li><a href="#M000009">cache?</a></li>
+              <li><a href="#M000003">cache_last_commit_ids</a></li>
+              <li><a href="#M000015">clear_html_cache</a></li>
+              <li><a href="#M000013">compute_asset_host</a></li>
+              <li><a href="#M000005">config</a></li>
+              <li><a href="#M000002">last_bundle_commit_id</a></li>
               <li><a href="#M000001">last_commit_id</a></li>
-              <li><a href="#M000008">min_filepath</a></li>
-              <li><a href="#M000002">version</a></li>
+              <li><a href="#M000010">min_filepath</a></li>
+              <li><a href="#M000014">ssl_asset_host_differs?</a></li>
+              <li><a href="#M000004">version</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -159,7 +163,7 @@
                   <tr class='top-aligned-row context-row'>
                     <td class='context-item-name'>STYLESHEETS_DIR</td>
                     <td>=</td>
-                    <td class='context-item-value'>&quot;#{ASSETS_DIR}/stylesheets&quot;</td>
+                    <td class='context-item-value'>File.join(ASSETS_DIR, 'stylesheets')</td>
                     <td>&nbsp;</td>
                     <td class='context-item-desc'>
                       
@@ -170,7 +174,7 @@
                   <tr class='top-aligned-row context-row'>
                     <td class='context-item-name'>JAVASCRIPTS_DIR</td>
                     <td>=</td>
-                    <td class='context-item-value'>&quot;#{ASSETS_DIR}/javascripts&quot;</td>
+                    <td class='context-item-value'>File.join(ASSETS_DIR, 'javascripts')</td>
                     <td>&nbsp;</td>
                     <td class='context-item-desc'>
                       
@@ -203,8 +207,8 @@
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000006'>
-                <a name='M000006'></a>
+              <div class='method public-class' id='method-M000008'>
+                <a name='M000008'></a>
                 <div class='synopsis'>
                   <span class='name'>asset_exists?</span>
                   <span class='arguments'>(filename, type)</span>
@@ -213,43 +217,43 @@
                   <p>
                   Returns true if the specified asset exists in the file system:
                   </p>
-                  <pre>AssetHat.asset_exists?('application', :css)&#x000A;  # =&gt; true if /public/stylesheets/application.css exists&#x000A;AssetHat.asset_exists?('some-plugin', :js)&#x000A;  # =&gt; true if /public/javascripts/some-plugin.js exists</pre>
+                  <pre>AssetHat.asset_exists?('application.css', :css)&#x000A;  # =&gt; true if public/stylesheets/application.css exists&#x000A;AssetHat.asset_exists?('some-plugin.js', :js)&#x000A;  # =&gt; true if public/javascripts/some-plugin.js exists</pre>
                   <p>
-                  See also <tt>AssetHat::STYLESHEETS_DIR</tt> and
-                  <tt>AssetHat::JAVASCRIPTS_DIR</tt>.
+                  See also <tt><a href="AssetHat.html#M000006">AssetHat.assets_dir</a></tt>.
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000006-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 92</span>&#x000A; 92:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">asset_exists?</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-identifier">type</span>)&#x000A; 93:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A; 94:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A; 95:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>)&#x000A; 96:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A; 97:       <span class="ruby-keyword kw">return</span>&#x000A; 98:     <span class="ruby-keyword kw">end</span>&#x000A; 99: &#x000A;100:     <span class="ruby-ivar">@asset_exists</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hsh</span>, <span class="ruby-identifier">known_type</span><span class="ruby-operator">|</span>&#x000A;101:       <span class="ruby-identifier">hsh</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">known_type</span> =<span class="ruby-operator">&gt;</span> {})&#x000A;102:     <span class="ruby-keyword kw">end</span>&#x000A;103:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>].<span class="ruby-identifier">nil?</span>&#x000A;104:       <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>] =&#x000A;105:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>), <span class="ruby-identifier">filename</span>))&#x000A;106:     <span class="ruby-keyword kw">end</span>&#x000A;107:     <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>]&#x000A;108:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000008-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 127</span>&#x000A;127:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">asset_exists?</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-identifier">type</span>)&#x000A;128:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;129:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A;130:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>)&#x000A;131:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;132:       <span class="ruby-keyword kw">return</span>&#x000A;133:     <span class="ruby-keyword kw">end</span>&#x000A;134: &#x000A;135:     <span class="ruby-comment cmt"># Default to `{:css =&gt; {}, :js =&gt; {}}`</span>&#x000A;136:     <span class="ruby-ivar">@asset_exists</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">inject</span>({}) { <span class="ruby-operator">|</span><span class="ruby-identifier">hsh</span>, <span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">hsh</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">t</span> =<span class="ruby-operator">&gt;</span> {}) }&#x000A;137: &#x000A;138:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>].<span class="ruby-identifier">nil?</span>&#x000A;139:       <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>] =&#x000A;140:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>), <span class="ruby-identifier">filename</span>))&#x000A;141:     <span class="ruby-keyword kw">end</span>&#x000A;142:     <span class="ruby-ivar">@asset_exists</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">filename</span>]&#x000A;143:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000005'>
-                <a name='M000005'></a>
+              <div class='method public-class' id='method-M000006'>
+                <a name='M000006'></a>
                 <div class='synopsis'>
                   <span class='name'>assets_dir</span>
                   <span class='arguments'>(type)</span>
                 </div>
                 <div class='description'>
                   <p>
-                  Argument: <tt>:css</tt> or <tt>:js</tt>
+                  Returns the relative path to the directory where the original <a
+                  href="AssetHat/CSS.html">CSS</a> or <a href="AssetHat/JS.html">JS</a> files
+                  are stored.
                   </p>
                   <p>
-                  Returns the path to the directory where <a href="AssetHat/CSS.html">CSS</a>
-                  or <a href="AssetHat/JS.html">JS</a> files are stored.
+                  <tt>type</tt> argument: <tt>:css</tt> or <tt>:js</tt>
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000005-source'>    <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 75</span>&#x000A;75:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;76:     <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A;77:     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:css</span> ; <span class="ruby-constant">STYLESHEETS_DIR</span>&#x000A;78:     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:js</span>  ; <span class="ruby-constant">JAVASCRIPTS_DIR</span>&#x000A;79:     <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">nil</span>&#x000A;80:     <span class="ruby-keyword kw">end</span>&#x000A;81:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000006-source'>    <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 76</span>&#x000A;76:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;77:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A;78: &#x000A;79:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>)&#x000A;80:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;81:       <span class="ruby-keyword kw">return</span>&#x000A;82:     <span class="ruby-keyword kw">end</span>&#x000A;83: &#x000A;84:     <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">type</span>&#x000A;85:     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:css</span> ; <span class="ruby-constant">STYLESHEETS_DIR</span>&#x000A;86:     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:js</span>  ; <span class="ruby-constant">JAVASCRIPTS_DIR</span>&#x000A;87:     <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">nil</span>&#x000A;88:     <span class="ruby-keyword kw">end</span>&#x000A;89:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000009'>
-                <a name='M000009'></a>
+              <div class='method public-class' id='method-M000011'>
+                <a name='M000011'></a>
                 <div class='synopsis'>
                   <span class='name'>bundle_filenames</span>
                   <span class='arguments'>(bundle, type)</span>
@@ -261,14 +265,14 @@
                   <pre>AssetHat.bundle_filenames('application', :css)&#x000A;  # =&gt; ['reset', 'application', 'clearfix']&#x000A;AssetHat.bundle_filenames('non-existent-file', :css)&#x000A;  # =&gt; nil</pre>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000009-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 134</span>&#x000A;134:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filenames</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;135:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;136:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;137:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;138:       <span class="ruby-keyword kw">return</span>&#x000A;139:     <span class="ruby-keyword kw">end</span>&#x000A;140: &#x000A;141:     <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">config</span>[<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>][<span class="ruby-value str">'bundles'</span>][<span class="ruby-identifier">bundle</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;142:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000011-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 169</span>&#x000A;169:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filenames</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;170:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;171:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;172:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;173:       <span class="ruby-keyword kw">return</span>&#x000A;174:     <span class="ruby-keyword kw">end</span>&#x000A;175: &#x000A;176:     <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">config</span>[<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>][<span class="ruby-value str">'bundles'</span>][<span class="ruby-identifier">bundle</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;177:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000010'>
-                <a name='M000010'></a>
+              <div class='method public-class' id='method-M000012'>
+                <a name='M000012'></a>
                 <div class='synopsis'>
                   <span class='name'>bundle_filepaths</span>
                   <span class='arguments'>(bundle, type)</span>
@@ -280,14 +284,47 @@
                   <pre>AssetHat.bundle_filenames('application', :css)&#x000A;  # =&gt; ['/path/to/app/public/stylesheets/reset.css',&#x000A;        '/path/to/app/public/stylesheets/application.css',&#x000A;        '/path/to/app/public/stylesheets/clearfix.css']&#x000A;AssetHat.bundle_filenames('non-existent-file', :css)&#x000A;  # =&gt; nil</pre>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000010-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 152</span>&#x000A;152:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filepaths</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;153:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;154:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;155:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;156:       <span class="ruby-keyword kw">return</span>&#x000A;157:     <span class="ruby-keyword kw">end</span>&#x000A;158: &#x000A;159:     <span class="ruby-identifier">dir</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;160:     <span class="ruby-identifier">filenames</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filenames</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;161:     <span class="ruby-identifier">filepaths</span> = <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">present?</span> <span class="ruby-value">?&#x000A;162: </span>      <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">fn</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>, <span class="ruby-node">&quot;#{fn}.#{type}&quot;</span>) } <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;163:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000012-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 187</span>&#x000A;187:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filepaths</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;188:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;189:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;190:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;191:       <span class="ruby-keyword kw">return</span>&#x000A;192:     <span class="ruby-keyword kw">end</span>&#x000A;193: &#x000A;194:     <span class="ruby-identifier">dir</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;195:     <span class="ruby-identifier">filenames</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filenames</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;196:     <span class="ruby-identifier">filepaths</span> = <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">present?</span> <span class="ruby-value">?&#x000A;197: </span>      <span class="ruby-identifier">filenames</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">fn</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>, <span class="ruby-node">&quot;#{fn}.#{type}&quot;</span>) } <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;198:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-class' id='method-M000007'>
                 <a name='M000007'></a>
+                <div class='synopsis'>
+                  <span class='name'>bundles_dir</span>
+                  <span class='arguments'>(*args)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Returns the relative path to the directory where <a
+                  href="AssetHat/CSS.html">CSS</a> or <a href="AssetHat/JS.html">JS</a>
+                  bundles are stored.
+                  </p>
+                  <p>
+                  Usage:
+                  </p>
+                  <pre>AssetHat.bundles_dir&#x000A;  # =&gt; 'bundles'&#x000A;AssetHat.bundles_dir(:ssl =&gt; true)&#x000A;  # =&gt; 'bundles/ssl'&#x000A;AssetHat.bundles_dir(:css)&#x000A;  # =&gt; 'public/stylesheets/bundles'&#x000A;AssetHat.bundles_dir(:js, :ssl =&gt; true)&#x000A;  # =&gt; 'public/javascripts/bundles/ssl</pre>
+                  <p>
+                  Options:
+                  </p>
+                  <dl>
+                  <dt>ssl</dt><dd>Set this to <tt>true</tt> if the stylesheet references images via SSL.
+                  Defaults to <tt>false</tt>.
+                  
+                  </dd>
+                  </dl>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000007-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 109</span>&#x000A;109:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundles_dir</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;110:     <span class="ruby-identifier">options</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">extract_options!</span>&#x000A;111:     <span class="ruby-identifier">options</span>.<span class="ruby-identifier">symbolize_keys!</span>.<span class="ruby-identifier">reverse_merge!</span>(<span class="ruby-identifier">:ssl</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>)&#x000A;112:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>&#x000A;113: &#x000A;114:     <span class="ruby-identifier">dir</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">present?</span> <span class="ruby-value">? </span><span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>), <span class="ruby-value str">'bundles'</span>) <span class="ruby-operator">:</span> <span class="ruby-value str">'bundles'</span>&#x000A;115:     <span class="ruby-identifier">dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>, <span class="ruby-value str">'ssl'</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:ssl</span>]&#x000A;116:     <span class="ruby-identifier">dir</span>&#x000A;117:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-M000009'>
+                <a name='M000009'></a>
                 <div class='synopsis'>
                   <span class='name'>cache?</span>
                   <span class='arguments'>()</span>
@@ -302,27 +339,85 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000007-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 115</span>&#x000A;115:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cache?</span> ; <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">perform_caching</span> ; <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000009-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 150</span>&#x000A;150:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cache?</span> ; <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">perform_caching</span> ; <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000011'>
-                <a name='M000011'></a>
+              <div class='method public-class' id='method-M000003'>
+                <a name='M000003'></a>
+                <div class='synopsis'>
+                  <span class='name'>cache_last_commit_ids</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Precomputes and caches the last commit ID for all bundles. Your web server
+                  process(es) should run this at boot to avoid overhead during user runtime.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000003-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/vcs.rb, line 74</span>&#x000A;74:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cache_last_commit_ids</span>&#x000A;75:     <span class="ruby-constant">AssetHat</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">type</span><span class="ruby-operator">|</span>&#x000A;76:       <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>].<span class="ruby-identifier">blank?</span> <span class="ruby-operator">||</span>&#x000A;77:               <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>][<span class="ruby-value str">'bundles'</span>].<span class="ruby-identifier">blank?</span>&#x000A;78: &#x000A;79:       <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>][<span class="ruby-value str">'bundles'</span>].<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">bundle</span><span class="ruby-operator">|</span>&#x000A;80:         <span class="ruby-comment cmt"># Memoize commit ID for this bundle</span>&#x000A;81:         <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">last_bundle_commit_id</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">cache?</span>&#x000A;82: &#x000A;83:         <span class="ruby-comment cmt"># Memoize commit IDs for each file in this bundle</span>&#x000A;84:         <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">bundle_filepaths</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filepath</span><span class="ruby-operator">|</span>&#x000A;85:           <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">last_commit_id</span>(<span class="ruby-identifier">filepath</span>)&#x000A;86:         <span class="ruby-keyword kw">end</span>&#x000A;87:       <span class="ruby-keyword kw">end</span>&#x000A;88:     <span class="ruby-keyword kw">end</span>&#x000A;89:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-M000015'>
+                <a name='M000015'></a>
                 <div class='synopsis'>
                   <span class='name'>clear_html_cache</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000015-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000011-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 165</span>&#x000A;165:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">clear_html_cache</span>&#x000A;166:     <span class="ruby-identifier">html_cache</span> = {}&#x000A;167:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000015-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 249</span>&#x000A;249:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">clear_html_cache</span>&#x000A;250:     <span class="ruby-identifier">html_cache</span> = {}&#x000A;251:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000004'>
-                <a name='M000004'></a>
+              <div class='method public-class' id='method-M000013'>
+                <a name='M000013'></a>
+                <div class='synopsis'>
+                  <span class='name'>compute_asset_host</span>
+                  <span class='arguments'>(asset_host, source, options={})</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Reads <tt>ActionController::Base.asset_host</tt>, which can be a String or
+                  Proc, and returns a String. Should behave just like Rails 2.3.x&#8217;s
+                  private `<a href="AssetHat.html#M000013">compute_asset_host</a>` method,
+                  but with a simulated request.
+                  </p>
+                  <p>
+                  Example environment config for CDN support via SSL:
+                  </p>
+                  <pre># In config/environments/production.rb:&#x000A;config.action_controller.asset_host = Proc.new do |source, request|&#x000A;  &quot;#{request.protocol}cdn#{source.hash % 4}.example.com&quot;&#x000A;    # =&gt; 'http://cdn0.example.com', 'https://cdn1.example.com', etc.&#x000A;end</pre>
+                  <p>
+                  If your CDN doesn&#8217;t have SSL support, you can instead revert SSL
+                  pages to serving assets from your web server:
+                  </p>
+                  <pre>config.action_controller.asset_host = Proc.new do |source, request|&#x000A;  request.ssl? ? nil : &quot;http://cdn#{source.hash % 4}.example.com&quot;&#x000A;end</pre>
+                  <p>
+                  Options:
+                  </p>
+                  <dl>
+                  <dt>ssl</dt><dd>Set to <tt>true</tt> to simulate a request via SSL. Defaults to
+                  <tt>false</tt>.
+                  
+                  </dd>
+                  </dl>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000013-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000013-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 223</span>&#x000A;223:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">compute_asset_host</span>(<span class="ruby-identifier">asset_host</span>, <span class="ruby-identifier">source</span>, <span class="ruby-identifier">options</span>={})&#x000A;224:     <span class="ruby-identifier">host</span> = <span class="ruby-identifier">asset_host</span>&#x000A;225:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">host</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Proc</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">host</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:call</span>)&#x000A;226:       <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">host</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Proc</span>) <span class="ruby-operator">?</span>&#x000A;227:            <span class="ruby-identifier">host</span>.<span class="ruby-identifier">arity</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">host</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:call</span>).<span class="ruby-identifier">arity</span>&#x000A;228:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">2</span>&#x000A;229:         <span class="ruby-identifier">request</span> = <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(&#x000A;230:           <span class="ruby-value str">'HTTPS'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:ssl</span>] <span class="ruby-operator">?</span> <span class="ruby-value str">'on'</span> <span class="ruby-operator">:</span> <span class="ruby-value str">'off'</span>)&#x000A;231:         <span class="ruby-identifier">host</span> = <span class="ruby-identifier">host</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">source</span>, <span class="ruby-identifier">request</span>)&#x000A;232:       <span class="ruby-keyword kw">else</span>&#x000A;233:         <span class="ruby-identifier">host</span> = <span class="ruby-identifier">host</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">source</span>)&#x000A;234:       <span class="ruby-keyword kw">end</span>&#x000A;235:     <span class="ruby-keyword kw">else</span>&#x000A;236:       <span class="ruby-identifier">host</span> <span class="ruby-operator">%=</span> (<span class="ruby-identifier">source</span>.<span class="ruby-identifier">hash</span> <span class="ruby-operator">%</span> <span class="ruby-value">4</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">host</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/%d/</span>&#x000A;237:     <span class="ruby-keyword kw">end</span>&#x000A;238:     <span class="ruby-identifier">host</span>&#x000A;239:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-M000005'>
+                <a name='M000005'></a>
                 <div class='synopsis'>
                   <span class='name'>config</span>
                   <span class='arguments'>()</span>
@@ -333,14 +428,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000004-source'>    <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 65</span>&#x000A;65:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">config</span>&#x000A;66:     <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">blank?</span>&#x000A;67:       <span class="ruby-ivar">@config</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-constant">CONFIG_FILEPATH</span>, <span class="ruby-value str">'r'</span>))&#x000A;68:     <span class="ruby-keyword kw">end</span>&#x000A;69:     <span class="ruby-ivar">@config</span>&#x000A;70:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000005-source'>    <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 65</span>&#x000A;65:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">config</span>&#x000A;66:     <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">blank?</span>&#x000A;67:       <span class="ruby-ivar">@config</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-constant">CONFIG_FILEPATH</span>)).<span class="ruby-identifier">result</span>)&#x000A;68:     <span class="ruby-keyword kw">end</span>&#x000A;69:     <span class="ruby-ivar">@config</span>&#x000A;70:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000003'>
-                <a name='M000003'></a>
+              <div class='method public-class' id='method-M000002'>
+                <a name='M000002'></a>
                 <div class='synopsis'>
                   <span class='name'>last_bundle_commit_id</span>
                   <span class='arguments'>(bundle, type)</span>
@@ -357,10 +452,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000003-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/vcs.rb, line 45</span>&#x000A;45:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">last_bundle_commit_id</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;46:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;47:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A;48:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>)&#x000A;49:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;50:       <span class="ruby-keyword kw">return</span>&#x000A;51:     <span class="ruby-keyword kw">end</span>&#x000A;52: &#x000A;53:     <span class="ruby-comment cmt"># Default to `{:css =&gt; {}, :js =&gt; {}}`</span>&#x000A;54:     <span class="ruby-ivar">@last_bundle_commit_ids</span> <span class="ruby-operator">||=</span>&#x000A;55:       <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">inject</span>({}) { <span class="ruby-operator">|</span><span class="ruby-identifier">hsh</span>, <span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">hsh</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">t</span> =<span class="ruby-operator">&gt;</span> {}) }&#x000A;56: &#x000A;57:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>].<span class="ruby-identifier">blank?</span>&#x000A;58:       <span class="ruby-identifier">dir</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;59:       <span class="ruby-identifier">filepaths</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filepaths</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;60:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filepaths</span>.<span class="ruby-identifier">present?</span>&#x000A;61:         <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>] = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">last_commit_id</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filepaths</span>)&#x000A;62:       <span class="ruby-keyword kw">end</span>&#x000A;63:     <span class="ruby-keyword kw">end</span>&#x000A;64: &#x000A;65:     <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>]&#x000A;66:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000002-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/vcs.rb, line 45</span>&#x000A;45:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">last_bundle_commit_id</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;46:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;47:     <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_sym</span>&#x000A;48:     <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">type</span>)&#x000A;49:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown type \&quot;#{type}\&quot;; should be one of: #{TYPES.join(', ')}.&quot;</span>&#x000A;50:       <span class="ruby-keyword kw">return</span>&#x000A;51:     <span class="ruby-keyword kw">end</span>&#x000A;52: &#x000A;53:     <span class="ruby-comment cmt"># Default to `{:css =&gt; {}, :js =&gt; {}}`</span>&#x000A;54:     <span class="ruby-ivar">@last_bundle_commit_ids</span> <span class="ruby-operator">||=</span>&#x000A;55:       <span class="ruby-constant">TYPES</span>.<span class="ruby-identifier">inject</span>({}) { <span class="ruby-operator">|</span><span class="ruby-identifier">hsh</span>, <span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">hsh</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">t</span> =<span class="ruby-operator">&gt;</span> {}) }&#x000A;56: &#x000A;57:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>].<span class="ruby-identifier">blank?</span>&#x000A;58:       <span class="ruby-identifier">dir</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">assets_dir</span>(<span class="ruby-identifier">type</span>)&#x000A;59:       <span class="ruby-identifier">filepaths</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bundle_filepaths</span>(<span class="ruby-identifier">bundle</span>, <span class="ruby-identifier">type</span>)&#x000A;60:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filepaths</span>.<span class="ruby-identifier">present?</span>&#x000A;61:         <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>] = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">last_commit_id</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filepaths</span>)&#x000A;62:       <span class="ruby-keyword kw">end</span>&#x000A;63:     <span class="ruby-keyword kw">end</span>&#x000A;64: &#x000A;65:     <span class="ruby-ivar">@last_bundle_commit_ids</span>[<span class="ruby-identifier">type</span>][<span class="ruby-identifier">bundle</span>]&#x000A;66:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-class' id='method-M000001'>
@@ -392,8 +487,8 @@
                   <pre id='M000001-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/vcs.rb, line 18</span>&#x000A;18:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">last_commit_id</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;19:     <span class="ruby-comment cmt"># Process arguments</span>&#x000A;20:     <span class="ruby-identifier">options</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">extract_options!</span>&#x000A;21:     <span class="ruby-identifier">options</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">symbolize_keys</span>.<span class="ruby-identifier">reverse_merge</span>(<span class="ruby-identifier">:vcs</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:git</span>)&#x000A;22:     <span class="ruby-identifier">filepaths</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">' '</span>)&#x000A;23: &#x000A;24:     <span class="ruby-comment cmt"># Validate options</span>&#x000A;25:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:vcs</span>] <span class="ruby-operator">!=</span> <span class="ruby-identifier">:git</span>&#x000A;26:       <span class="ruby-identifier">raise</span> <span class="ruby-value str">'Git is currently the only supported VCS.'</span> <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">return</span>&#x000A;27:     <span class="ruby-keyword kw">end</span>&#x000A;28: &#x000A;29:     <span class="ruby-ivar">@last_commit_ids</span> <span class="ruby-operator">||=</span> {}&#x000A;30:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@last_commit_ids</span>[<span class="ruby-identifier">filepaths</span>].<span class="ruby-identifier">blank?</span>&#x000A;31:       <span class="ruby-identifier">h</span> = <span class="ruby-node">`git log -1 --pretty=format:%h #{filepaths} 2&gt;/dev/null`</span>&#x000A;32:         <span class="ruby-comment cmt"># `h` has either the abbreviated Git commit hash or an empty string</span>&#x000A;33:       <span class="ruby-ivar">@last_commit_ids</span>[<span class="ruby-identifier">filepaths</span>] = <span class="ruby-identifier">h</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">present?</span>&#x000A;34:     <span class="ruby-keyword kw">end</span>&#x000A;35:     <span class="ruby-ivar">@last_commit_ids</span>[<span class="ruby-identifier">filepaths</span>]&#x000A;36:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000008'>
-                <a name='M000008'></a>
+              <div class='method public-class' id='method-M000010'>
+                <a name='M000010'></a>
                 <div class='synopsis'>
                   <span class='name'>min_filepath</span>
                   <span class='arguments'>(filepath, extension)</span>
@@ -405,19 +500,38 @@
                   <pre>AssetHat.min_filepath('public/stylesheets/bundles/application.css', 'css')&#x000A;  # =&gt; 'public/stylesheets/bundles/application.min.css'</pre>
                   <p>
                   See also <tt><a
-                  href="AssetHat/CSS.html#M000012">AssetHat::CSS.min_filepath</a></tt> and
-                  <tt><a href="AssetHat/JS.html#M000018">AssetHat::JS.min_filepath</a></tt>.
+                  href="AssetHat/CSS.html#M000016">AssetHat::CSS.min_filepath</a></tt> and
+                  <tt><a href="AssetHat/JS.html#M000022">AssetHat::JS.min_filepath</a></tt>.
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000008-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 124</span>&#x000A;124:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">extension</span>)&#x000A;125:     <span class="ruby-identifier">filepath</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-node">/([^\.]*).#{extension}$/</span>, <span class="ruby-node">&quot;\\1.min.#{extension}&quot;</span>)&#x000A;126:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000010-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 159</span>&#x000A;159:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">extension</span>)&#x000A;160:     <span class="ruby-identifier">filepath</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-node">/([^\.]*).#{extension}$/</span>, <span class="ruby-node">&quot;\\1.min.#{extension}&quot;</span>)&#x000A;161:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000002'>
-                <a name='M000002'></a>
+              <div class='method public-class' id='method-M000014'>
+                <a name='M000014'></a>
+                <div class='synopsis'>
+                  <span class='name'>ssl_asset_host_differs?</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Returns <tt>true</tt> if the asset host differs between SSL and non-SSL
+                  pages, or <tt>false</tt> if the asset host doesn&#8217;t change.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000014-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000014-source'>     <span class="ruby-comment cmt"># File lib/asset_hat.rb, line 243</span>&#x000A;243:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">ssl_asset_host_differs?</span>&#x000A;244:     <span class="ruby-identifier">asset_host</span> = <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">asset_host</span>&#x000A;245:     <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">compute_asset_host</span>(<span class="ruby-identifier">asset_host</span>, <span class="ruby-value str">'x.png'</span>) <span class="ruby-operator">!=</span>&#x000A;246:       <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">compute_asset_host</span>(<span class="ruby-identifier">asset_host</span>, <span class="ruby-value str">'x.png'</span>, <span class="ruby-identifier">:ssl</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">true</span>)&#x000A;247:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-M000004'>
+                <a name='M000004'></a>
                 <div class='synopsis'>
                   <span class='name'>version</span>
                   <span class='arguments'>()</span>
@@ -428,10 +542,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000002-source'>   <span class="ruby-comment cmt"># File lib/asset_hat/version.rb, line 3</span>&#x000A;3:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">version</span>&#x000A;4:     <span class="ruby-identifier">data_filepath</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-node">%w[.. .. VERSION.yml]</span>)&#x000A;5:     <span class="ruby-identifier">data</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">data_filepath</span>, <span class="ruby-value str">'r'</span>))&#x000A;6:     [<span class="ruby-identifier">:major</span>, <span class="ruby-identifier">:minor</span>, <span class="ruby-identifier">:patch</span>, <span class="ruby-identifier">:build</span>].&#x000A;7:       <span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">data</span>[<span class="ruby-identifier">x</span>] }.<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:blank?</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'.'</span>)&#x000A;8:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000004-source'>   <span class="ruby-comment cmt"># File lib/asset_hat/version.rb, line 3</span>&#x000A;3:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">version</span>&#x000A;4:     <span class="ruby-identifier">data_filepath</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-node">%w[.. .. VERSION.yml]</span>)&#x000A;5:     <span class="ruby-identifier">data</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">data_filepath</span>, <span class="ruby-value str">'r'</span>))&#x000A;6:     [<span class="ruby-identifier">:major</span>, <span class="ruby-identifier">:minor</span>, <span class="ruby-identifier">:patch</span>, <span class="ruby-identifier">:build</span>].&#x000A;7:       <span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">data</span>[<span class="ruby-identifier">x</span>] }.<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:blank?</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'.'</span>)&#x000A;8:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

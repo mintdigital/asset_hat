@@ -46,15 +46,15 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000022">jsmin</a></li>
-              <li><a href="#M000021">weak</a></li>
+              <li><a href="#M000026">jsmin</a></li>
+              <li><a href="#M000025">weak</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000022'>
-                <a name='M000022'></a>
+              <div class='method public-class' id='method-M000026'>
+                <a name='M000026'></a>
                 <div class='synopsis'>
                   <span class='name'>jsmin</span>
                   <span class='arguments'>(input_string)</span>
@@ -77,14 +77,14 @@
                   </ul>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000022-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000022-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 79</span>&#x000A;79:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">jsmin</span>(<span class="ruby-identifier">input_string</span>)&#x000A;80:         <span class="ruby-constant">JSMin</span>.<span class="ruby-identifier">minify</span>(<span class="ruby-identifier">input_string</span>)&#x000A;81:       <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000026-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 79</span>&#x000A;79:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">jsmin</span>(<span class="ruby-identifier">input_string</span>)&#x000A;80:         <span class="ruby-constant">JSMin</span>.<span class="ruby-identifier">minify</span>(<span class="ruby-identifier">input_string</span>)&#x000A;81:       <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000021'>
-                <a name='M000021'></a>
+              <div class='method public-class' id='method-M000025'>
+                <a name='M000025'></a>
                 <div class='synopsis'>
                   <span class='name'>weak</span>
                   <span class='arguments'>(input_string)</span>
@@ -103,10 +103,10 @@
                   </ul>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000021-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000021-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 48</span>&#x000A;48:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">weak</span>(<span class="ruby-identifier">input_string</span>)&#x000A;49:         <span class="ruby-identifier">input</span>   = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">input_string</span>)&#x000A;50:         <span class="ruby-identifier">output</span>  = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>&#x000A;51: &#x000A;52:         <span class="ruby-identifier">input</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;53:           <span class="ruby-comment cmt"># Remove indentation and trailing whitespace</span>&#x000A;54:           <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip!</span>&#x000A;55:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">blank?</span>&#x000A;56: &#x000A;57:           <span class="ruby-comment cmt"># Skip single-line comments</span>&#x000A;58:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\/\//</span>).<span class="ruby-identifier">nil?</span>&#x000A;59:           <span class="ruby-comment cmt"># TODO: Also skip single-line comments that began mid-line, but not</span>&#x000A;60:           <span class="ruby-comment cmt">#       inside a string or regex</span>&#x000A;61: &#x000A;62:           <span class="ruby-comment cmt"># TODO: Skip multi-line comments</span>&#x000A;63:           <span class="ruby-comment cmt"># - Should not strip from within a string or regex</span>&#x000A;64:           <span class="ruby-comment cmt"># - Should not strip comments that begin with `/*!` (e.g., licenses)</span>&#x000A;65: &#x000A;66:           <span class="ruby-identifier">output</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">line</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;\n&quot;</span>)&#x000A;67:         <span class="ruby-keyword kw">end</span>&#x000A;68: &#x000A;69:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">rewind</span>&#x000A;70:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">read</span>&#x000A;71:       <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000025-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 48</span>&#x000A;48:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">weak</span>(<span class="ruby-identifier">input_string</span>)&#x000A;49:         <span class="ruby-identifier">input</span>   = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">input_string</span>)&#x000A;50:         <span class="ruby-identifier">output</span>  = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>&#x000A;51: &#x000A;52:         <span class="ruby-identifier">input</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;53:           <span class="ruby-comment cmt"># Remove indentation and trailing whitespace</span>&#x000A;54:           <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip!</span>&#x000A;55:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">blank?</span>&#x000A;56: &#x000A;57:           <span class="ruby-comment cmt"># Skip single-line comments</span>&#x000A;58:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\/\//</span>).<span class="ruby-identifier">nil?</span>&#x000A;59:           <span class="ruby-comment cmt"># TODO: Also skip single-line comments that began mid-line, but not</span>&#x000A;60:           <span class="ruby-comment cmt">#       inside a string or regex</span>&#x000A;61: &#x000A;62:           <span class="ruby-comment cmt"># TODO: Skip multi-line comments</span>&#x000A;63:           <span class="ruby-comment cmt"># - Should not strip from within a string or regex</span>&#x000A;64:           <span class="ruby-comment cmt"># - Should not strip comments that begin with `/*!` (e.g., licenses)</span>&#x000A;65: &#x000A;66:           <span class="ruby-identifier">output</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">line</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;\n&quot;</span>)&#x000A;67:         <span class="ruby-keyword kw">end</span>&#x000A;68: &#x000A;69:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">rewind</span>&#x000A;70:         <span class="ruby-identifier">output</span>.<span class="ruby-identifier">read</span>&#x000A;71:       <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

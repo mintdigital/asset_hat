@@ -4331,30 +4331,34 @@
         
         Element.addMethods();
         var search_index = [
-          { method: 'add_asset_commit_ids', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000014"><span class="method_name">add_asset_commit_ids</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
-          { method: 'add_asset_hosts', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000015"><span class="method_name">add_asset_hosts</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
-          { method: 'asset_exists?', module: 'assethat', html: '<a href="classes/AssetHat.html#M000006"><span class="method_name">asset_exists?</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'assets_dir', module: 'assethat', html: '<a href="classes/AssetHat.html#M000005"><span class="method_name">assets_dir</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'bundle_filenames', module: 'assethat', html: '<a href="classes/AssetHat.html#M000009"><span class="method_name">bundle_filenames</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'bundle_filepaths', module: 'assethat', html: '<a href="classes/AssetHat.html#M000010"><span class="method_name">bundle_filepaths</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'cache?', module: 'assethat', html: '<a href="classes/AssetHat.html#M000007"><span class="method_name">cache?</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'clear_html_cache', module: 'assethat', html: '<a href="classes/AssetHat.html#M000011"><span class="method_name">clear_html_cache</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'config', module: 'assethat', html: '<a href="classes/AssetHat.html#M000004"><span class="method_name">config</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'cssmin', module: 'assethat::css::engines', html: '<a href="classes/AssetHat/CSS/Engines.html#M000017"><span class="method_name">cssmin</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a>' },
-          { method: 'include_css', module: 'assethathelper', html: '<a href="classes/AssetHatHelper.html#M000023"><span class="method_name">include_css</span> <span class="module_name">(AssetHatHelper)</span></a>' },
-          { method: 'include_js', module: 'assethathelper', html: '<a href="classes/AssetHatHelper.html#M000024"><span class="method_name">include_js</span> <span class="module_name">(AssetHatHelper)</span></a>' },
-          { method: 'jsmin', module: 'assethat::js::engines', html: '<a href="classes/AssetHat/JS/Engines.html#M000022"><span class="method_name">jsmin</span> <span class="module_name">(AssetHat::JS::Engines)</span></a>' },
-          { method: 'last_bundle_commit_id', module: 'assethat', html: '<a href="classes/AssetHat.html#M000003"><span class="method_name">last_bundle_commit_id</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'add_asset_commit_ids', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000018"><span class="method_name">add_asset_commit_ids</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
+          { method: 'add_asset_hosts', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000019"><span class="method_name">add_asset_hosts</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
+          { method: 'asset_exists?', module: 'assethat', html: '<a href="classes/AssetHat.html#M000008"><span class="method_name">asset_exists?</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'assets_dir', module: 'assethat', html: '<a href="classes/AssetHat.html#M000006"><span class="method_name">assets_dir</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'bundle_filenames', module: 'assethat', html: '<a href="classes/AssetHat.html#M000011"><span class="method_name">bundle_filenames</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'bundle_filepaths', module: 'assethat', html: '<a href="classes/AssetHat.html#M000012"><span class="method_name">bundle_filepaths</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'bundles_dir', module: 'assethat', html: '<a href="classes/AssetHat.html#M000007"><span class="method_name">bundles_dir</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'cache?', module: 'assethat', html: '<a href="classes/AssetHat.html#M000009"><span class="method_name">cache?</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'cache_last_commit_ids', module: 'assethat', html: '<a href="classes/AssetHat.html#M000003"><span class="method_name">cache_last_commit_ids</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'clear_html_cache', module: 'assethat', html: '<a href="classes/AssetHat.html#M000015"><span class="method_name">clear_html_cache</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'compute_asset_host', module: 'assethat', html: '<a href="classes/AssetHat.html#M000013"><span class="method_name">compute_asset_host</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'config', module: 'assethat', html: '<a href="classes/AssetHat.html#M000005"><span class="method_name">config</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'cssmin', module: 'assethat::css::engines', html: '<a href="classes/AssetHat/CSS/Engines.html#M000021"><span class="method_name">cssmin</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a>' },
+          { method: 'include_css', module: 'assethathelper', html: '<a href="classes/AssetHatHelper.html#M000027"><span class="method_name">include_css</span> <span class="module_name">(AssetHatHelper)</span></a>' },
+          { method: 'include_js', module: 'assethathelper', html: '<a href="classes/AssetHatHelper.html#M000028"><span class="method_name">include_js</span> <span class="module_name">(AssetHatHelper)</span></a>' },
+          { method: 'jsmin', module: 'assethat::js::engines', html: '<a href="classes/AssetHat/JS/Engines.html#M000026"><span class="method_name">jsmin</span> <span class="module_name">(AssetHat::JS::Engines)</span></a>' },
+          { method: 'last_bundle_commit_id', module: 'assethat', html: '<a href="classes/AssetHat.html#M000002"><span class="method_name">last_bundle_commit_id</span> <span class="module_name">(AssetHat)</span></a>' },
           { method: 'last_commit_id', module: 'assethat', html: '<a href="classes/AssetHat.html#M000001"><span class="method_name">last_commit_id</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'min_filepath', module: 'assethat', html: '<a href="classes/AssetHat.html#M000008"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'min_filepath', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000012"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
-          { method: 'min_filepath', module: 'assethat::js', html: '<a href="classes/AssetHat/JS.html#M000018"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::JS)</span></a>' },
-          { method: 'minify', module: 'assethat::js', html: '<a href="classes/AssetHat/JS.html#M000019"><span class="method_name">minify</span> <span class="module_name">(AssetHat::JS)</span></a>' },
-          { method: 'minify', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000013"><span class="method_name">minify</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
-          { method: 'source_for', module: 'assethat::js::vendors', html: '<a href="classes/AssetHat/JS/Vendors.html#M000020"><span class="method_name">source_for</span> <span class="module_name">(AssetHat::JS::Vendors)</span></a>' },
-          { method: 'version', module: 'assethat', html: '<a href="classes/AssetHat.html#M000002"><span class="method_name">version</span> <span class="module_name">(AssetHat)</span></a>' },
-          { method: 'weak', module: 'assethat::js::engines', html: '<a href="classes/AssetHat/JS/Engines.html#M000021"><span class="method_name">weak</span> <span class="module_name">(AssetHat::JS::Engines)</span></a>' },
-          { method: 'weak', module: 'assethat::css::engines', html: '<a href="classes/AssetHat/CSS/Engines.html#M000016"><span class="method_name">weak</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a>' },
+          { method: 'min_filepath', module: 'assethat::js', html: '<a href="classes/AssetHat/JS.html#M000022"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::JS)</span></a>' },
+          { method: 'min_filepath', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000016"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
+          { method: 'min_filepath', module: 'assethat', html: '<a href="classes/AssetHat.html#M000010"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'minify', module: 'assethat::css', html: '<a href="classes/AssetHat/CSS.html#M000017"><span class="method_name">minify</span> <span class="module_name">(AssetHat::CSS)</span></a>' },
+          { method: 'minify', module: 'assethat::js', html: '<a href="classes/AssetHat/JS.html#M000023"><span class="method_name">minify</span> <span class="module_name">(AssetHat::JS)</span></a>' },
+          { method: 'source_for', module: 'assethat::js::vendors', html: '<a href="classes/AssetHat/JS/Vendors.html#M000024"><span class="method_name">source_for</span> <span class="module_name">(AssetHat::JS::Vendors)</span></a>' },
+          { method: 'ssl_asset_host_differs?', module: 'assethat', html: '<a href="classes/AssetHat.html#M000014"><span class="method_name">ssl_asset_host_differs?</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'version', module: 'assethat', html: '<a href="classes/AssetHat.html#M000004"><span class="method_name">version</span> <span class="module_name">(AssetHat)</span></a>' },
+          { method: 'weak', module: 'assethat::js::engines', html: '<a href="classes/AssetHat/JS/Engines.html#M000025"><span class="method_name">weak</span> <span class="module_name">(AssetHat::JS::Engines)</span></a>' },
+          { method: 'weak', module: 'assethat::css::engines', html: '<a href="classes/AssetHat/CSS/Engines.html#M000020"><span class="method_name">weak</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a>' },
         ]
         $(document).observe('dom:loaded', function() {
         	// Setup search-during-typing.
@@ -4425,30 +4429,34 @@
       </form>
       <ol class='methods' id='search-results' style='display: none'></ol>
       <ol class='methods' id='index-entries'>
-        <li><a href="classes/AssetHat/CSS.html#M000014"><span class="method_name">add_asset_commit_ids</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
-        <li><a href="classes/AssetHat/CSS.html#M000015"><span class="method_name">add_asset_hosts</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000006"><span class="method_name">asset_exists?</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000005"><span class="method_name">assets_dir</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000009"><span class="method_name">bundle_filenames</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000010"><span class="method_name">bundle_filepaths</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000007"><span class="method_name">cache?</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000011"><span class="method_name">clear_html_cache</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000004"><span class="method_name">config</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat/CSS/Engines.html#M000017"><span class="method_name">cssmin</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a></li>
-        <li><a href="classes/AssetHatHelper.html#M000023"><span class="method_name">include_css</span> <span class="module_name">(AssetHatHelper)</span></a></li>
-        <li><a href="classes/AssetHatHelper.html#M000024"><span class="method_name">include_js</span> <span class="module_name">(AssetHatHelper)</span></a></li>
-        <li><a href="classes/AssetHat/JS/Engines.html#M000022"><span class="method_name">jsmin</span> <span class="module_name">(AssetHat::JS::Engines)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000003"><span class="method_name">last_bundle_commit_id</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat/CSS.html#M000018"><span class="method_name">add_asset_commit_ids</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
+        <li><a href="classes/AssetHat/CSS.html#M000019"><span class="method_name">add_asset_hosts</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000008"><span class="method_name">asset_exists?</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000006"><span class="method_name">assets_dir</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000011"><span class="method_name">bundle_filenames</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000012"><span class="method_name">bundle_filepaths</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000007"><span class="method_name">bundles_dir</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000009"><span class="method_name">cache?</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000003"><span class="method_name">cache_last_commit_ids</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000015"><span class="method_name">clear_html_cache</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000013"><span class="method_name">compute_asset_host</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000005"><span class="method_name">config</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat/CSS/Engines.html#M000021"><span class="method_name">cssmin</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a></li>
+        <li><a href="classes/AssetHatHelper.html#M000027"><span class="method_name">include_css</span> <span class="module_name">(AssetHatHelper)</span></a></li>
+        <li><a href="classes/AssetHatHelper.html#M000028"><span class="method_name">include_js</span> <span class="module_name">(AssetHatHelper)</span></a></li>
+        <li><a href="classes/AssetHat/JS/Engines.html#M000026"><span class="method_name">jsmin</span> <span class="module_name">(AssetHat::JS::Engines)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000002"><span class="method_name">last_bundle_commit_id</span> <span class="module_name">(AssetHat)</span></a></li>
         <li><a href="classes/AssetHat.html#M000001"><span class="method_name">last_commit_id</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000008"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat/CSS.html#M000012"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
-        <li><a href="classes/AssetHat/JS.html#M000018"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::JS)</span></a></li>
-        <li><a href="classes/AssetHat/JS.html#M000019"><span class="method_name">minify</span> <span class="module_name">(AssetHat::JS)</span></a></li>
-        <li><a href="classes/AssetHat/CSS.html#M000013"><span class="method_name">minify</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
-        <li><a href="classes/AssetHat/JS/Vendors.html#M000020"><span class="method_name">source_for</span> <span class="module_name">(AssetHat::JS::Vendors)</span></a></li>
-        <li><a href="classes/AssetHat.html#M000002"><span class="method_name">version</span> <span class="module_name">(AssetHat)</span></a></li>
-        <li><a href="classes/AssetHat/JS/Engines.html#M000021"><span class="method_name">weak</span> <span class="module_name">(AssetHat::JS::Engines)</span></a></li>
-        <li><a href="classes/AssetHat/CSS/Engines.html#M000016"><span class="method_name">weak</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a></li>
+        <li><a href="classes/AssetHat/JS.html#M000022"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::JS)</span></a></li>
+        <li><a href="classes/AssetHat/CSS.html#M000016"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000010"><span class="method_name">min_filepath</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat/CSS.html#M000017"><span class="method_name">minify</span> <span class="module_name">(AssetHat::CSS)</span></a></li>
+        <li><a href="classes/AssetHat/JS.html#M000023"><span class="method_name">minify</span> <span class="module_name">(AssetHat::JS)</span></a></li>
+        <li><a href="classes/AssetHat/JS/Vendors.html#M000024"><span class="method_name">source_for</span> <span class="module_name">(AssetHat::JS::Vendors)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000014"><span class="method_name">ssl_asset_host_differs?</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat.html#M000004"><span class="method_name">version</span> <span class="module_name">(AssetHat)</span></a></li>
+        <li><a href="classes/AssetHat/JS/Engines.html#M000025"><span class="method_name">weak</span> <span class="module_name">(AssetHat::JS::Engines)</span></a></li>
+        <li><a href="classes/AssetHat/CSS/Engines.html#M000020"><span class="method_name">weak</span> <span class="module_name">(AssetHat::CSS::Engines)</span></a></li>
       </ol>
     </div>
   </body>
