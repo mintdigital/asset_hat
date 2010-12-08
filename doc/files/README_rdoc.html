@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Wed Jul 21 11:50:30 -0400 2010</span>
+          <span class='datetime'>Wed Dec 08 12:26:25 -0500 2010</span>
         </div>
       </div>
       <div id='content'>
@@ -51,43 +51,47 @@
             sizes and HTTP requests.
             
             </li>
-            <li>Load popular <strong>third-party JS</strong> (like jQuery and Prototype)
-            from <a href="http://code.google.com/apis/ajaxlibs/"><strong>Google's
-            CDN</strong></a> when in production, or from localhost in development.
+            <li>Load popular <b>third-party JS</b> (like jQuery and Prototype) from <a
+            href="http://code.google.com/apis/ajaxlibs/">Google's CDN</a> when in
+            production, or from localhost in development.
             
             </li>
-            <li>Force image URLs in your CSS to use <strong>CDN subdomains</strong>, not
-            just the current host.
+            <li>Force image URLs in your CSS to use <b>CDN subdomains</b> (including SSL
+            support), not just the current host.
             
             </li>
             <li>Add an image&#8217;s last <a href="http://git-scm.com/">Git</a> commit ID
-            to its CSS URLs to <strong>bust browser caches</strong> (e.g.,
-            <tt>/images/foo.png?ab12cd34e</tt>).
+            to its CSS URLs to <b>bust browser caches</b> (e.g.,
+            <tt>/images/foo.png?ab12cd3</tt>).
             
             </li>
             </ul>
             <p>
-            After setup, you can use these in your layouts and views:
+            After setup, you can use this in your layouts and views:
             </p>
-            <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;  # =&gt; &lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  #          media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&#x000A;&lt;%= include_js :bundles =&gt; ['plugins', 'common'] %&gt;&#x000A;  # =&gt; &lt;script src=&quot;/javascripts/bundles/plugins.min.js&quot;&#x000A;  #            type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;  #    &lt;script src=&quot;/javascripts/bundles/common.min.js&quot;&#x000A;  #            type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
+            <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;&lt;%= include_js  :jquery, :bundles =&gt; ['plugins', 'common'] %&gt;</pre>
+            <p>
+            Which turns into:
+            </p>
+            <pre>&lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&lt;script src=&quot;/javascripts/jquery-1.x.x.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;  &lt;!-- In production, jQuery loads from Google's CDN instead. --&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/plugins.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/common.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
             <p>
             And this in your deploy script:
             </p>
             <pre>rake asset_hat:minify</pre>
             <p>
-            Tested with Rails 2.3.x.
+            Tested with Rails 2.3.x. For the gritty details, check the <a
+            href="http://mintdigital.github.com/asset_hat/doc/">complete docs</a> and
+            <a
+            href="http://mintdigital.github.com/asset_hat/doc/files/HISTORY.html">change
+            history</a>.
             </p>
             <h2>Installation</h2>
             <ol>
-            <li>Install the gem:
-            
-            <pre>gem install asset_hat</pre>
-            </li>
             <li>Configure the gem:
             
             <ul>
-            <li>If you&#8217;re using <a href="http://github.com/carlhuda/bundler">Bundler
-            0.9+</a>:
+            <li>If you&#8217;re using Rails 3 and/or <a
+            href="http://github.com/carlhuda/bundler">Bundler 0.9+</a>:
             
             <ol>
             <li>Add to your app&#8217;s Gemfile: <tt>gem 'asset_hat', '0.x.x'</tt>
@@ -98,16 +102,22 @@
             </li>
             </ol>
             </li>
-            <li>If you&#8217;re using Rails&#8217; <tt>config.gem</tt>, add to your
-            app&#8217;s <tt>config/environment.rb</tt>:
+            <li>If you&#8217;re using Rails 2.x&#8217;s <tt>config.gem</tt>:
             
-            <pre>config.gem 'asset_hat', :version =&gt; '0.x.x'</pre>
+            <ol>
+            <li>Add to your app&#8217;s <tt>config/environment.rb</tt>: <tt>config.gem
+            'asset_hat', :version =&gt; '0.x.x'</tt>
+            
+            </li>
+            <li>Command-line: <tt>gem install asset_hat</tt>
+            
+            </li>
+            </ol>
             </li>
             </ul>
             </li>
-            <li>Add to your app&#8217;s Rakefile:
+            <li>Add to your app&#8217;s Rakefile: <tt>require 'asset_hat/tasks'</tt>
             
-            <pre>require 'asset_hat/tasks'</pre>
             </li>
             </ol>
             <h2>Configuration</h2>
@@ -131,12 +141,12 @@
             <p>
             Bundles are created as new files in <tt>public/stylesheets/bundles/</tt>
             and <tt>public/javascripts/bundles/</tt>. Your original CSS/JS files remain
-            intact.
+            untouched.
             </p>
             </li>
             <li>Set your deployment script to run <tt>rake asset_hat:minify</tt> after
             deploying your latest CSS/JS. This overwrites previously minified bundles,
-            and leaves your original CSS/JS files intact.
+            and leaves your original CSS/JS files untouched.
             
             </li>
             </ol>
@@ -146,6 +156,11 @@
             href="http://www.capify.org/">Capistrano</a>, see the gem&#8217;s packaged
             example at <tt><a
             href="lib/asset_hat/capistrano_rb.html">lib/asset_hat/capistrano.rb</a></tt>.
+            </p>
+            <p>
+            If you want shorter output during deployments, you can use `rake
+            asset_hat:minify FORMAT=short` (one output line per bundle) or `FORMAT=dot`
+            (one output line total) in your deploy script.
             </p>
             <p>
             Additional settings are supported in <tt>config/assets.yml</tt>:
@@ -159,28 +174,70 @@
             Ruby port of Crockford&#8217;s JSMin).
             
             <p>
-            If the default engines cause problems by minifying too strongly, try
-            switching each to <tt>weak</tt>. The <tt>weak</tt> engines are much safer,
-            but don&#8217;t save as many bytes.
+            If you&#8217;d prefer to have slightly more readable code for debugging
+            purposes, you can switch both the CSS and JS engines to <tt>weak</tt>.
+            However, the <tt>weak</tt> engines don&#8217;t save as many bytes.
             </p>
             </li>
-            <li><tt>vendors</tt>: Currently only allows for setting the jQuery version
-            number:
+            <li><tt>vendors</tt>: Configures third-party JS that&#8217;s loaded from a CDN
+            or other external source. The following example configures jQuery and
+            jQuery UI for use throughout the app:
             
-            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version: 1.4</pre>
+            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version:        1.4.4&#x000A;    jquery_ui:&#x000A;      version:        1.8.5&#x000A;      remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js&#x000A;      remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js</pre>
             <p>
-            In the future, this will be used for configuring the retrieval of other
-            third-party code.
+            Configuration keys per vendor:
+            </p>
+            <ul>
+            <li><tt>version</tt>: Sets the default version across the app. In the example
+            above, <tt>&lt;%= include_js :jquery %&gt;</tt> uses version 1.4.4 by
+            default. You can override this for special layouts/views with <tt>&lt;%=
+            include_js :jquery, :version =&gt; '1.3.2' %&gt;</tt>.
+            
+            </li>
+            <li><tt>remote_url</tt>, <tt>remote_ssl_url</tt>: By default, vendor JS will
+            load from <a href="http://code.google.com/apis/ajaxlibs/">Google's CDN</a>
+            in production (or any environment where
+            <tt>config.action_controller.consider_all_requests_local</tt> is set to
+            <tt>true</tt>). If the original request to your app used SSL, the vendor JS
+            will also load from Google&#8217;s CDN via SSL. If you prefer to use a
+            different CDN, specify its SSL/non-SSL URLs, and the appropriate URL will
+            be used per request.
+            
+            </li>
+            </ul>
+            <p>
+            A full list of supported vendors is in the <a
+            href="../classes/AssetHat/JS/Vendors.html">AssetHat::JS::Vendors</a>
+            module.
             </p>
             </li>
             </ul>
+            <h3>SSL configuration</h3>
+            <p>
+            When you request a page via SSL, some browsers (euphemism for
+            &#8220;IE&#8221;) show errors if any assets &#8212; stylesheets, JS files,
+            images &#8212; are served <em>without</em> SSL.
+            </p>
+            <p>
+            <a href="../classes/AssetHat.html">AssetHat</a> plays well with SSL pages
+            that load assets from a CDN. Put this in
+            <tt>config/environments/production.rb</tt> or similar:
+            </p>
+            <pre>config.action_controller.asset_host = Proc.new do |source, request|&#x000A;  &quot;#{request.protocol}cdn#{source.hash % 4}.example.com&quot;&#x000A;    # =&gt; 'http://cdn0.example.com', 'https://cdn1.example.com', etc.&#x000A;end</pre>
+            <p>
+            This switches to a different CDN URL if the request used SSL. When you run
+            <tt>rake asset_hat:minify</tt> at deploy time, <a
+            href="../classes/AssetHat.html">AssetHat</a> detects this configuration,
+            and generates special SSL versions of each stylesheet that also load images
+            from CDN via SSL. (Non-SSL pages still get non-SSL stylesheets.)
+            </p>
             <h2>Usage</h2>
             <p>
-            In your layouts and views, instead of these:
+            In your layouts and views, <b>instead of these</b>:
             </p>
             <pre>&lt;%= stylesheet_link_tag 'reset', 'application', 'clearfix',&#x000A;                        :media =&gt; 'screen,projection',&#x000A;                        :cache =&gt; 'bundles/application' %&gt;&#x000A;&lt;%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',&#x000A;                           :cache =&gt; 'bundles/application' %&gt;</pre>
             <p>
-            <strong>Use these:</strong>
+            <b>Use these:</b>
             </p>
             <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;&lt;%= include_js  :bundle =&gt; 'application' %&gt;</pre>
             <p>
@@ -199,6 +256,12 @@
             included, based on the bundle contents you define in
             <tt>config/assets.yml</tt>.
             </p>
+            <p>
+            If your environment has <tt>config.action_controller.asset_host</tt>
+            pointing to a CDN, your CSS/JS files will load from there. If your
+            configuration supports using the CDN via SSL (see the section &#8220;SSL
+            configuration&#8221;), SSL requests will also load CSS/JS files via SSL.
+            </p>
             <h3>Advanced usage</h3>
             <p>
             You can also include single files as expected:
@@ -216,10 +279,22 @@
             You may want to use multiple bundles to separate plugins (rarely changed)
             from application code (frequently changed). If all code is in one huge
             bundle, then whenever there&#8217;s a change, browsers have to re-download
-            the whole bundle. By using multiple bundles based on change frequency,
-            browsers cache the rarely changed code, and only re-download the frequently
-            changed code.
+            the whole bundle. By using multiple bundles based on update frequency,
+            browsers cache the rarely updated code, and only re-download the frequently
+            updated code.
             </p>
+            <h2><a href="http://www.youtube.com/watch?v=V30tyaXv6EI">What is best in AssetHat?</a></h2>
+            <ul>
+            <li>To crush your assets;
+            
+            </li>
+            <li>See them bundled before you; and
+            
+            </li>
+            <li>Hear no more lamentation about slow page loads.
+            
+            </li>
+            </ul>
           </div>
           <div id='section'>
           </div>

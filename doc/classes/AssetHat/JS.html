@@ -52,8 +52,8 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000018">min_filepath</a></li>
-              <li><a href="#M000019">minify</a></li>
+              <li><a href="#M000022">min_filepath</a></li>
+              <li><a href="#M000023">minify</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -92,8 +92,8 @@
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000018'>
-                <a name='M000018'></a>
+              <div class='method public-class' id='method-M000022'>
+                <a name='M000022'></a>
                 <div class='synopsis'>
                   <span class='name'>min_filepath</span>
                   <span class='arguments'>(filepath)</span>
@@ -106,14 +106,14 @@
                   <pre>AssetHat::JS.min_filepath('public/javascripts/bundles/application.js')&#x000A;  # =&gt; 'public/javascripts/bundles/application.min.js'</pre>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000018-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000022-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000018-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 19</span>&#x000A;19:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>)&#x000A;20:       <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>, <span class="ruby-value str">'js'</span>)&#x000A;21:     <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000022-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 19</span>&#x000A;19:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>)&#x000A;20:       <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">min_filepath</span>(<span class="ruby-identifier">filepath</span>, <span class="ruby-value str">'js'</span>)&#x000A;21:     <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-class' id='method-M000019'>
-                <a name='M000019'></a>
+              <div class='method public-class' id='method-M000023'>
+                <a name='M000023'></a>
                 <div class='synopsis'>
                   <span class='name'>minify</span>
                   <span class='arguments'>(input_string, options={})</span>
@@ -125,17 +125,17 @@
                   </p>
                   <dl>
                   <dt>engine</dt><dd>Default is <tt>:jsmin</tt>; see <a href=JS/Engines.html#method-c-jsmin><a
-                  href="JS/Engines.html#M000022">Engines.jsmin</a></a>. Allowed values are in
+                  href="JS/Engines.html#M000026">Engines.jsmin</a></a>. Allowed values are in
                   ENGINES.
                   
                   </dd>
                   </dl>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000019-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000023-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000019-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 28</span>&#x000A;28:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">minify</span>(<span class="ruby-identifier">input_string</span>, <span class="ruby-identifier">options</span>={})&#x000A;29:       <span class="ruby-identifier">options</span>.<span class="ruby-identifier">reverse_merge!</span>(<span class="ruby-identifier">:engine</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:jsmin</span>)&#x000A;30: &#x000A;31:       <span class="ruby-identifier">engine</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:engine</span>].<span class="ruby-identifier">to_sym</span>&#x000A;32:       <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">ENGINES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">engine</span>)&#x000A;33:         <span class="ruby-identifier">raise</span> <span class="ruby-node">%Q{&#x000A;34:           Unknown JS minification engine '#{engine}'.&#x000A;35:           Allowed: #{ENGINES.map{ |e| &quot;'#{e}'&quot; }.join(', ')}&#x000A;36:         }</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/\s+/</span>, <span class="ruby-value str">' '</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">return</span>&#x000A;37:       <span class="ruby-keyword kw">end</span>&#x000A;38: &#x000A;39:       <span class="ruby-constant">AssetHat</span><span class="ruby-operator">::</span><span class="ruby-constant">JS</span><span class="ruby-operator">::</span><span class="ruby-constant">Engines</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">engine</span>, <span class="ruby-identifier">input_string</span>)&#x000A;40:     <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000023-source'>    <span class="ruby-comment cmt"># File lib/asset_hat/js.rb, line 28</span>&#x000A;28:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">minify</span>(<span class="ruby-identifier">input_string</span>, <span class="ruby-identifier">options</span>={})&#x000A;29:       <span class="ruby-identifier">options</span>.<span class="ruby-identifier">reverse_merge!</span>(<span class="ruby-identifier">:engine</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:jsmin</span>)&#x000A;30: &#x000A;31:       <span class="ruby-identifier">engine</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:engine</span>].<span class="ruby-identifier">to_sym</span>&#x000A;32:       <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">ENGINES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">engine</span>)&#x000A;33:         <span class="ruby-identifier">raise</span> <span class="ruby-node">%{&#x000A;34:           Unknown JS minification engine '#{engine}'.&#x000A;35:           Allowed: #{ENGINES.map{ |e| &quot;'#{e}'&quot; }.join(', ')}&#x000A;36:         }</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/\s+/</span>, <span class="ruby-value str">' '</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">return</span>&#x000A;37:       <span class="ruby-keyword kw">end</span>&#x000A;38: &#x000A;39:       <span class="ruby-constant">AssetHat</span><span class="ruby-operator">::</span><span class="ruby-constant">JS</span><span class="ruby-operator">::</span><span class="ruby-constant">Engines</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">engine</span>, <span class="ruby-identifier">input_string</span>).<span class="ruby-identifier">strip</span>&#x000A;40:     <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>
