@@ -21,17 +21,22 @@ can automatically:
 [Git]:          http://git-scm.com/
 [Google's CDN]: http://code.google.com/apis/ajaxlibs/
 
-After setup, you can use these in your layouts and views:
+After setup, you can use this in your layouts and views:
 
     <%= include_css :bundle => 'application' %>
-      # => <link href="/stylesheets/bundles/application.min.css"
-      #          media="screen,projection" rel="stylesheet" type="text/css" />
+    <%= include_js  :jquery, :bundles => ['plugins', 'common'] %>
 
-    <%= include_js :bundles => ['plugins', 'common'] %>
-      # => <script src="/javascripts/bundles/plugins.min.js"
-      #            type="text/javascript"></script>
-      #    <script src="/javascripts/bundles/common.min.js"
-      #            type="text/javascript"></script>
+Which turns into:
+
+    <link href="/stylesheets/bundles/application.min.css"
+      media="screen,projection" rel="stylesheet" type="text/css" />
+    <script src="/javascripts/jquery-1.x.x.min.js"
+      type="text/javascript"></script>
+      <!-- In production, jQuery loads from Google's CDN instead. -->
+    <script src="/javascripts/bundles/plugins.min.js"
+      type="text/javascript"></script>
+    <script src="/javascripts/bundles/common.min.js"
+      type="text/javascript"></script>
 
 And this in your deploy script:
 
