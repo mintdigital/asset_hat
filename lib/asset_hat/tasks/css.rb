@@ -88,7 +88,7 @@ namespace :asset_hat do
       end
       filepaths = filenames.map do |filename|
         parts = filename.split(File::SEPARATOR)
-        parts.last << '.' << type
+        parts.last << '.' << type unless parts.last =~ /\.#{type}$/
         File.join(
           (parts.first.present? ?
             AssetHat.assets_dir(type) : # Given path was relative
@@ -110,7 +110,7 @@ namespace :asset_hat do
         # Concatenate and process output
         bundle_filepath = AssetHat::CSS.min_filepath(File.join(
           AssetHat.bundles_dir(type, output_options.slice(:ssl)),
-          "#{args.bundle}.#{type}"))
+          args.bundle))
         old_bundle_size = 0.0
         new_bundle_size = 0.0
         output     = ''
@@ -164,7 +164,7 @@ namespace :asset_hat do
       if opts[:show_intro]
         print "Minifying #{type.upcase}..."
         if report_format == 'dot'
-          $stdout.sync = true
+          $stdout.sync = true # Output immediately
         else
           puts
         end

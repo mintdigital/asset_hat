@@ -1,5 +1,8 @@
 = HISTORY
 
+* IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
+  even though you don't need them.
+
 == VERSION 0.3.0 (2010-12-08)
 * FEATURE: Added ERb support in `config/assets.yml`.
 * FEATURE: Added support for auto-creating SSL versions of every stylesheet.

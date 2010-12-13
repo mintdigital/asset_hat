@@ -41,7 +41,7 @@ namespace :asset_hat do
 
       config = AssetHat.config[type]
       report_format = ([ENV['FORMAT']] & %w[long short dot])[0] || 'long'
-      $stdout.sync = true if report_format == 'dot'
+      $stdout.sync = true if report_format == 'dot' # Output immediately
       min_options = {
         :engine => config['engine']
       }.reject { |k,v| v.blank? }
@@ -54,7 +54,7 @@ namespace :asset_hat do
       end
       filepaths = filenames.map do |filename|
         parts = filename.split(File::SEPARATOR)
-        parts.last << '.' << type
+        parts.last << '.' << type unless parts.last =~ /\.#{type}$/
         File.join(
           (parts.first.present? ?
             AssetHat.assets_dir(type) : # Given path was relative
@@ -63,7 +63,7 @@ namespace :asset_hat do
         )
       end
       bundle_filepath = AssetHat::JS.min_filepath(File.join(
-        AssetHat.bundles_dir(type), "#{args.bundle}.#{type}"))
+        AssetHat.bundles_dir(type), args.bundle))
 
       # Concatenate and process output
       output = ''
@@ -113,7 +113,7 @@ namespace :asset_hat do
       if opts[:show_intro]
         print "Minifying #{type.upcase}..."
         if report_format == 'dot'
-          $stdout.sync = true
+          $stdout.sync = true # Output immediately
         else
           puts
         end
