@@ -19,10 +19,18 @@ module AssetHat
   ASSETS_DIR = defined?(Rails.public_path) && Rails.public_path.present? ?
     Rails.public_path : 'public'
 
-  # Directory in which all stylesheets are kept, e.g., 'public/stylesheets/'.
+  # Root URL path for all stylesheets. For public-facing use.
+  STYLESHEETS_PATH = '/stylesheets'
+
+  # Root URL path for all JavaScripts. For public-facing use.
+  JAVASCRIPTS_PATH = '/javascripts'
+
+  # Directory in which all stylesheets are kept, e.g., 'public/stylesheets'.
+  # For internal filesystem use.
   STYLESHEETS_DIR = File.join(ASSETS_DIR, 'stylesheets')
 
-  # Directory in which all JavaScripts are kept, e.g., 'public/javascripts/'.
+  # Directory in which all JavaScripts are kept, e.g., 'public/javascripts'.
+  # For internal filesystem use.
   JAVASCRIPTS_DIR = File.join(ASSETS_DIR, 'javascripts')
 
   # Relative path for the config file.
@@ -49,12 +57,11 @@ module AssetHat
   end
 
   # Returns the relative path to the directory where the original CSS or JS
-  # files are stored.
+  # files are stored. For internal filesystem use.
   #
   # <code>type</code> argument: <code>:css</code> or <code>:js</code>
   def self.assets_dir(type)
     type = type.to_sym
-
     unless TYPES.include?(type)
       raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
       return
@@ -67,8 +74,26 @@ module AssetHat
     end
   end
 
+  # Returns the root URL path where the original CSS or JS files are stored.
+  # For external URL-building use.
+  #
+  # <code>type</code> argument: <code>:css</code> or <code>:js</code>
+  def self.assets_path(type)
+    type = type.to_sym
+    unless TYPES.include?(type)
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      return
+    end
+
+    case type
+    when :css ; STYLESHEETS_PATH
+    when :js  ; JAVASCRIPTS_PATH
+    else nil
+    end
+  end
+
   # Returns the relative path to the directory where CSS or JS bundles are
-  # stored.
+  # stored. For internal filesystem use.
   #
   # Usage:
   #
@@ -93,6 +118,37 @@ module AssetHat
     dir = type.present? ? File.join(assets_dir(type), 'bundles') : 'bundles'
     dir = File.join(dir, 'ssl') if options[:ssl]
     dir
+  end
+
+  # Returns the root URL path where CSS or JS bundles are stored. For external
+  # URL-building use.
+  #
+  # Usage:
+  #
+  #     AssetHat.bundles_path(:css)
+  #       # => 'public/stylesheets/bundles'
+  #     AssetHat.bundles_path(:js, :ssl => true)
+  #       # => 'public/javascripts/bundles/ssl
+  #
+  # Options:
+  #
+  # [ssl] Set this to <code>true</code> if the stylesheet references images
+  #       via SSL. Defaults to <code>false</code>.
+  def self.bundles_path(type, options={})
+    type = type.to_sym
+    unless TYPES.include?(type)
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      return
+    end
+
+    path =  case type
+            when :css ; STYLESHEETS_PATH
+            when :js  ; JAVASCRIPTS_PATH
+            else nil
+            end
+    path += '/bundles'
+    path += '/ssl' if options[:ssl]
+    path
   end
 
   # Returns true if the specified asset exists in the file system:

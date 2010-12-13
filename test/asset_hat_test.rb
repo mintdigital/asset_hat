@@ -2,11 +2,11 @@ require 'test_helper'
 
 class AssetHatTest < ActiveSupport::TestCase
   context 'AssetHat' do
-    should 'know where to store assets' do
+    should 'know where to find/store assets in the file system' do
       assert_equal 'public/stylesheets', AssetHat.assets_dir(:css)
       assert_equal 'public/javascripts', AssetHat.assets_dir(:js)
 
-      assert_equal 'bundles', AssetHat.bundles_dir
+      assert_equal 'bundles',     AssetHat.bundles_dir
       assert_equal 'bundles/ssl', AssetHat.bundles_dir(:ssl => true)
       assert_equal 'public/stylesheets/bundles', AssetHat.bundles_dir(:css)
       assert_equal 'public/javascripts/bundles', AssetHat.bundles_dir(:js)
@@ -23,6 +23,18 @@ class AssetHatTest < ActiveSupport::TestCase
       assert_raise RuntimeError do
         AssetHat.config
       end
+    end
+
+    should 'know where to find assets via a URL' do
+      assert_equal '/stylesheets', AssetHat.assets_path(:css)
+      assert_equal '/javascripts', AssetHat.assets_path(:js)
+
+      assert_equal '/stylesheets/bundles', AssetHat.bundles_path(:css)
+      assert_equal '/stylesheets/bundles/ssl',
+        AssetHat.bundles_path(:css, :ssl => true)
+      assert_equal '/javascripts/bundles', AssetHat.bundles_path(:js)
+      assert_equal '/javascripts/bundles/ssl',
+        AssetHat.bundles_path(:js, :ssl => true)
     end
 
     context 'with caching enabled' do

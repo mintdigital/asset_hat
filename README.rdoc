@@ -159,9 +159,9 @@ Additional settings are supported in <code>config/assets.yml</code>:
         jquery:
           version:        1.4.4
         jquery_ui:
-          version:        1.8.5
-          remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js
-          remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js
+          version:        1.8.7
+          remote_url:     http://cdn.example.com/js/jquery-ui-1.8.7.min.js
+          remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.7.min.js
 
   Configuration keys per vendor:
 

@@ -24,7 +24,7 @@ module AssetHatHelper
     sources   = [] # The URLs that are ultimately included via HTML
     source_commit_ids = {} # Last commit ID for each source
 
-    # Set to `true` to use bundles and minified code:
+    # If `use_caching` is `true`, bundles and minified code will be used:
     use_caching = AssetHat.cache?
     use_caching = options[:cache] unless options[:cache].nil?
     options.delete :cache # Completely avoid Rails' built-in caching
@@ -88,27 +88,40 @@ module AssetHatHelper
       end
     end
 
-    # Build output HTML
+    # Prepare return value
     options.delete :ssl
-    html = sources.map do |src|
-      case type
-      when :css ; stylesheet_link_tag(src, options)
-      when :js  ; javascript_include_tag(src, options)
-      else nil
+    if options.delete(:only_url)
+      # Return one URL (string) or multiple (array of strings)
+      sources = sources.map do |src|
+        case type
+        when :css ; stylesheet_path(src)
+        when :js  ; javascript_path(src)
+        end
       end
-    end.join("\n")
-    html.respond_to?(:html_safe) ? html.html_safe : html
+      sources.size == 1 ? sources.first : sources
+    else
+      # Return one long string of HTML
+      html = sources.map do |src|
+        case type
+        when :css ; stylesheet_link_tag(src, options)
+        when :js  ; javascript_include_tag(src, options)
+        else nil
+        end
+      end.join("\n")
+      html.respond_to?(:html_safe) ? html.html_safe : html
+    end
+
   end # def include_assets
 
   # <code>include_css</code> is a smart wrapper for Rails'
   # <code>stylesheet_link_tag</code>. The two can be used together while
   # migrating to AssetHat.
   #
-  # Include a single stylesheet:
+  # Include a single, minified stylesheet:
   #   include_css 'diagnostics'
   #   =>  <link href="/stylesheets/diagnostics.min.css" media="screen,projection" rel="stylesheet" type="text/css" />
   #
-  # Include a single unminified stylesheet:
+  # Include a single, unminified stylesheet:
   #   include_css 'diagnostics.css'
   #   =>  <link href="/stylesheets/diagnostics.css" media="screen,projection" rel="stylesheet" type="text/css" />
   #
@@ -126,6 +139,28 @@ module AssetHatHelper
   #   include_css 'mobile', :media => 'handheld,screen,projection'
   #   =>  <link href="/stylesheets/mobile.min.css"
   #             media="handheld,screen,projection" ... />
+  #
+  # Get the URL for a single, minified stylesheet:
+  #   include_css 'diagnostics', :only_url => true
+  #   => '/stylesheets/diagnostics.min.css'
+  #
+  # Get the URL for a single, unminified stylesheet:
+  #   include_css 'diagnostics.css', :only_url => true
+  #   => '/stylesheets/diagnostics.css'
+  #
+  # Get the URL for a bundle of stylesheets when environment *enables* caching
+  # (e.g., staging, production):
+  #   include_css :bundle => 'application', :only_url => true
+  #   => '/stylesheets/bundles/application.min.css'
+  #
+  # Get URLs for a bundle of stylesheets when environment *disables* caching
+  # (e.g., development, test):
+  #   include_css :bundle => 'application', :only_url => true
+  #   => ['/stylesheets/reset.css', '/stylesheets/common.css', ...]
+  #
+  # Get URLs for multiple stylesheets manually:
+  #   include_css 'reset', 'application', :only_url => true
+  #   => ['/stylesheets/reset.css', '/stylesheets/application.css']
   def include_css(*args)
     return if args.blank?
 
@@ -152,11 +187,11 @@ module AssetHatHelper
   # <code>javascript_include_tag</code>. The two can be used together while
   # migrating to AssetHat.
   #
-  # Include a single JS file:
+  # Include a single, minified JS file:
   #   include_js 'application'
   #   =>  <script src="/javascripts/application.min.js" type="text/javascript"></script>
   #
-  # Include a single JS unminified file:
+  # Include a single, unminified JS file:
   #   include_js 'application.js'
   #   =>  <script src="/javascripts/application.js" type="text/javascript"></script>
   #
@@ -186,6 +221,40 @@ module AssetHatHelper
   #   =>  <script src="/javascripts/bloombox.min.js" ...></script>
   #       <script src="/javascripts/jquery.cookie.min.js" ...></script>
   #       <script src="/javascripts/jquery.json.min.js" ...></script>
+  #
+  # Get the URL for a single, minified JS file:
+  #   include_js 'application', :only_url => true
+  #   =>  '/javascripts/application.min.js'
+  #
+  # Get the URL for a single, unminified JS file:
+  #   include_js 'application.js', :only_url => true
+  #   =>  '/javascripts/application.js', :only_url => true
+  #
+  # Get the URL for jQuery:
+  #   # Development/test environment:
+  #   include_js :jquery, :only_url => true
+  #   =>  '/javascripts/jquery-VERSION.min.js'
+  #
+  #   # Staging/production environment:
+  #   include_js :jquery, :only_url => true
+  #   =>  'http://ajax.googleapis.com/.../jquery.min.js'
+  #
+  # Get the URL for a bundle of JS files when environment *enables* caching
+  # (e.g., staging, production):
+  #   include_js :bundle => 'application', :only_url => true
+  #   => '/javascripts/bundles/application.min.js'
+  #
+  # Get URLs for a bundle of JS files when environment *disables* caching
+  # (e.g., development, test):
+  #   include_js :bundle => 'application', :only_url => true
+  #   => ['/javascripts/jquery.plugin-foo.js',
+  #       '/javascripts/jquery.plugin-bar.min.js',
+  #       '/javascripts/json2.js',
+  #       ...]
+  #
+  # Get URLs for multiple JS files manually:
+  #   include_js 'json2', 'application', :only_url => true
+  #   => ['/javascripts/json2.js', '/javascripts/application.js']
   def include_js(*args)
     return if args.blank?
 
@@ -199,19 +268,27 @@ module AssetHatHelper
     if !AssetHat.cache? || AssetHat.html_cache[:js][cache_key].blank?
       # Generate HTML and write to cache
 
-      html = []
+      htmls = []
       included_vendors = (args & AssetHat::JS::VENDORS)
       included_vendors.each do |vendor|
         args.delete vendor
         src = AssetHat::JS::Vendors.source_for(
                 vendor, options.slice(:ssl, :version))
-        html << include_assets(:js, src, :cache => true)
+        htmls << include_assets(:js, src,
+          options.except(:ssl, :version).merge(:cache => true))
       end
 
       options.except! :ssl, :version
 
-      html << include_assets(:js, *(args + [options]))
-      html = html.join("\n").strip
+      htmls << include_assets(:js, *(args + [options]))
+      htmls.reject!(&:blank?)
+      html =  if options[:only_url]
+                # Return one URL (string) or multiple (array of strings)
+                htmls.size == 1 ? htmls.first : htmls
+              else
+                # Return one long string of HTMl
+                htmls.join("\n").strip
+              end
       AssetHat.html_cache[:js][cache_key] = html
     end
 
