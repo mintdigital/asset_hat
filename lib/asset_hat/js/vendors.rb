@@ -42,7 +42,11 @@ module AssetHat
       def self.source_for(vendor, options={})
         vendor_config =
           AssetHat.config['js']['vendors'][vendor.to_s] rescue nil
-        use_local = ActionController::Base.consider_all_requests_local
+        use_local = if defined?(Rails) && Rails.respond_to?(:application)
+                      Rails.application.config.consider_all_requests_local
+                    else
+                      ActionController::Base.consider_all_requests_local
+                    end
         use_ssl   = !!options[:ssl]
         version   = options[:version] || vendor_config['version'] rescue nil
 

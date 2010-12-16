@@ -40,7 +40,8 @@ namespace :asset_hat do
     end
 
     FileUtils.cp(template_filepath, target_filepath)
-    puts "Wrote to #{target_filepath}"
+    puts "\nWrote to #{target_filepath}. Next, open this file in your editor"
+    puts 'and set up your CSS/JS bundles.'
   end
 
 end # namespace :asset_hat

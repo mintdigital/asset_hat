@@ -45,7 +45,7 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.title    = 'AssetHat'
   rdoc.main     = 'README.rdoc'
   rdoc.options  += %w[--line-numbers --inline-source]
-  %w[README.rdoc HISTORY LICENSE app/* lib/*].each do |path|
+  %w[README.rdoc HISTORY LICENSE lib/*].each do |path|
     rdoc.rdoc_files.include(path)
   end
 end

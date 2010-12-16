@@ -37,13 +37,20 @@ end
 #
 # See README.rdoc for more.
 module AssetHat
-  RAILS_ROOT = File.join(File.dirname(__FILE__), '..') unless defined?(RAILS_ROOT) #:nodoc:
+  if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+    RAILS_ROOT = Rails.root || '.' #:nodoc:
+    require 'asset_hat/railtie'
+  else
+    RAILS_ROOT = File.join(File.dirname(__FILE__), '..') unless
+      defined?(RAILS_ROOT) #:nodoc:
+  end
 
   # Types of supported assets; currently <code>[:css, :js]</code>.
   TYPES = [:css, :js]
 
   # Base directory in which all assets are kept, e.g., 'public/'.
-  ASSETS_DIR = defined?(Rails.public_path) ? Rails.public_path : 'public'
+  ASSETS_DIR = defined?(Rails.public_path) && Rails.public_path.present? ?
+    Rails.public_path : 'public'
 
   # Directory in which all stylesheets are kept, e.g., 'public/stylesheets/'.
   STYLESHEETS_DIR = File.join(ASSETS_DIR, 'stylesheets')

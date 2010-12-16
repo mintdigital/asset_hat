@@ -1,5 +1,6 @@
 = HISTORY
 
+* FEATURE: Added Rails 3 support.
 * IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
   even though you don't need them.
 

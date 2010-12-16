@@ -90,13 +90,14 @@ module AssetHatHelper
 
     # Build output HTML
     options.delete :ssl
-    sources.map do |src|
+    html = sources.map do |src|
       case type
       when :css ; stylesheet_link_tag(src, options)
       when :js  ; javascript_include_tag(src, options)
       else nil
       end
     end.join("\n")
+    respond_to?(:raw) ? raw(html) : html
   end # def include_assets
 
   # <code>include_css</code> is a smart wrapper for Rails'
