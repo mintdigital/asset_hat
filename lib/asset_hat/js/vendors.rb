@@ -44,7 +44,7 @@ module AssetHat
           AssetHat.config['js']['vendors'][vendor.to_s] rescue nil
         use_local = if defined?(Rails) && Rails.respond_to?(:application)
                       Rails.application.config.consider_all_requests_local
-                    else
+                    else # Rails 2.x
                       ActionController::Base.consider_all_requests_local
                     end
         use_ssl   = !!options[:ssl]

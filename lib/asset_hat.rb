@@ -1,5 +1,5 @@
-%w[css js vcs].each do |x|
-  require File.join(File.dirname(__FILE__), 'asset_hat', x)
+%w[css js vcs].each do |filename|
+  require File.join(File.dirname(__FILE__), 'asset_hat', filename)
 end
 
 # Your assets are covered.
@@ -233,7 +233,12 @@ module AssetHat
       case host.is_a?(Proc) ?
            host.arity : host.method(:call).arity
       when 2
-        request = ActionController::Request.new(
+        if defined?(ActionDispatch)
+          request_class = ActionDispatch::Request
+        else # Rails 2.x
+          request_class = ActionController::Request
+        end
+        request = request_class.new(
           'HTTPS' => options[:ssl] ? 'on' : 'off')
         host = host.call(source, request)
       else

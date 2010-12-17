@@ -4,6 +4,8 @@ class AssetHatHelperTest < ActionView::TestCase
   RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
 
   context 'include_css' do
+    setup { flexmock_rails_app }
+
     context 'with caching enabled' do
       context 'with minified versions' do
         setup do
@@ -46,7 +48,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
         context 'via SSL' do
           setup do
-            @request = ActionController::TestRequest.new
+            @request = test_request
             flexmock(@controller, :request => @request)
             flexmock(@controller.request, :ssl? => true)
             assert @controller.request.ssl?,
@@ -133,7 +135,8 @@ class AssetHatHelperTest < ActionView::TestCase
 
   context 'include_js' do
     setup do
-      @request = ActionController::TestRequest.new
+      flexmock_rails_app
+      @request = test_request
       flexmock(@controller, :request => @request)
     end
 
@@ -174,7 +177,6 @@ class AssetHatHelperTest < ActionView::TestCase
           end
 
           should 'include jQuery and jQuery UI' do
-            flexmock(AssetHat, :config => @original_config)
             [:jquery, :jquery_ui].each do |vendor|
               output = include_js(vendor, :cache => true)
               assert_equal(
@@ -198,9 +200,10 @@ class AssetHatHelperTest < ActionView::TestCase
                 helper_opts = {:version => '1', :cache => true}
 
                 flexmock_teardown
-                flexmock(AssetHat, :cache? => true)
-                flexmock(ActionController::Base,
+                flexmock_rails_app
+                flexmock_rails_app_config(
                   :consider_all_requests_local => false)
+                flexmock(AssetHat, :cache? => true)
                 flexmock(@controller.request, :ssl? => true)
                 assert @controller.request.ssl?,
                   'Precondition: Request should use SSL'
@@ -215,9 +218,10 @@ class AssetHatHelperTest < ActionView::TestCase
 
                 http_cache_key = AssetHat.html_cache[:js].to_a.first[0]
                 flexmock_teardown
-                flexmock(AssetHat, :cache? => true)
-                flexmock(ActionController::Base,
+                flexmock_rails_app
+                flexmock_rails_app_config(
                   :consider_all_requests_local => false)
+                flexmock(AssetHat, :cache? => true)
                 flexmock(@controller.request, :ssl? => false)
                 assert !@controller.request.ssl?,
                   'Precondition: Request should not use SSL'
@@ -275,8 +279,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
           context 'with remote requests' do
             setup do
-              flexmock(ActionController::Base,
-                :consider_all_requests_local => false)
+              flexmock_rails_app_config(:consider_all_requests_local => false)
             end
 
             should 'use specified remote URL for jQuery' do
@@ -327,7 +330,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
         context 'via SSL' do
           setup do
-            @request = ActionController::TestRequest.new
+            @request = test_request
             flexmock(@controller, :request => @request)
             flexmock(@controller.request, :ssl? => true)
             assert @controller.request.ssl?,
@@ -430,6 +433,30 @@ class AssetHatHelperTest < ActionView::TestCase
 
   def js_tag(filename)
     %{<script src="/javascripts/#{filename}" type="text/javascript"></script>}
+  end
+
+  def flexmock_rails_app
+    # Creates just enough hooks for a dummy Rails app.
+    flexmock(Rails, :application => flexmock('dummy_app',
+      :config => flexmock(:consider_all_requests_local => true),
+      :env_defaults => {}
+    ))
+    if defined?(config) # Rails 3.x
+      config[:assets_dir] = AssetHat::ASSETS_DIR
+    end
+  end
+
+  def flexmock_rails_app_config(opts)
+    flexmock(Rails.application.config, opts)  # Rails 3.x
+    flexmock(ActionController::Base, opts)    # Rails 2.x
+  end
+
+  def test_request
+    if defined?(ActionDispatch) # Rails 3.x
+      ActionDispatch::TestRequest.new
+    else # Rails 2.x
+      ActionController::TestRequest.new
+    end
   end
 
 end
