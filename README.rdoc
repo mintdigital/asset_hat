@@ -4,7 +4,7 @@ Your assets are covered.
 
 With Rails' default asset caching, CSS and JS are concatenated (not even
 minified) at runtime when that bundle is first requested. Not good enough.
-AssetHat can automatically:
+To make your pages load faster, AssetHat can automatically:
 
 * Easily *minify* and *bundle* CSS and JS on deploy to reduce file sizes and
   HTTP requests.
@@ -22,7 +22,7 @@ After setup, you can use this in your layouts and views:
     <%= include_css :bundle => 'application' %>
     <%= include_js  :jquery, :bundles => ['plugins', 'common'] %>
 
-Which turns into:
+Which expands into:
 
     <link href="/stylesheets/bundles/application.min.css"
       media="screen,projection" rel="stylesheet" type="text/css" />
@@ -34,7 +34,8 @@ Which turns into:
     <script src="/javascripts/bundles/common.min.js"
       type="text/javascript"></script>
 
-And this in your deploy script:
+Add this to your deploy script, and your CSS/JS will be optimized
+automatically:
 
     rake asset_hat:minify
 
@@ -48,34 +49,62 @@ For the gritty details, check the
 
 == Installation
 
-1.  Configure the gem:
+* Rails 3.x:
 
-    * If you're using Rails 3 and/or
-      {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
+  1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
+  2.  Command-line: <code>bundle install</code>
 
-      1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
-      2.  Command-line: <code>bundle install</code>
+* Rails 2.x:
 
-    * If you're using Rails 2.x's <code>config.gem</code>:
+  1.  Add the gem:
 
-      1.  Add to your app's <code>config/environment.rb</code>:
-          <code>config.gem 'asset_hat', :version => '0.x.x'</code>
-      2.  Command-line: <code>gem install asset_hat</code>
+      * If you're using {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
 
-2.  Add to your app's Rakefile: <code>require 'asset_hat/tasks'</code>
+        1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
+        2.  Command-line: <code>bundle install</code>
+
+      * If you're using Rails 2.x's <code>config.gem</code>:
+
+        1.  Add to your app's <code>config/environment.rb</code>:
+            <code>config.gem 'asset_hat', :version => '0.x.x'</code>
+        2.  Command-line: <code>gem install asset_hat</code>
+
+  2.  Add to your app's Rakefile: <code>require 'asset_hat/tasks'</code>
 
 
 
-== Configuration
+== Quick start & configuration
 
-1.  Create the default config file:
+1.  In all of your layouts and views, change <code>stylesheet_link_tag</code>
+    to <code>include_css</code>, and change
+    <code>javascript_include_tag</code> to <code>include_js</code>. (Don't
+    worry, these helpers use the same arguments as Rails' helpers. Nothing
+    will break.)
+
+2.  Create the default config file:
 
         rake asset_hat:config
 
-2.  In your app, open the new file at <code>config/assets.yml</code>, and set
+3.  In your app, open the new file at <code>config/assets.yml</code>, and set
     up your CSS/JS bundles according to that file's example.
 
-3.  Minify your bundles:
+4.  In your layouts and views, switch to the new bundles. For example, if you
+    originally had this:
+
+        <%# app/views/layouts/application.html.erb: %>
+        <%= stylesheet_include_tag 'reset', 'application' %>
+
+    Then you'll now have:
+
+        # config/assets.yml:
+        css:
+          bundles:
+            application: ['reset', 'application']
+
+        <%# app/views/layouts/application.html.erb: %>
+        <%= include_css :bundle => 'application' %>
+
+5.  Add this to your deployment script:
 
         rake asset_hat:minify
 
@@ -84,14 +113,10 @@ For the gritty details, check the
     files, and adds CDN asset hosts and cache-busting commit IDs to image URLs
     in your CSS.
 
-    Bundles are created as new files in
+    Any previously minified bundles are overwritten; your original
+    CSS/JS files remain untouched. Bundles are created as new files in
     <code>public/stylesheets/bundles/</code> and
-    <code>public/javascripts/bundles/</code>. Your original CSS/JS files
-    remain untouched.
-
-4.  Set your deployment script to run <code>rake asset_hat:minify</code> after
-    deploying your latest CSS/JS. This overwrites previously minified bundles,
-    and leaves your original CSS/JS files untouched.
+    <code>public/javascripts/bundles/</code>.
 
 === Advanced configuration
 
@@ -216,12 +241,19 @@ Or include multiple bundles at once:
 When including multiple bundles at once, this yields one
 <code><link></code> or <code><script></code> element per bundle.
 
-You may want to use multiple bundles to separate plugins (rarely changed) from
-application code (frequently changed). If all code is in one huge bundle, then
-whenever there's a change, browsers have to re-download the whole bundle. By
-using multiple bundles based on update frequency, browsers cache the rarely
-updated code, and only re-download the frequently updated code.
+=== Bundle tips
 
+Don't go overboard with huge bundles:
+
+* Mobile browsers may not cache CSS/JS files that are too large, regardless of
+  gzipping. Check the latest specs for each mobile browser you support.
+* You might want to put plugins (rarely changed) in one bundle, and
+  application code (frequently changed) in another bundle. This way, when the
+  app code changes, the browser re-downloads only the new app code, and uses
+  the cached plugin code.
+* Regardless of code-change frequency, it's sometimes faster to split a bundle
+  in half, and load each half in parallel (i.e., two HTTP requests instead of
+  one). Your own tests will tell what's optimal for your situation.
 
 
 == {What is best in AssetHat?}[http://www.youtube.com/watch?v=V30tyaXv6EI]

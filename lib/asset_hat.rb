@@ -2,40 +2,7 @@
   require File.join(File.dirname(__FILE__), 'asset_hat', filename)
 end
 
-# Your assets are covered.
-#
-# With Rails' default asset caching, CSS and JS are concatenated (not even
-# minified) at runtime when that bundle is first requested. Not good enough.
-# AssetHat can automatically:
-#
-# * Easily *minify* and *bundle* CSS and JS on deploy to reduce file sizes and
-#   HTTP requests.
-# * Load popular <strong>third-party JS</strong> (like jQuery and Prototype)
-#   from {<strong>Google's CDN</strong>}[http://code.google.com/apis/ajaxlibs/]
-#   when in production, or from localhost in development.
-# * Force image URLs in your CSS to use <strong>CDN subdomains</strong>, not
-#   just the current host.
-# * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
-#   <strong>bust browser caches</strong> (e.g.,
-#   <code>/images/foo.png?ab12cd3</code>).
-#
-# After setup, you can use these in your layouts and views:
-#
-#     <%= include_css :bundle => 'application' %>
-#       # => <link href="/stylesheets/bundles/application.min.css"
-#       #          media="screen,projection" rel="stylesheet" type="text/css" />
-#
-#     <%= include_js :bundles => ['plugins', 'common'] %>
-#       # => <script src="/javascripts/bundles/plugins.min.js"
-#       #            type="text/javascript"></script>
-#       #    <script src="/javascripts/bundles/common.min.js"
-#       #            type="text/javascript"></script>
-#
-# And this in your deploy script:
-#
-#     rake asset_hat:minify
-#
-# See README.rdoc for more.
+# Your assets are covered. See README.rdoc for more.
 module AssetHat
   if defined?(Rails) && Rails::VERSION::MAJOR >= 3
     RAILS_ROOT = Rails.root || '.' #:nodoc:
