@@ -19,25 +19,25 @@ To make your pages load faster, AssetHat can automatically:
 
 After setup, you can use this in your layouts and views:
 
-    <%= include_css :bundle => 'application' %>
-    <%= include_js  :jquery, :bundles => ['plugins', 'common'] %>
+  <%= include_css :bundle => 'application' %>
+  <%= include_js  :jquery, :bundles => ['plugins', 'common'] %>
 
 Which expands into:
 
-    <link href="/stylesheets/bundles/application.min.css"
-      media="screen,projection" rel="stylesheet" type="text/css" />
-    <script src="/javascripts/jquery-1.x.x.min.js"
-      type="text/javascript"></script>
-      <!-- In production, jQuery loads from Google's CDN instead. -->
-    <script src="/javascripts/bundles/plugins.min.js"
-      type="text/javascript"></script>
-    <script src="/javascripts/bundles/common.min.js"
-      type="text/javascript"></script>
+  <link href="/stylesheets/bundles/application.min.css"
+    media="screen,projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/jquery-1.x.x.min.js"
+    type="text/javascript"></script>
+    <!-- In production, jQuery loads from Google's CDN instead. -->
+  <script src="/javascripts/bundles/plugins.min.js"
+    type="text/javascript"></script>
+  <script src="/javascripts/bundles/common.min.js"
+    type="text/javascript"></script>
 
 Add this to your deploy script, and your CSS/JS will be optimized
 automatically:
 
-    rake asset_hat:minify
+  rake asset_hat:minify
 
 Tested with Rails 2.3.x. For a quick overview, see
 {the AssetHat website}[http://mintdigital.github.com/asset_hat/].
@@ -83,7 +83,7 @@ For the gritty details, check the
 
 2.  Create the default config file:
 
-        rake asset_hat:config
+      rake asset_hat:config
 
 3.  In your app, open the new file at <code>config/assets.yml</code>, and set
     up your CSS/JS bundles according to that file's example.
@@ -91,22 +91,22 @@ For the gritty details, check the
 4.  In your layouts and views, switch to the new bundles. For example, if you
     originally had this:
 
-        <%# app/views/layouts/application.html.erb: %>
-        <%= stylesheet_include_tag 'reset', 'application' %>
+      <%# app/views/layouts/application.html.erb: %>
+      <%= stylesheet_include_tag 'reset', 'application' %>
 
     Then you'll now have:
 
-        # config/assets.yml:
-        css:
-          bundles:
-            application: ['reset', 'application']
+      # config/assets.yml:
+      css:
+        bundles:
+          application: ['reset', 'application']
 
-        <%# app/views/layouts/application.html.erb: %>
-        <%= include_css :bundle => 'application' %>
+      <%# app/views/layouts/application.html.erb: %>
+      <%= include_css :bundle => 'application' %>
 
 5.  Add this to your deployment script:
 
-        rake asset_hat:minify
+      rake asset_hat:minify
 
     This minifies all of the CSS/JS files listed in
     <code>config/assets.yml</code>, concatenates the minified code into bundle
@@ -144,14 +144,14 @@ Additional settings are supported in <code>config/assets.yml</code>:
   other external source. The following example configures jQuery and jQuery UI
   for use throughout the app:
 
-        js:
-          vendors:
-            jquery:
-              version:        1.4.4
-            jquery_ui:
-              version:        1.8.5
-              remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js
-              remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js
+    js:
+      vendors:
+        jquery:
+          version:        1.4.4
+        jquery_ui:
+          version:        1.8.5
+          remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js
+          remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js
 
   Configuration keys per vendor:
 
@@ -179,10 +179,10 @@ SSL.
 AssetHat plays well with SSL pages that load assets from a CDN. Put this in
 <code>config/environments/production.rb</code> or similar:
 
-    config.action_controller.asset_host = Proc.new do |source, request|
-      "#{request.protocol}cdn#{source.hash % 4}.example.com"
-        # => 'http://cdn0.example.com', 'https://cdn1.example.com', etc.
-    end
+  config.action_controller.asset_host = Proc.new do |source, request|
+    "#{request.protocol}cdn#{source.hash % 4}.example.com"
+      # => 'http://cdn0.example.com', 'https://cdn1.example.com', etc.
+  end
 
 This switches to a different CDN URL if the request used SSL. When you run
 <code>rake asset_hat:minify</code> at deploy time, AssetHat detects this
@@ -195,23 +195,23 @@ load images from CDN via SSL. (Non-SSL pages still get non-SSL stylesheets.)
 
 In your layouts and views, <b>instead of these</b>:
 
-    <%= stylesheet_link_tag 'reset', 'application', 'clearfix',
-                            :media => 'screen,projection',
-                            :cache => 'bundles/application' %>
-    <%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',
-                               :cache => 'bundles/application' %>
+  <%= stylesheet_link_tag 'reset', 'application', 'clearfix',
+                          :media => 'screen,projection',
+                          :cache => 'bundles/application' %>
+  <%= javascript_include_tag 'plugin-1', 'plugin-2', 'plugin-3',
+                             :cache => 'bundles/application' %>
 
 <b>Use these:</b>
 
-    <%= include_css :bundle => 'application' %>
-    <%= include_js  :bundle => 'application' %>
+  <%= include_css :bundle => 'application' %>
+  <%= include_js  :bundle => 'application' %>
 
 These turn into:
 
-    <link href="/stylesheets/bundles/application.min.css"
-      media="screen,projection" rel="stylesheet" type="text/css" />
-    <script src="/javascripts/bundles/application.min.js"
-      type="text/javascript"></script>
+  <link href="/stylesheets/bundles/application.min.css"
+    media="screen,projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/bundles/application.min.js"
+    type="text/javascript"></script>
 
 Have an enormous app? You can integrate gradually, using AssetHat alongside
 Rails' default asset caching.
@@ -231,12 +231,12 @@ configuration"), SSL requests will also load CSS/JS files via SSL.
 
 You can also include single files as expected:
 
-    <%= include_css 'reset', 'application' %>
-    <%= include_js  'plugin.min', 'application' %>
+  <%= include_css 'reset', 'application' %>
+  <%= include_js  'plugin.min', 'application' %>
 
 Or include multiple bundles at once:
 
-    <%= include_js :bundles => %w[plugins common] %>
+  <%= include_js :bundles => %w[plugins common] %>
 
 When including multiple bundles at once, this yields one
 <code><link></code> or <code><script></code> element per bundle.
