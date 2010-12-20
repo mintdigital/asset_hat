@@ -441,8 +441,14 @@ class AssetHatHelperTest < ActionView::TestCase
       :config => flexmock(:consider_all_requests_local => true),
       :env_defaults => {}
     ))
+
+    if ActionController::Base.respond_to?(:consider_all_requests_local)
+      # Rails 2.x
+      flexmock(ActionController::Base, :consider_all_requests_local => true)
+    end
+
     if defined?(config) # Rails 3.x
-      config[:assets_dir] = AssetHat::ASSETS_DIR
+      config.assets_dir = AssetHat::ASSETS_DIR
     end
   end
 

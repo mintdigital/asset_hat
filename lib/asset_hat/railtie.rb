@@ -5,11 +5,11 @@ require 'rails'
 module AssetHat
   class Railtie < Rails::Railtie #:nodoc:
     initializer 'asset_hat.action_view' do |app|
-      ActionView::Base.send(:include, ::AssetHatHelper)
+      require 'asset_hat/initializers/action_view'
     end
 
     initializer 'asset_hat.cache_last_commit_ids' do |app|
-      AssetHat.cache_last_commit_ids unless defined?(::IRB)
+      require 'asset_hat/initializers/cache_last_commit_ids'
     end
 
     rake_tasks do
