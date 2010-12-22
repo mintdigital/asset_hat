@@ -92,14 +92,14 @@ module AssetHatHelper
     # Prepare return value
     options.delete :ssl
     if options[:only_url]
-      # Return early: Requesting only asset URLs, not HTML inclusions
+      # Return only asset URLs, not HTML inclusions
       source_urls = sources.map { |source| asset_path(type, source) }
       source_urls.size == 1 ? source_urls.first : source_urls
     else
       html = sources.map do |src|
         case type
-        when :css ; stylesheet_link_tag(src, options)
-        when :js  ; javascript_include_tag(src, options)
+        when :css then stylesheet_link_tag(src, options)
+        when :js  then javascript_include_tag(src, options)
         else nil
         end
       end.join("\n")
@@ -250,6 +250,36 @@ module AssetHatHelper
   # Get URLs for multiple JS files manually:
   #   include_js 'json2', 'application', :only_url => true
   #   => ['/javascripts/json2.js', '/javascripts/application.js']
+  #
+  # Load JS files with LABjs (You must first download the latest LABjs
+  # manually from <http://labjs.com/>):
+  #
+  #   # config/assets.yml:
+  #   js:
+  #     vendors:
+  #       lab_js:
+  #         version: 1.x.x
+  #
+  #   # Usage:
+  #   include_js :jquery, :bundle => 'application', :loader => :lab_js
+  #   =>  <script src="/javascripts/LAB-1.x.x.min.js" ...></script>
+  #       <script type="text/javascript">
+  #       window.$LABinst=$LAB.
+  #         script('http://ajax.googleapis.com/.../jquery.min.js').wait().
+  #         script('/javascripts/bundles/application.min.js').wait();
+  #       </script>
+  #
+  #   # If you want to execute an inline <script> block that relies on any
+  #   # of these dependencies, use the JS variable `window.$LABinst`.
+  #   # Example (using jQuery to handle when DOM is ready):
+  #   <script>
+  #   window.$LABinst(function(){
+  #     console.log('JS dependencies are ready');
+  #     $(function(){
+  #       console.log('DOM is ready');
+  #     });
+  #   });
+  #   </script>
   def include_js(*args)
     return if args.blank?
 
@@ -264,6 +294,15 @@ module AssetHatHelper
       # Generate HTML and write to cache
 
       htmls = []
+      include_assets_options = options.except(:ssl, :version)
+      loader = nil
+
+      if options[:loader].present?
+        loader = options.delete(:loader)
+        include_assets_options.merge!(:only_url => true)
+      end
+
+      # Get vendor HTML/URLs
       included_vendors = (args & AssetHat::JS::VENDORS)
 
       # Add HTML inclusions for vendors
@@ -272,15 +311,29 @@ module AssetHatHelper
         src = AssetHat::JS::Vendors.source_for(
                 vendor, options.slice(:ssl, :version))
         htmls << include_assets(:js, src,
-          options.except(:bundle, :bundles, :ssl, :version).
-                  merge(:cache => true))
+                  include_assets_options.merge(:cache => true).
+                                         except(:bundle, :bundles))
       end
 
-      options.except! :ssl, :version
-
-      # Add HTML inclusions for non-vendors
-      htmls << include_assets(:js, *(args + [options]))
+      # Get non-vendor HTML/URLs
+      htmls << include_assets(:js, *(args + [include_assets_options]))
       htmls.reject!(&:blank?)
+
+      if loader
+        # `htmls` actually contains URLs; convert to an HTML/JS block
+        urls  = htmls.dup.flatten
+        htmls = []
+
+        case loader
+        when :lab_js
+          htmls << include_js(:lab_js)
+          htmls << '<script type="text/javascript">'
+          htmls << AssetHat::JS::Vendors.loader_js(:lab_js, :urls => urls)
+          htmls << '</script>'
+        end
+      end
+
+      # Convert to a URL (string), array of URLs, or one long HTML string
       html =  if options[:only_url]
                 # Return one URL (string) or multiple (array of strings).
                 # Not actually HTML.

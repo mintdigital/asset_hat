@@ -79,8 +79,10 @@ class AssetHatHelperTest < ActionView::TestCase
         context 'via SSL' do
           setup do
             @request = test_request
-            flexmock(@controller, :request => @request)
-            flexmock(@controller.request, :ssl? => true)
+            flexmock(@controller).should_receive(:request => @request).
+              by_default
+            flexmock(@controller.request).should_receive(:ssl? => true).
+              by_default
             assert @controller.request.ssl?,
               'Precondition: Request should use SSL'
           end
@@ -217,7 +219,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include named files and bundles together' do
-          bundles = [2,3].map { |i| "css-bundle-#{i}" }
+          bundles = ['css-bundle-2']
           expected_html = css_tag("css-file-1-1.css?#{@asset_id}") + "\n" +
             bundles.map do |bundle|
               sources = @config['css']['bundles'][bundle]
@@ -245,7 +247,7 @@ class AssetHatHelperTest < ActionView::TestCase
     setup do
       flexmock_rails_app
       @request = test_request
-      flexmock(@controller, :request => @request)
+      flexmock(@controller).should_receive(:request => @request).by_default
     end
 
     context 'with caching enabled' do
@@ -299,7 +301,7 @@ class AssetHatHelperTest < ActionView::TestCase
             AssetHat::JS::VENDORS.each do |vendor|
               assert include_js(vendor, :cache => true).present?
               assert include_js(vendor, :cache => true,
-                      :only_url => true).present?
+                                        :only_url => true).present?
             end
           end
 
@@ -344,7 +346,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
           context 'with remote requests via SSL' do
             should 'include vendor JS via Google CDN' do
-              AssetHat::JS::VENDORS.each do |vendor|
+              AssetHat::JS::Vendors::VENDORS_ON_GOOGLE_CDN.each do |vendor|
                 AssetHat.html_cache[:js] = {}
                 helper_opts = {:version => '1', :cache => true}
 
@@ -404,7 +406,7 @@ class AssetHatHelperTest < ActionView::TestCase
             end
 
             should 'get vendor URLs pointing to Google CDN' do
-              AssetHat::JS::VENDORS.each do |vendor|
+              AssetHat::JS::Vendors::VENDORS_ON_GOOGLE_CDN.each do |vendor|
                 AssetHat.html_cache[:js] = {}
                 helper_opts = {:version => '1', :cache => true}
 
@@ -671,8 +673,10 @@ class AssetHatHelperTest < ActionView::TestCase
         context 'via SSL' do
           setup do
             @request = test_request
-            flexmock(@controller, :request => @request)
-            flexmock(@controller.request, :ssl? => true)
+            flexmock(@controller).should_receive(:request => @request).
+              by_default
+            flexmock(@controller.request).should_receive(:ssl? => true).
+              by_default
             assert @controller.request.ssl?,
               'Precondition: Request should use SSL'
           end
@@ -820,7 +824,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include vendors, named files and bundles together' do
-          bundles = [2,3].map { |i| "js-bundle-#{i}" }
+          bundles = ['js-bundle-2']
           expected_html =
             js_tag("jquery.min.js?#{@asset_id}") + "\n" +
             js_tag("js-file-1-1.js?#{@asset_id}") + "\n" +
@@ -847,6 +851,97 @@ class AssetHatHelperTest < ActionView::TestCase
         end
       end # context 'with real bundle files'
     end # context 'with caching disabled'
+
+    context 'with LABjs' do
+      should 'render with default config and basic URL arguments' do
+        urls      = [ '/javascripts/foo.js',
+                      'http://cdn.example.com/bar.js' ]
+        expected  = %{<script src="/javascripts/LAB.min.js" } +
+                      %{type="text/javascript"></script>\n}
+        expected << %{<script type="text/javascript">\n}
+        expected << %{window.$LABinst=$LAB.\n}
+        expected << %{  script('#{urls.first}').wait().\n}
+        expected << %{  script('#{urls.second}').wait();\n}
+        expected << %{</script>}
+
+        assert_equal expected,
+          include_js('foo', urls.second, :loader => :lab_js)
+      end
+
+      context 'with LABjs version config, vendor, and multiple bundles' do
+        setup do
+          @config = AssetHat.config
+          @config['js']['vendors'] = {
+            'jquery' => {'version' => '1.4.4'},
+            'lab_js' => {'version' => '1.0.4'}
+          }
+          flexmock(AssetHat).should_receive(:config => @config).by_default
+
+          @asset_id = ENV['RAILS_ASSET_ID'] = ''
+          flexmock(AssetHat).should_receive(
+            :asset_exists?  => false,
+            :last_commit_id => ''
+          ).by_default
+
+          @jquery_version = @config['js']['vendors']['jquery']['version']
+          @lab_js_version = @config['js']['vendors']['lab_js']['version']
+        end
+        teardown { ENV['RAILS_ASSET_ID'] = nil }
+
+        should 'render with caching disabled' do
+          loader_filename = "LAB-#{@lab_js_version}.min.js"
+          vendor_filename = "jquery-#{@jquery_version}.min.js"
+
+          flexmock(AssetHat).should_receive(:asset_exists?).
+            with(loader_filename, :js).and_return(true)
+          flexmock(AssetHat).should_receive(:asset_exists?).
+            with(vendor_filename, :js).and_return(true)
+          assert AssetHat.asset_exists?(vendor_filename, :js), 'Precondition'
+
+          expected =  %{<script src="/javascripts/#{loader_filename}" } +
+                        %{type="text/javascript"></script>\n}
+          expected << %{<script type="text/javascript">\n}
+          expected << "window.$LABinst=$LAB.\n"
+          expected << "  script('/javascripts/#{vendor_filename}').wait().\n"
+          expected << "  script('/javascripts/foo.js').wait().\n"
+          expected << "  script('/javascripts/js-file-1-1.js').wait().\n"
+          expected << "  script('/javascripts/js-file-1-2.js').wait().\n"
+          expected << "  script('/javascripts/js-file-1-3.js').wait().\n"
+          expected << "  script('/javascripts/js-file-2-1.js').wait().\n"
+          expected << "  script('/javascripts/js-file-2-2.js').wait().\n"
+          expected << "  script('/javascripts/js-file-2-3.js').wait();\n"
+          expected << '</script>'
+
+          assert_equal expected, include_js(:jquery, 'foo',
+                                  :bundles => %w[js-bundle-1 js-bundle-2],
+                                  :loader  => :lab_js)
+        end
+
+        should 'render with caching enabled and remote vendors' do
+          flexmock(AssetHat, :consider_all_requests_local? => false)
+          jquery_url = 'http://ajax.googleapis.com/ajax/libs/jquery/' +
+                        @jquery_version + '/jquery.min.js'
+
+          expected =  '<script ' +
+                        %{src="/javascripts/LAB-#{@lab_js_version}.min.js" } +
+                        %{type="text/javascript"></script>\n}
+          expected << %{<script type="text/javascript">\n}
+          expected << "window.$LABinst=$LAB.\n"
+          expected << "  script('#{jquery_url}').wait().\n"
+          expected << "  script('/javascripts/foo.js').wait().\n"
+          expected << "  script('/javascripts/" +
+                          "bundles/js-bundle-1.min.js').wait().\n"
+          expected << "  script('/javascripts/" +
+                          "bundles/js-bundle-2.min.js').wait();\n"
+          expected << '</script>'
+
+          assert_equal expected, include_js(:jquery, 'foo',
+                                  :bundles => %w[js-bundle-1 js-bundle-2],
+                                  :loader  => :lab_js,
+                                  :cache   => true)
+        end
+      end # context 'with LABjs version config, vendor, and multiple bundles'
+    end # context 'with LABjs'
 
   end # context 'include_js'
 
@@ -892,10 +987,10 @@ class AssetHatHelperTest < ActionView::TestCase
       by_default
   end
 
-  def flexmock_rails_app_config(opts)
-    flexmock(Rails.application.config, opts)  # Rails 3.x
-    flexmock(ActionController::Base, opts)    # Rails 2.x
-  end
+  # def flexmock_rails_app_config(opts)
+  #   flexmock(Rails.application.config, opts)  # Rails 3.x
+  #   flexmock(ActionController::Base, opts)    # Rails 2.x
+  # end
 
   def test_request
     if defined?(ActionDispatch) # Rails 3.x

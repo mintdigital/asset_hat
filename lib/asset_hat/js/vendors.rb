@@ -6,17 +6,20 @@ module AssetHat
       # A list of supported 3rd-party JavaScript plugin/vendor names.
       # Homepages:
       #
-      # * {jQuery}[http://jquery.com/]
-      # * {jQuery UI}[http://jqueryui.com/]
-      # * {Prototype}[http://www.prototypejs.org/]
-      # * {script.aculo.us}[http://script.aculo.us/]
-      # * {MooTools}[http://mootools.net/]
-      # * {Dojo}[http://dojotoolkit.org/]
-      # * {SWFObject}[http://code.google.com/p/swfobject/]
-      # * {YUI}[http://developer.yahoo.com/yui/]
-      # * {Ext Core}[http://extjs.com/products/extcore/]
-      # * {WebFont Loader}[http://code.google.com/apis/webfonts/docs/webfont_loader.html]
-      VENDORS = [
+      # * Frameworks/libraries:
+      #   * {jQuery}[http://jquery.com/]
+      #   * {jQuery UI}[http://jqueryui.com/]
+      #   * {Prototype}[http://www.prototypejs.org/]
+      #   * {script.aculo.us}[http://script.aculo.us/]
+      #   * {MooTools}[http://mootools.net/]
+      #   * {Dojo}[http://dojotoolkit.org/]
+      #   * {SWFObject}[http://code.google.com/p/swfobject/]
+      #   * {YUI}[http://developer.yahoo.com/yui/]
+      #   * {Ext Core}[http://extjs.com/products/extcore/]
+      #   * {WebFont Loader}[http://code.google.com/apis/webfonts/docs/webfont_loader.html]
+      # * Loaders:
+      #   * {LABjs}[http://labjs.com]
+      VENDORS_ON_GOOGLE_CDN = [
         :jquery, :jquery_ui,
         :prototype, :scriptaculous,
         :mootools,
@@ -25,6 +28,10 @@ module AssetHat
         :yui,
         :ext_core,
         :webfont
+      ]
+      VENDORS = VENDORS_ON_GOOGLE_CDN + [
+        # Not on Google CDN:
+        :lab_js
       ]
 
       # Accepts an item from `VENDORS`, and returns the URL at which that
@@ -150,6 +157,9 @@ module AssetHat
         when :webfont
           uris[:local ] = "#{['webfont', version].compact.join('-')}.min.js"
           uris[:remote] = "http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/webfont/#{version}/webfont.js"
+        when :lab_js
+          # Exists only locally, not on Google CDN
+          uris[:local ] = "#{['LAB', version].compact.join('-')}.min.js"
         else nil # TODO: Write to log
         end
 
@@ -158,6 +168,34 @@ module AssetHat
         uris.delete(:remote) if version.blank?
 
         uris
+      end
+
+      # Usage (currently only supports LABjs):
+      #
+      #   AssetHat::JS::Vendors.loader_js :lab_js,
+      #     :urls => ['/javascripts/app.js',
+      #               'http://cdn.example.com/jquery.js']
+      #
+      # Returns a string of JS:
+      #
+      #   window.$LABinst=$LAB.
+      #     script('/javascripts/app.js').wait().
+      #     script('http://cdn.example.com/jquery.js').wait();
+      def self.loader_js(loader, opts)
+        return nil unless opts[:urls]
+
+        case loader
+        when :lab_js
+          urls  = opts[:urls]
+          lines = ['window.$LABinst=$LAB.']
+          urls.each_with_index do |url, i|
+            is_last = i >= urls.length - 1
+            lines << "  script('#{url}').wait()#{is_last ? ';' : '.'}"
+              # Use `wait()` for each script to load in parallel, but
+              # preserve execution order by default.
+          end
+          lines.join("\n")
+        end
       end
 
     end
