@@ -58,7 +58,8 @@ module AssetHat
       dir = self.assets_dir(type)
       filepaths = self.bundle_filepaths(bundle, type)
       if filepaths.present?
-        @last_bundle_commit_ids[type][bundle] = self.last_commit_id(*filepaths)
+        @last_bundle_commit_ids[type][bundle] =
+          self.last_commit_id(*filepaths)
       end
     end
 

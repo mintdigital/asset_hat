@@ -61,16 +61,12 @@ module AssetHat
   #
   # <code>type</code> argument: <code>:css</code> or <code>:js</code>
   def self.assets_dir(type)
-    type = type.to_sym
-    unless TYPES.include?(type)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
-      return
-    end
-
-    case type
+    case type.to_sym
     when :css ; STYLESHEETS_DIR
     when :js  ; JAVASCRIPTS_DIR
-    else nil
+    else
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      nil
     end
   end
 
@@ -79,16 +75,12 @@ module AssetHat
   #
   # <code>type</code> argument: <code>:css</code> or <code>:js</code>
   def self.assets_path(type)
-    type = type.to_sym
-    unless TYPES.include?(type)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
-      return
-    end
-
-    case type
+    case type.to_sym
     when :css ; STYLESHEETS_PATH
     when :js  ; JAVASCRIPTS_PATH
-    else nil
+    else
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      nil
     end
   end
 

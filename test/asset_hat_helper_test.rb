@@ -801,6 +801,18 @@ class AssetHatHelperTest < ActionView::TestCase
 
   end # context 'include_js'
 
+  should 'compute public asset paths' do
+    flexmock_rails_app
+
+    assert_equal '/stylesheets/foo.css', asset_path(:css, 'foo')
+    assert_equal '/stylesheets/bundles/foo.min.css',
+      asset_path(:css, 'bundles/foo.min.css')
+
+    assert_equal '/javascripts/foo.js', asset_path(:js, 'foo')
+    assert_equal '/javascripts/bundles/foo.min.js',
+      asset_path(:js, 'bundles/foo.min.js')
+  end
+
 
 
   private

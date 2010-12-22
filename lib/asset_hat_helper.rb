@@ -20,7 +20,7 @@ module AssetHatHelper
     end
 
     options   = args.extract_options!.symbolize_keys
-    filenames = []
+    filenames = [] # May or may not have proper extensions
     sources   = [] # The URLs that are ultimately included via HTML
     source_commit_ids = {} # Last commit ID for each source
 
@@ -29,24 +29,25 @@ module AssetHatHelper
     use_caching = options[:cache] unless options[:cache].nil?
     options.delete :cache # Completely avoid Rails' built-in caching
 
+    # Gather list of filenames, which may not have proper extensions yet
+    filenames = args.dup
     if options[:bundle].present? || options[:bundles].present?
       bundles = [options.delete(:bundle), options.delete(:bundles)].
                   flatten.reject(&:blank?)
       if use_caching
-        sources += bundles.map do |bundle|
+        filenames += bundles.map do |bundle|
           File.join(AssetHat.bundles_dir(options.slice(:ssl)),
                     "#{bundle}.min.#{type}")
         end
       else
         config = AssetHat.config
-        filenames = bundles.map { |b| AssetHat.bundle_filenames(b, type) }.
+        filenames += bundles.map { |b| AssetHat.bundle_filenames(b, type) }.
                       flatten.reject(&:blank?)
       end
-    else
-      filenames = args
     end
 
-    # Add extensions if needed, using minified file if it already exists
+    # Build `sources`, adding extensions if needed, using minified file if it
+    # already exists
     filenames.each do |filename|
       if filename.match(/\.#{type}$/)
         sources << filename
@@ -90,17 +91,11 @@ module AssetHatHelper
 
     # Prepare return value
     options.delete :ssl
-    if options.delete(:only_url)
-      # Return one URL (string) or multiple (array of strings)
-      sources = sources.map do |src|
-        case type
-        when :css ; stylesheet_path(src)
-        when :js  ; javascript_path(src)
-        end
-      end
-      sources.size == 1 ? sources.first : sources
+    if options[:only_url]
+      # Return early: Requesting only asset URLs, not HTML inclusions
+      source_urls = sources.map { |source| asset_path(type, source) }
+      source_urls.size == 1 ? source_urls.first : source_urls
     else
-      # Return one long string of HTML
       html = sources.map do |src|
         case type
         when :css ; stylesheet_link_tag(src, options)
@@ -283,10 +278,11 @@ module AssetHatHelper
       htmls << include_assets(:js, *(args + [options]))
       htmls.reject!(&:blank?)
       html =  if options[:only_url]
-                # Return one URL (string) or multiple (array of strings)
+                # Return one URL (string) or multiple (array of strings).
+                # Not actually HTML.
                 htmls.size == 1 ? htmls.first : htmls
               else
-                # Return one long string of HTMl
+                # Return one long string of HTML
                 htmls.join("\n").strip
               end
       AssetHat.html_cache[:js][cache_key] = html
@@ -294,6 +290,18 @@ module AssetHatHelper
 
     html ||= AssetHat.html_cache[:js][cache_key]
     html.respond_to?(:html_safe) ? html.html_safe : html
+  end
+
+  # Returns the public URL path to the given source file.
+  #
+  # <code>type</code> argument: <code>:css</code> or <code>:js</code>
+  def asset_path(type, source)
+    case type.to_sym
+    when :css ; stylesheet_path(source)
+    when :js  ; javascript_path(source)
+    else
+      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+    end
   end
 
 end
