@@ -3,6 +3,8 @@
 * FEATURE: Added Rails 3 support.
 * IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
   even though you don't need them.
+* FIX: Worked around a JSMin bug that causes an error when JS ends with a
+  comment and no line break.
 
 == VERSION 0.3.0 (2010-12-08)
 * FEATURE: Added ERb support in `config/assets.yml`.

@@ -63,7 +63,7 @@ namespace :asset_hat do
         )
       end
       bundle_filepath = AssetHat::JS.min_filepath(File.join(
-        AssetHat.bundles_dir(type), args.bundle))
+        AssetHat.bundles_dir(type), "#{args.bundle}.#{type}"))
 
       # Concatenate and process output
       output = ''

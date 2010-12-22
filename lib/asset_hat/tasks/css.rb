@@ -110,7 +110,7 @@ namespace :asset_hat do
         # Concatenate and process output
         bundle_filepath = AssetHat::CSS.min_filepath(File.join(
           AssetHat.bundles_dir(type, output_options.slice(:ssl)),
-          args.bundle))
+          "#{args.bundle}.#{type}"))
         old_bundle_size = 0.0
         new_bundle_size = 0.0
         output     = ''
