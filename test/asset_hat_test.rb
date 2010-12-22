@@ -228,6 +228,13 @@ class AssetHatTest < ActiveSupport::TestCase
       assert_equal  'foo/bar/baz.min.js',
                     AssetHat::JS.min_filepath('foo/bar/baz.js')
     end
+
+    context 'with minifying' do
+      should 'minify if a string ends with a comment and no line break' do
+        input = 'foo(); // bar'
+        assert_equal 'foo();', AssetHat::JS.minify(input, :engine => :jsmin)
+      end
+    end # context 'with minifying'
   end # context 'AssetHat::JS'
 
 end

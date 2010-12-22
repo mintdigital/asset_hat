@@ -77,7 +77,7 @@ module AssetHat
       # - http://github.com/rgrove/jsmin
       # - http://rubygems.org/gems/jsmin
       def self.jsmin(input_string)
-        JSMin.minify(input_string)
+        JSMin.minify(input_string + "\n")
       end
     end # module Engines
 
