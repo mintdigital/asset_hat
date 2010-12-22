@@ -265,21 +265,26 @@ module AssetHatHelper
 
       htmls = []
       included_vendors = (args & AssetHat::JS::VENDORS)
+
+      # Add HTML inclusions for vendors
       included_vendors.each do |vendor|
         args.delete vendor
         src = AssetHat::JS::Vendors.source_for(
                 vendor, options.slice(:ssl, :version))
         htmls << include_assets(:js, src,
-          options.except(:ssl, :version).merge(:cache => true))
+          options.except(:bundle, :bundles, :ssl, :version).
+                  merge(:cache => true))
       end
 
       options.except! :ssl, :version
 
+      # Add HTML inclusions for non-vendors
       htmls << include_assets(:js, *(args + [options]))
       htmls.reject!(&:blank?)
       html =  if options[:only_url]
                 # Return one URL (string) or multiple (array of strings).
                 # Not actually HTML.
+                htmls.flatten!
                 htmls.size == 1 ? htmls.first : htmls
               else
                 # Return one long string of HTML

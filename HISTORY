@@ -3,6 +3,9 @@
 * FEATURE: Added Rails 3 support.
 
 == Version 0.3.1 (2011-04-02)
+* FEATURE: Added support for getting asset URLs, e.g.:
+  `<%= include_css 'foo', :bundle => 'bar', :only_url => true %>`,
+  `<%= include_js :jquery, 'foo', :bundle => 'bar', :only_url => true %>`.
 * IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
   even though you don't need them.
 * IMPROVEMENT: Added support for symbols as bundle names, e.g.,

@@ -215,6 +215,28 @@ class AssetHatHelperTest < ActionView::TestCase
             include_css(:bundles => bundles, :cache => false,
               :only_url => true)
         end
+
+        should 'include named files and bundles together' do
+          bundles = [2,3].map { |i| "css-bundle-#{i}" }
+          expected_html = css_tag("css-file-1-1.css?#{@asset_id}") + "\n" +
+            bundles.map do |bundle|
+              sources = @config['css']['bundles'][bundle]
+              sources.map { |src| css_tag("#{src}.css?#{@asset_id}") }
+            end.flatten.uniq.join("\n")
+          expected_paths = ["/stylesheets/css-file-1-1.css?#{@asset_id}"] +
+            bundles.map do |bundle|
+              sources = @config['css']['bundles'][bundle]
+              sources.map do |src|
+                AssetHat.assets_path(:css) + "/#{src}.css?#{@asset_id}"
+              end
+            end.flatten.uniq
+
+          assert_equal expected_html,
+            include_css('css-file-1-1', :bundles => bundles, :cache => false)
+          assert_equal expected_paths,
+            include_css('css-file-1-1', :bundles => bundles, :cache => false,
+              :only_url => true)
+        end
       end # context 'with real bundle files'
     end # context 'with caching disabled'
   end # context 'include_css'
@@ -795,6 +817,33 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal expected_paths,
             include_js(:bundles => bundles, :cache => false,
               :only_url => true)
+        end
+
+        should 'include vendors, named files and bundles together' do
+          bundles = [2,3].map { |i| "js-bundle-#{i}" }
+          expected_html =
+            js_tag("jquery.min.js?#{@asset_id}") + "\n" +
+            js_tag("js-file-1-1.js?#{@asset_id}") + "\n" +
+            bundles.map do |bundle|
+              sources = @config['js']['bundles'][bundle]
+              sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }
+            end.flatten.uniq.join("\n")
+          expected_paths =
+            [ "/javascripts/jquery.min.js?#{@asset_id}",
+              "/javascripts/js-file-1-1.js?#{@asset_id}" ] +
+            bundles.map do |bundle|
+              sources = @config['js']['bundles'][bundle]
+              sources.map do |src|
+                AssetHat.assets_path(:js) + "/#{src}.js?#{@asset_id}"
+              end
+            end.flatten.uniq
+
+          assert_equal expected_html,
+            include_js(:jquery, 'js-file-1-1', :bundles => bundles,
+              :cache => false)
+          assert_equal expected_paths,
+            include_js(:jquery, 'js-file-1-1', :bundles => bundles,
+              :cache => false, :only_url => true)
         end
       end # context 'with real bundle files'
     end # context 'with caching disabled'
