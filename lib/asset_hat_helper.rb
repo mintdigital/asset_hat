@@ -97,7 +97,7 @@ module AssetHatHelper
       else nil
       end
     end.join("\n")
-    respond_to?(:raw) ? raw(html) : html
+    html.respond_to?(:html_safe) ? html.html_safe : html
   end # def include_assets
 
   # <code>include_css</code> is a smart wrapper for Rails'
@@ -146,7 +146,7 @@ module AssetHatHelper
     end
 
     html ||= AssetHat.html_cache[:css][cache_key]
-    html
+    html.respond_to?(:html_safe) ? html.html_safe : html
   end
 
   # <code>include_js</code> is a smart wrapper for Rails'
@@ -217,7 +217,7 @@ module AssetHatHelper
     end
 
     html ||= AssetHat.html_cache[:js][cache_key]
-    html
+    html.respond_to?(:html_safe) ? html.html_safe : html
   end
 
 end
