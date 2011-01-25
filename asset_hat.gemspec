@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2010-12-08}
+  s.date = %q{2011-01-25}
   s.description = %q{Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular JS frameworks (like jQuery and Prototype) from localhost in development, and auto-switches to Google's CDN in production. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
   s.email = %q{hello@rondevera.com}
   s.extra_rdoc_files = [
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION.yml",
-    "app/helpers/asset_hat_helper.rb",
     "asset_hat.gemspec",
     "config/assets.yml",
     "doc/classes/AssetHat.html",
@@ -36,17 +35,19 @@ Gem::Specification.new do |s|
     "doc/files/HISTORY.html",
     "doc/files/LICENSE.html",
     "doc/files/README_rdoc.html",
-    "doc/files/app/helpers/asset_hat_helper_rb.html",
     "doc/files/lib/asset_hat/capistrano_rb.html",
     "doc/files/lib/asset_hat/css_rb.html",
     "doc/files/lib/asset_hat/js/vendors_rb.html",
     "doc/files/lib/asset_hat/js_rb.html",
+    "doc/files/lib/asset_hat/railtie_rb.html",
     "doc/files/lib/asset_hat/tasks/css_rb.html",
     "doc/files/lib/asset_hat/tasks/js_rb.html",
     "doc/files/lib/asset_hat/tasks_rb.html",
     "doc/files/lib/asset_hat/vcs_rb.html",
     "doc/files/lib/asset_hat/version_rb.html",
+    "doc/files/lib/asset_hat_helper_rb.html",
     "doc/files/lib/asset_hat_rb.html",
+    "doc/files/lib/tasks/asset_hat_rake.html",
     "doc/fr_class_index.html",
     "doc/fr_file_index.html",
     "doc/fr_method_index.html",
@@ -55,13 +56,18 @@ Gem::Specification.new do |s|
     "lib/asset_hat.rb",
     "lib/asset_hat/capistrano.rb",
     "lib/asset_hat/css.rb",
+    "lib/asset_hat/initializers/action_view.rb",
+    "lib/asset_hat/initializers/cache_last_commit_ids.rb",
     "lib/asset_hat/js.rb",
     "lib/asset_hat/js/vendors.rb",
+    "lib/asset_hat/railtie.rb",
     "lib/asset_hat/tasks.rb",
     "lib/asset_hat/tasks/css.rb",
     "lib/asset_hat/tasks/js.rb",
     "lib/asset_hat/vcs.rb",
     "lib/asset_hat/version.rb",
+    "lib/asset_hat_helper.rb",
+    "lib/tasks/asset_hat.rake",
     "public/javascripts/bundles/js-bundle-1.min.js",
     "public/javascripts/bundles/js-bundle-2.min.js",
     "public/javascripts/bundles/js-bundle-3.min.js",
@@ -90,14 +96,13 @@ Gem::Specification.new do |s|
     "public/stylesheets/css-file-3-2.css",
     "public/stylesheets/css-file-3-3.css",
     "rails/init.rb",
-    "tasks/asset_hat.rake",
     "test/asset_hat_helper_test.rb",
     "test/asset_hat_test.rb",
     "test/test_helper.rb"
   ]
   s.homepage = %q{http://mintdigital.github.com/asset_hat}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Your assets are covered.}
   s.test_files = [
     "test/asset_hat_helper_test.rb",
@@ -109,7 +114,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
