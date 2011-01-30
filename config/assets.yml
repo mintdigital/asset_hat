@@ -1,5 +1,5 @@
-# This belongs in your app's `config` directory. Configure your bundles
-# below; no `.css` or `.js` suffixes needed. Example:
+# Configure your bundles below. No `.css` or `.js` suffixes needed; ERb is
+# supported if you need it. Example:
 #
 #     css:
 #       engine: cssmin
@@ -7,11 +7,9 @@
 #         application:
 #           - reset
 #           - application
-#           - clearfix
 #         admin:
 #           - reset
 #           - admin
-#           - clearfix
 #     js:
 #       engine: jsmin
 #       vendors:

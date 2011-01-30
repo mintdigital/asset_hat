@@ -37,6 +37,11 @@ module AssetHat
 
   # Nested-hash version of <code>config/assets.yml</code>.
   def self.config
+    unless File.exists?(CONFIG_FILEPATH)
+      raise '`config/assets.yml` is missing! ' +
+            'Run `rake asset_hat:config` to generate it.' and return
+    end
+
     if !cache? || @config.blank?
       @config = YAML.load(ERB.new(File.read(CONFIG_FILEPATH)).result)
     end
@@ -137,7 +142,7 @@ module AssetHat
   # Returns the extension-less names of files in the given bundle:
   #
   #     AssetHat.bundle_filenames('application', :css)
-  #       # => ['reset', 'application', 'clearfix']
+  #       # => ['reset', 'application']
   #     AssetHat.bundle_filenames('non-existent-file', :css)
   #       # => nil
   def self.bundle_filenames(bundle, type)
@@ -154,8 +159,7 @@ module AssetHat
   #
   #     AssetHat.bundle_filenames('application', :css)
   #       # => ['/path/to/app/public/stylesheets/reset.css',
-  #             '/path/to/app/public/stylesheets/application.css',
-  #             '/path/to/app/public/stylesheets/clearfix.css']
+  #             '/path/to/app/public/stylesheets/application.css']
   #     AssetHat.bundle_filenames('non-existent-file', :css)
   #       # => nil
   def self.bundle_filepaths(bundle, type)
