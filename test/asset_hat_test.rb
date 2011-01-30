@@ -16,6 +16,15 @@ class AssetHatTest < ActiveSupport::TestCase
         AssetHat.bundles_dir(:js, :ssl => true)
     end
 
+    should 'know whether the config file needs to be generated' do
+      flexmock(File).should_receive(:exists?).
+        with(AssetHat::CONFIG_FILEPATH).and_return(false)
+
+      assert_raise RuntimeError do
+        AssetHat.config
+      end
+    end
+
     context 'with caching enabled' do
       setup do
         flexmock(AssetHat, :cache? => true)

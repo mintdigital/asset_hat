@@ -117,10 +117,9 @@ module AssetHatHelper
   #   =>  <link href="/stylesheets/bundles/application.min.css" ... />
   #
   # Include multiple stylesheets separately (not as cool):
-  #   include_css 'reset', 'application', 'clearfix'
+  #   include_css 'reset', 'application'
   #   =>  <link href="/stylesheets/reset.min.css" ... />
   #       <link href="/stylesheets/application.min.css" ... />
-  #       <link href="/stylesheets/clearfix.min.css" ... />
   #
   # Include a stylesheet with extra media types:
   #   include_css 'mobile', :media => 'handheld,screen,projection'
