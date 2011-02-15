@@ -173,7 +173,7 @@ module AssetHat
       return
     end
 
-    self.config[type.to_s]['bundles'][bundle] rescue nil
+    self.config[type.to_s]['bundles'][bundle.to_s] rescue nil
   end
 
   # Returns the full paths of files in the given bundle:
