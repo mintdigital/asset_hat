@@ -403,6 +403,15 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal expected, output
         end
 
+        should 'include a bundle as a separate using a symbol as input' do
+          bundle = :"js-bundle-1"
+          sources = @config['js']['bundles'][bundle.to_s]
+          expected = sources.
+            map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
+          output = include_js(:bundle => bundle, :cache => false)
+          assert_equal expected, output
+        end
+
         should 'include multiple bundles as separate files' do
           bundles = [1,2,3].map { |i| "js-bundle-#{i}" }
           expected = bundles.map do |bundle|
