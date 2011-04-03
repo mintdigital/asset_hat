@@ -2,6 +2,8 @@
 
 * IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
   even though you don't need them.
+* IMPROVEMENT: Added support for symbols as bundle names, e.g.,
+  `include_js :bundle => :application`. Thanks, daphonz!
 * FIX: Worked around a JSMin bug that causes an error when JS ends with a
   comment and no line break.
 

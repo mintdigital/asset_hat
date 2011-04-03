@@ -118,6 +118,16 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal expected, output
         end
 
+        should 'include a bundle as separate files ' +
+               'with a symbol bundle name' do
+          bundle = 'css-bundle-1'
+          expected = @config['css']['bundles'][bundle].map do |source|
+            css_tag("#{source}.css?#{@asset_id}")
+          end.join("\n")
+          output = include_css(:bundle => bundle.to_sym, :cache => false)
+          assert_equal expected, output
+        end
+
         should 'include multiple bundles as separate files' do
           bundles = [1,2,3].map { |i| "css-bundle-#{i}" }
           expected = bundles.map do |bundle|
@@ -403,12 +413,13 @@ class AssetHatHelperTest < ActionView::TestCase
           assert_equal expected, output
         end
 
-        should 'include a bundle as a separate using a symbol as input' do
-          bundle = :"js-bundle-1"
-          sources = @config['js']['bundles'][bundle.to_s]
+        should 'include a bundle as separate files ' +
+               'with a symbol bundle name' do
+          bundle = 'js-bundle-1'
+          sources = @config['js']['bundles'][bundle]
           expected = sources.
             map { |src| js_tag("#{src}.js?#{@asset_id}") }.join("\n")
-          output = include_js(:bundle => bundle, :cache => false)
+          output = include_js(:bundle => bundle.to_sym, :cache => false)
           assert_equal expected, output
         end
 
