@@ -1,13 +1,15 @@
 = HISTORY
 
+== Version 0.3.1 (2011-04-02)
 * IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
   even though you don't need them.
 * IMPROVEMENT: Added support for symbols as bundle names, e.g.,
-  `include_js :bundle => :application`. Thanks, daphonz!
+  `include_js :bundle => :application`. Thanks,
+  daphonz[https://github.com/daphonz]!
 * FIX: Worked around a JSMin bug that causes an error when JS ends with a
   comment and no line break.
 
-== VERSION 0.3.0 (2010-12-08)
+== Version 0.3.0 (2010-12-08)
 * FEATURE: Added ERb support in `config/assets.yml`.
 * FEATURE: Added support for auto-creating SSL versions of every stylesheet.
 * FEATURE: Added support for loading remote JS via SSL. Includes loading
