@@ -27,6 +27,8 @@ namespace :asset_hat do
 
   desc 'Prepare configuration file'
   task :config do
+    require 'asset_hat'
+
     template_filepath = File.join(File.dirname(__FILE__), '..', '..',
       AssetHat::RELATIVE_CONFIG_FILEPATH)
     target_filepath = AssetHat::CONFIG_FILEPATH
