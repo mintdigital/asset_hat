@@ -1,29 +1,45 @@
-# Configure your bundles below. No `.css` or `.js` suffixes needed; ERb is
-# supported if you need it. Example:
+# Here, you can upgrade your layouts and views to AssetHat. For example, find
+# this sort of code in your app:
+#
+#     stylesheet_link_tag 'reset', 'application'
+#     javascript_include_tag(
+#       Rails.env.production? ? '<Google CDN URL>' : 'jquery-1.5.2')
+#     javascript_include_tag 'utilities', 'application'
+#
+# Create matching bundles in this file (no `.css` or `.js` suffixes needed;
+# ERb is supported if you need it):
 #
 #     css:
-#       engine: cssmin
 #       bundles:
 #         application:
 #           - reset
 #           - application
-#         admin:
-#           - reset
-#           - admin
 #     js:
-#       engine: jsmin
 #       vendors:
 #         jquery:
-#           version: 1.4
+#           version: 1.5.2
 #       bundles:
-#         plugins:
-#           - init
-#           - third-party-plugin.min
-#             # Here, the suffix `.min` indicates that the code has already
-#             # been minified, and should not be re-minified.
-#         common:
+#         application:
 #           - utilities
 #           - application
+#
+# Then, simplify your layouts and views to match your bundles:
+#
+#     include_css :bundle => 'application'
+#     include_js  :jquery, :bundle => 'application'
+#
+# This makes it really easy to reuse sets of CSS/JS files across layouts.
+#
+# Lastly, set up your deployment script to run `rake asset_hat:minify`
+# automatically. This creates minified versions of your CSS/JS; your original
+# code is untouched. If you deploy with Capistrano, here's an example recipe:
+# https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/capistrano.rb
+#
+# That's it! In development, individual CSS/JS files are loaded separately,
+# and your local copy of jQuery is used. In production, your minified CSS/JS
+# bundles are loaded, and jQuery is loaded from Google's CDN.
+#
+# More info: https://github.com/mintdigital/asset_hat/#readme
 
 css:
   engine: cssmin
@@ -42,6 +58,14 @@ css:
       - css-file-3-3
 js:
   engine: jsmin
+  # Enable if you're using jQuery or other popular JS:
+  #
+  # vendors:
+  #   jquery:
+  #     version: 1.5.2
+  #
+  # Full list of supported vendors:
+  # http://mintdigital.github.com/asset_hat/doc/classes/AssetHat/JS/Vendors.html
   bundles:
     js-bundle-1:
       - js-file-1-1
