@@ -43,6 +43,9 @@
 
 css:
   engine: cssmin
+  # Available minification engines:
+  # http://mintdigital.github.com/asset_hat/doc/classes/AssetHat/CSS/Engines.html
+
   bundles:
     css-bundle-1:
       - css-file-1-1
@@ -52,20 +55,21 @@ css:
       - css-file-2-1
       - css-file-2-2
       - css-file-2-3
-    css-bundle-3:
-      - css-file-3-1
-      - css-file-3-2
-      - css-file-3-3
+
 js:
   engine: jsmin
+  # Available minification engines:
+  # http://mintdigital.github.com/asset_hat/doc/classes/AssetHat/JS/Engines.html
+
   # Enable if you're using jQuery or other popular JS:
   #
   # vendors:
   #   jquery:
   #     version: 1.5.2
   #
-  # Full list of supported vendors:
+  # Supported vendors:
   # http://mintdigital.github.com/asset_hat/doc/classes/AssetHat/JS/Vendors.html
+
   bundles:
     js-bundle-1:
       - js-file-1-1
@@ -75,7 +79,3 @@ js:
       - js-file-2-1
       - js-file-2-2
       - js-file-2-3
-    js-bundle-3:
-      - js-file-3-1
-      - js-file-3-2
-      - js-file-3-3

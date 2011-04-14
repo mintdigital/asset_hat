@@ -131,7 +131,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple bundles as separate files' do
-          bundles = [1,2,3].map { |i| "css-bundle-#{i}" }
+          bundles = [1,2].map { |i| "css-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['css']['bundles'][bundle]
             sources.map { |src| css_tag("#{src}.css?#{@asset_id}") }
@@ -427,7 +427,7 @@ class AssetHatHelperTest < ActionView::TestCase
         end
 
         should 'include multiple bundles as separate files' do
-          bundles = [1,2,3].map { |i| "js-bundle-#{i}" }
+          bundles = [1,2].map { |i| "js-bundle-#{i}" }
           expected = bundles.map do |bundle|
             sources = @config['js']['bundles'][bundle]
             sources.map { |src| js_tag("#{src}.js?#{@asset_id}") }
