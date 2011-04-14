@@ -121,7 +121,8 @@ For the gritty details, check the
 === Advanced configuration
 
 If you manage deployments with Capistrano[http://www.capify.org/], see the
-gem's packaged example at <code>lib/asset_hat/capistrano.rb</code>.
+gem's packaged example at
+<code>lib/asset_hat/capistrano.rb[https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/capistrano.rb]</code>.
 
 If you want shorter output during deployments, you can use
 `rake asset_hat:minify FORMAT=short` (one output line per bundle) or
