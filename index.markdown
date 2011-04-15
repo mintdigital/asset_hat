@@ -42,7 +42,10 @@ And this in your deploy script:
 
     rake asset_hat:minify
 
-Tested with Rails 2.3.x.
+Tested with Rails 2.3.x and Rails 3.0.x ([development branch][]).
+
+[development branch]:
+  https://github.com/mintdigital/asset_hat/tree/development
 
 ## Quick Start ##
 
