@@ -10,7 +10,8 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with minified versions' do
         setup do
           @commit_id = '111'
-          flexmock(AssetHat, :last_commit_id => @commit_id)
+          flexmock(AssetHat).should_receive(:last_commit_id => @commit_id).
+            by_default
         end
 
         should 'include one file by name, and ' +
@@ -154,10 +155,10 @@ class AssetHatHelperTest < ActionView::TestCase
       context 'with minified versions' do
         setup do
           @commit_id = '111'
-          flexmock(AssetHat,
-            :last_commit_id => @commit_id,
+          flexmock(AssetHat).should_receive(
+            :last_commit_id        => @commit_id,
             :last_bundle_commit_id => @commit_id
-          )
+          ).by_default
         end
 
         should 'include one file by name, and ' +
@@ -186,21 +187,35 @@ class AssetHatHelperTest < ActionView::TestCase
             end
           end
 
-          should 'include jQuery and jQuery UI' do
+          should 'include jQuery and jQuery UI via local vendor files' do
             [:jquery, :jquery_ui].each do |vendor|
+              vendor_filename = "#{vendor.to_s.dasherize}.min.js"
+              flexmock(AssetHat).should_receive(:asset_exists?).
+                with(vendor_filename, :js).and_return(true)
               output = include_js(vendor, :cache => true)
+
               assert_equal(
-                js_tag("#{vendor.to_s.dasherize}.min.js?#{@commit_id}"),
+                js_tag("#{vendor_filename}?#{@commit_id}"),
                 output)
             end
           end
 
-          should 'include Prototype and script.aculo.us' do
+          should 'include Prototype and script.aculo.us ' +
+                 'via local vendor files' do
             [:prototype, :scriptaculous].each do |vendor|
+              vendor_filename = "#{vendor}.js"
+              flexmock(AssetHat).should_receive(:asset_exists?).
+                with(vendor_filename, :js).and_return(true)
               output = include_js(vendor, :cache => true)
+
               assert_equal js_tag("#{vendor}.js?#{@commit_id}"), output
                 # N.B.: Including only the regular, not minified, version
             end
+          end
+
+          should 'not use a remote URL fallback if version is unknown' do
+            output = include_js(:jquery, :cache => true)
+            assert_equal js_tag("jquery.min.js?#{@commit_id}"), output
           end
 
           context 'with remote requests via SSL' do
@@ -211,9 +226,10 @@ class AssetHatHelperTest < ActionView::TestCase
 
                 flexmock_teardown
                 flexmock_rails_app
-                flexmock_rails_app_config(
-                  :consider_all_requests_local => false)
-                flexmock(AssetHat, :cache? => true)
+                flexmock(AssetHat,
+                  :cache? => true,
+                  :consider_all_requests_local? => false
+                )
                 flexmock(@controller.request, :ssl? => true)
                 assert @controller.request.ssl?,
                   'Precondition: Request should use SSL'
@@ -229,9 +245,10 @@ class AssetHatHelperTest < ActionView::TestCase
                 http_cache_key = AssetHat.html_cache[:js].to_a.first[0]
                 flexmock_teardown
                 flexmock_rails_app
-                flexmock_rails_app_config(
-                  :consider_all_requests_local => false)
-                flexmock(AssetHat, :cache? => true)
+                flexmock(AssetHat,
+                  :cache? => true,
+                  :consider_all_requests_local? => false
+                )
                 flexmock(@controller.request, :ssl? => false)
                 assert !@controller.request.ssl?,
                   'Precondition: Request should not use SSL'
@@ -258,41 +275,153 @@ class AssetHatHelperTest < ActionView::TestCase
           end # context 'with remote requests via SSL'
         end # context 'with vendor JS'
 
-        should 'include jQuery by version via helper option' do
-          version = '1.4.1'
-          output = include_js(:jquery, :version => version, :cache => true)
-          assert_equal(
-            js_tag("jquery-#{version}.min.js?#{@commit_id}"), output)
-        end
-
-        context 'with a mock config' do
+        context 'with a mock config containing a version number' do
           setup do
-            version = '1.4.1'
+            @vendor_version = '1.5.2'
             config = AssetHat.config
             config['js']['vendors'] = {
-              'jquery' => {
-                'version' => version,
-                'remote_url' => 'http://example.com/cdn/jquery.min.js',
-                'remote_ssl_url' => 'https://secure.example.com/cdn/jquery.min.js'
-              }
+              'jquery' => {'version' => @vendor_version}
             }
-            flexmock(AssetHat, :config => config)
+            flexmock(AssetHat).should_receive(:config => config).by_default
           end
 
-          should 'include jQuery by version via config file' do
-            version = AssetHat.config['js']['vendors']['jquery']['version']
+          should 'include local copy of vendor with version in config file' do
+            vendor_filename = "jquery-#{@vendor_version}.min.js"
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(vendor_filename, :js).and_return(true)
+
             assert_equal(
-              js_tag("jquery-#{version}.min.js?#{@commit_id}"),
+              js_tag("#{vendor_filename}?#{@commit_id}"),
               include_js(:jquery, :cache => true)
             )
           end
 
-          context 'with remote requests' do
+          should 'include local copy of vendor with ' +
+                 'custom version in helper options' do
+            custom_version  = '1.3.2'
+            vendor_filename = "jquery-#{custom_version}.min.js"
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(vendor_filename, :js).and_return(true)
+
+            assert_equal(
+              js_tag("#{vendor_filename}?#{@commit_id}"),
+              include_js(:jquery, :version => custom_version, :cache => true))
+          end
+
+          context 'with local requests but no local copy of vendor file' do
             setup do
-              flexmock_rails_app_config(:consider_all_requests_local => false)
+              # Mock for version from config file:
+              flexmock(AssetHat).should_receive(:asset_exists?).
+                with("jquery-#{@vendor_version}.min.js", :js).
+                and_return(false).by_default
+
+              # Mock for version from helper options:
+              @custom_vendor_version = '1.3.2'
+              flexmock(AssetHat).should_receive(:asset_exists?).
+                with("jquery-#{@custom_vendor_version}.min.js", :js).
+                and_return(false).by_default
+
+              assert AssetHat.consider_all_requests_local?, 'Precondition'
             end
 
-            should 'use specified remote URL for jQuery' do
+            should 'fall back to default remote vendor URL ' +
+                   'with version in config file' do
+              src = "http://ajax.googleapis.com/ajax/libs/jquery/" +
+                    "#{@vendor_version}/jquery.min.js"
+
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true))
+            end
+
+            should 'fall back to default remote vendor URL ' +
+                   'with custom version in helper options' do
+              src = "http://ajax.googleapis.com/ajax/libs/jquery/" +
+                    "#{@custom_vendor_version}/jquery.min.js"
+
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :version => @custom_vendor_version,
+                                    :cache   => true))
+            end
+
+            should 'fall back to default remote vendor SSL URL ' +
+                   'with version in config file' do
+              flexmock(@controller.request, :ssl? => true)
+              src = "https://ajax.googleapis.com/ajax/libs/jquery/" +
+                    "#{@vendor_version}/jquery.min.js"
+
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true))
+            end
+
+            should 'fall back to default remote vendor SSL URL ' +
+                   'with custom version in helper options' do
+              flexmock(@controller.request, :ssl? => true)
+              src = "https://ajax.googleapis.com/ajax/libs/jquery/" +
+                    "#{@custom_vendor_version}/jquery.min.js"
+
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :version => @custom_vendor_version,
+                                    :cache   => true))
+            end
+
+          end # context 'with local requests but no local copy of vendor file'
+        end # context 'with a mock config containing a version number'
+
+        context 'with a mock config containing custom CDN URLs' do
+          setup do
+            @vendor_version = '1.5.2'
+            config = AssetHat.config
+            config['js']['vendors'] = {
+              'jquery' => {
+                'version'        => @vendor_version,
+                'remote_url'     => 'http://example.com/cdn/' +
+                                    "jquery-#{@vendor_version}.min.js",
+                'remote_ssl_url' => 'https://secure.example.com/cdn/' +
+                                    "jquery-#{@vendor_version}.min.js"
+              }
+            }
+            flexmock(AssetHat).should_receive(:config => config).by_default
+          end
+
+          context 'with local requests but no local copy of vendor file' do
+            setup do
+              flexmock(AssetHat).should_receive(:asset_exists?).
+                with("jquery-#{@vendor_version}.min.js", :js).
+                and_return(false).by_default
+              assert AssetHat.consider_all_requests_local?, 'Precondition'
+            end
+
+            should 'fall back to configured remote vendor URL' do
+              src = AssetHat.config['js']['vendors']['jquery']['remote_url']
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true))
+            end
+
+            should 'fall back to configured remote vendor SSL URL' do
+              flexmock(@controller.request, :ssl? => true)
+              src =
+                AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
+
+              assert_equal(
+                %{<script src="#{src}" type="text/javascript"></script>},
+                include_js(:jquery, :cache => true)
+              )
+            end
+          end # context 'with local requests but no local copy of vendor file'
+
+          context 'with remote requests' do
+            setup do
+              flexmock(AssetHat).
+                should_receive(:consider_all_requests_local? => false)
+              assert !AssetHat.consider_all_requests_local?, 'Precondition'
+            end
+
+            should 'use specified remote URL for vendor' do
               src = AssetHat.config['js']['vendors']['jquery']['remote_url']
               assert_equal(
                 %{<script src="#{src}" type="text/javascript"></script>},
@@ -300,7 +429,7 @@ class AssetHatHelperTest < ActionView::TestCase
               )
             end
 
-            should 'use specified remote SSL URL for jQuery' do
+            should 'use specified remote SSL URL for vendor' do
               flexmock(@controller.request, :ssl? => true)
               src =
                 AssetHat.config['js']['vendors']['jquery']['remote_ssl_url']
@@ -311,7 +440,8 @@ class AssetHatHelperTest < ActionView::TestCase
               )
             end
           end # context 'with remote requests'
-        end # context 'with a mock config'
+
+        end # context 'with a mock config containing custom CDN URLs'
 
         should 'include multiple files by name' do
           flexmock(AssetHat, :asset_exists? => true)
@@ -457,19 +587,17 @@ class AssetHatHelperTest < ActionView::TestCase
 
   def flexmock_rails_app
     # Creates just enough hooks for a dummy Rails app.
-    flexmock(Rails, :application => flexmock('dummy_app',
-      :config => flexmock(:consider_all_requests_local => true),
-      :env_defaults => {}
-    ))
-
-    if ActionController::Base.respond_to?(:consider_all_requests_local)
-      # Rails 2.x
-      flexmock(ActionController::Base, :consider_all_requests_local => true)
-    end
+    flexmock(Rails,
+      :application => flexmock('dummy_app', :env_defaults => {}),
+      :logger      => flexmock('dummy_logger', :warn => nil)
+    )
 
     if defined?(config) # Rails 3.x
       config.assets_dir = AssetHat::ASSETS_DIR
     end
+
+    flexmock(AssetHat).should_receive(:consider_all_requests_local? => true).
+      by_default
   end
 
   def flexmock_rails_app_config(opts)
