@@ -124,9 +124,23 @@ module AssetHat
   # Returns <code>true</code> if bundles should be included as single minified
   # files (e.g., in production), or <code>false</code> if bundles should be
   # included as separate, unminified files (e.g., in development). To modify
-  # this value, set <code>config.action_controller.perform_caching = true</code>
+  # this value, set
+  # <code>config.action_controller.perform_caching</code> (boolean)
   # in your environment.
   def self.cache? ; ActionController::Base.perform_caching ; end
+
+  # Returns the value of
+  # <code>Rails.application.config.consider_all_requests_local</code> or its
+  # equivalent in older versions of Rails. To modify this value, set
+  # <code>config.consider_all_requests_local</code> (boolean) in your
+  # environment.
+  def self.consider_all_requests_local?
+    if defined?(Rails) && Rails.respond_to?(:application)
+      Rails.application.config.consider_all_requests_local
+    else # Rails 2.x
+      ActionController::Base.consider_all_requests_local
+    end
+  end
 
   # Returns the expected path for the minified version of an asset:
   #
