@@ -46,7 +46,7 @@ module AssetHat
     # Process arguments
     type = type.to_sym
     unless TYPES.include?(type)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       return
     end
 

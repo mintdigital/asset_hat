@@ -65,7 +65,7 @@ module AssetHat
     when :css ; STYLESHEETS_DIR
     when :js  ; JAVASCRIPTS_DIR
     else
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       nil
     end
   end
@@ -79,7 +79,7 @@ module AssetHat
     when :css ; STYLESHEETS_PATH
     when :js  ; JAVASCRIPTS_PATH
     else
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       nil
     end
   end
@@ -129,7 +129,7 @@ module AssetHat
   def self.bundles_path(type, options={})
     type = type.to_sym
     unless TYPES.include?(type)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       return
     end
 
@@ -155,7 +155,7 @@ module AssetHat
     # Process arguments
     type = type.to_sym
     unless TYPES.include?(type)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       return
     end
 
@@ -210,7 +210,7 @@ module AssetHat
   def self.bundle_filenames(bundle, type)
     # Process arguments
     unless TYPES.include?(type.to_sym)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       return
     end
 
@@ -227,7 +227,7 @@ module AssetHat
   def self.bundle_filepaths(bundle, type)
     # Process arguments
     unless TYPES.include?(type.to_sym)
-      raise "Unknown type \"#{type}\"; should be one of: #{TYPES.join(', ')}."
+      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
       return
     end
 
