@@ -9,8 +9,8 @@ begin
     gemspec.summary     = 'Your assets are covered.'
     gemspec.description = %{
       Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on
-      deploy), not at runtime. Loads popular JS frameworks (like jQuery and
-      Prototype) from localhost in development, and auto-switches to Google's
+      deploy), not at runtime. Loads popular third-party JS (like jQuery, YUI,
+      and Ext JS) from localhost in development, and auto-switches to Google's
       CDN in production. Can rewrite stylesheets to use CDN hosts (not just
       your web server) and cache-busting hashes for updated images.
     }.strip.gsub(/\s+/, ' ')

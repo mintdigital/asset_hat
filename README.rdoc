@@ -6,11 +6,12 @@ With Rails' default asset caching, CSS and JS are concatenated (not even
 minified) at runtime when that bundle is first requested. Not good enough.
 To make your pages load faster, AssetHat can automatically:
 
-* Easily *minify* and *bundle* CSS and JS on deploy to reduce file sizes and
-  HTTP requests.
-* Load popular <b>third-party JS</b> (like jQuery and Prototype)
+* Easily *minify* and *bundle* CSS and JS to reduce file sizes and
+  HTTP requests. Do this on deploy, and avoid any performance hit at runtime.
+* Load popular <b>third-party JS</b> (like jQuery, YUI, and Ext JS)
   from {<b>Google's CDN</b>}[http://code.google.com/apis/ajaxlibs/]
-  when in production, or from localhost in development.
+  when in production, or from localhost in development. It's as simple as
+  <code><%= include_js :jquery %></code> to load straight from Google.
 * Force image URLs in your CSS to use <b>CDN subdomains</b>
   (including SSL support), not just the current host.
 * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
@@ -34,6 +35,9 @@ Which expands into:
   <script src="/javascripts/bundles/common.min.js"
     type="text/javascript"></script>
 
+Don't have your own copy of jQuery? AssetHat detects this and loads jQuery
+from Google's CDN instead, whether you're in development or production.
+
 Add this to your deploy script, and your CSS/JS will be optimized
 automatically:
 
@@ -54,7 +58,7 @@ For the gritty details, check the
   1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
   2.  Command-line: <code>bundle install</code>
 
-* Rails 2.x:
+* Rails 2.3.x:
 
   1.  Add the gem:
 
@@ -63,7 +67,7 @@ For the gritty details, check the
         1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
         2.  Command-line: <code>bundle install</code>
 
-      * If you're using Rails 2.x's <code>config.gem</code>:
+      * If you're using Rails 2.3.x's <code>config.gem</code>:
 
         1.  Add to your app's <code>config/environment.rb</code>:
             <code>config.gem 'asset_hat', :version => '0.x.x'</code>
