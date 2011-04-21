@@ -20,19 +20,21 @@ module AssetHat
       # * Loaders:
       #   * {LABjs}[http://labjs.com]
       VENDORS_ON_GOOGLE_CDN = [
-        :jquery, :jquery_ui,
-        :prototype, :scriptaculous,
-        :mootools,
         :dojo,
-        :swfobject,
-        :yui,
         :ext_core,
-        :webfont
+        :jquery,
+        :jquery_ui,
+        :mootools,
+        :prototype,
+        :scriptaculous,
+        :swfobject,
+        :webfont,
+        :yui
       ]
-      VENDORS = VENDORS_ON_GOOGLE_CDN + [
-        # Not on Google CDN:
+      VENDORS_ON_CDNJS = [
         :lab_js
       ]
+      VENDORS = VENDORS_ON_GOOGLE_CDN + VENDORS_ON_CDNJS
 
       # Accepts an item from `VENDORS`, and returns the URL at which that
       # vendor asset can be found. The URL is either local (relative) or
@@ -158,8 +160,24 @@ module AssetHat
           uris[:local ] = "#{['webfont', version].compact.join('-')}.min.js"
           uris[:remote] = "http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/webfont/#{version}/webfont.js"
         when :lab_js
-          # Exists only locally, not on Google CDN
           uris[:local ] = "#{['LAB', version].compact.join('-')}.min.js"
+          unless use_ssl
+            uris[:remote] = "http://ajax.cdnjs.com/ajax/libs/labjs/#{version}/LAB.min.js"
+            # SSL support at cdnjs.com is currently unreliable, as per these
+            # discussions about Amazon CloudFront not supporting SSL:
+            # - <http://www.cdnjs.com/#IDComment130405257>
+            # - <https://forums.aws.amazon.com/message.jspa?messageID=141951>
+            #
+            # As a result, a remote URL is provided for this vendor only if
+            # the non-SSL version is needed. Two workarounds are:
+            #
+            # 1.  Hardcode cdnjs.com's specific CloudFront bucket ID
+            #     ("d3eee1nukb5wg") into your app's assets.yml as
+            #     `remote_ssl_url`. Example URL:
+            #     <https://d3eee1nukb5wg.cloudfront.net/ajax/libs/backbone.js/0.3.3/backbone-min.js>
+            # 2.  Download a copy of the vendor JS and host it on a server
+            #     where you control SSL certificates.
+          end
         else nil # TODO: Write to log
         end
 

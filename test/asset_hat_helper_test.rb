@@ -873,7 +873,7 @@ class AssetHatHelperTest < ActionView::TestCase
           @config = AssetHat.config
           @config['js']['vendors'] = {
             'jquery' => {'version' => '1.4.4'},
-            'lab_js' => {'version' => '1.0.4'}
+            'lab_js' => {'version' => '1.2.0'}
           }
           flexmock(AssetHat).should_receive(:config => @config).by_default
 
@@ -919,11 +919,12 @@ class AssetHatHelperTest < ActionView::TestCase
 
         should 'render with caching enabled and remote vendors' do
           flexmock(AssetHat, :consider_all_requests_local? => false)
+          lab_js_url = 'http://ajax.cdnjs.com/ajax/libs/labjs/' +
+                        @lab_js_version + '/LAB.min.js'
           jquery_url = 'http://ajax.googleapis.com/ajax/libs/jquery/' +
                         @jquery_version + '/jquery.min.js'
 
-          expected =  '<script ' +
-                        %{src="/javascripts/LAB-#{@lab_js_version}.min.js" } +
+          expected =  %{<script src="#{lab_js_url}" } +
                         %{type="text/javascript"></script>\n}
           expected << %{<script type="text/javascript">\n}
           expected << "window.$LABinst=$LAB.\n"
