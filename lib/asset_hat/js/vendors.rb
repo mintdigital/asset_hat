@@ -218,7 +218,10 @@ module AssetHat
             is_last = i >= urls.length - 1
             lines << "  script('#{url}').wait()#{is_last ? ';' : '.'}"
               # Use `wait()` for each script to load in parallel, but
-              # preserve execution order by default.
+              # preserve execution order by default. Alternatively, call
+              # `$LAB.setOptions({AlwaysPreserveOrder:true})` at the start
+              # of the chain, but if the list of bundles to include is short,
+              # this may use even more bytes.
           end
           lines.join("\n")
         end

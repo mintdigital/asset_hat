@@ -888,59 +888,93 @@ class AssetHatHelperTest < ActionView::TestCase
         end
         teardown { ENV['RAILS_ASSET_ID'] = nil }
 
-        should 'render with caching disabled' do
-          loader_filename = "LAB-#{@lab_js_version}.min.js"
-          vendor_filename = "jquery-#{@jquery_version}.min.js"
+        context 'with local requests' do
+          should 'render with caching disabled' do
+            loader_filename = "LAB-#{@lab_js_version}.min.js"
+            vendor_filename = "jquery-#{@jquery_version}.min.js"
 
-          flexmock(AssetHat).should_receive(:asset_exists?).
-            with(loader_filename, :js).and_return(true)
-          flexmock(AssetHat).should_receive(:asset_exists?).
-            with(vendor_filename, :js).and_return(true)
-          assert AssetHat.asset_exists?(vendor_filename, :js), 'Precondition'
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(loader_filename, :js).and_return(true)
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(vendor_filename, :js).and_return(true)
+            assert AssetHat.asset_exists?(vendor_filename, :js),
+              'Precondition'
 
-          expected =  %{<script src="/javascripts/#{loader_filename}" } +
-                        %{type="text/javascript"></script>\n}
-          expected << %{<script type="text/javascript">\n}
-          expected << "window.$LABinst=$LAB.\n"
-          expected << "  script('/javascripts/#{vendor_filename}').wait().\n"
-          expected << "  script('/javascripts/foo.js').wait().\n"
-          expected << "  script('/javascripts/js-file-1-1.js').wait().\n"
-          expected << "  script('/javascripts/js-file-1-2.js').wait().\n"
-          expected << "  script('/javascripts/js-file-1-3.js').wait().\n"
-          expected << "  script('/javascripts/js-file-2-1.js').wait().\n"
-          expected << "  script('/javascripts/js-file-2-2.js').wait().\n"
-          expected << "  script('/javascripts/js-file-2-3.js').wait();\n"
-          expected << '</script>'
+            expected =  %{<script src="/javascripts/#{loader_filename}" } +
+                          %{type="text/javascript"></script>\n}
+            expected << %{<script type="text/javascript">\n}
+            expected << "window.$LABinst=$LAB.\n"
+            expected << "  script('/javascripts/#{vendor_filename}').wait().\n"
+            expected << "  script('/javascripts/foo.js').wait().\n"
+            expected << "  script('/javascripts/js-file-1-1.js').wait().\n"
+            expected << "  script('/javascripts/js-file-1-2.js').wait().\n"
+            expected << "  script('/javascripts/js-file-1-3.js').wait().\n"
+            expected << "  script('/javascripts/js-file-2-1.js').wait().\n"
+            expected << "  script('/javascripts/js-file-2-2.js').wait().\n"
+            expected << "  script('/javascripts/js-file-2-3.js').wait();\n"
+            expected << '</script>'
 
-          assert_equal expected, include_js(:jquery, 'foo',
-                                  :bundles => %w[js-bundle-1 js-bundle-2],
-                                  :loader  => :lab_js)
-        end
+            assert_equal expected, include_js(:jquery, 'foo',
+                                    :bundles => %w[js-bundle-1 js-bundle-2],
+                                    :loader  => :lab_js)
+          end
 
-        should 'render with caching enabled and remote vendors' do
-          flexmock(AssetHat, :consider_all_requests_local? => false)
-          lab_js_url = 'http://ajax.cdnjs.com/ajax/libs/labjs/' +
-                        @lab_js_version + '/LAB.min.js'
-          jquery_url = 'http://ajax.googleapis.com/ajax/libs/jquery/' +
-                        @jquery_version + '/jquery.min.js'
+          should 'render with caching disabled and remote vendor ' +
+                 'if local loader vendor is missing' do
+            loader_filename = "LAB-#{@lab_js_version}.min.js"
+            vendor_filename = "jquery-#{@jquery_version}.min.js"
+            loader_url      = 'http://ajax.cdnjs.com/ajax/libs/labjs/' +
+                                @lab_js_version + '/LAB.min.js'
 
-          expected =  %{<script src="#{lab_js_url}" } +
-                        %{type="text/javascript"></script>\n}
-          expected << %{<script type="text/javascript">\n}
-          expected << "window.$LABinst=$LAB.\n"
-          expected << "  script('#{jquery_url}').wait().\n"
-          expected << "  script('/javascripts/foo.js').wait().\n"
-          expected << "  script('/javascripts/" +
-                          "bundles/js-bundle-1.min.js').wait().\n"
-          expected << "  script('/javascripts/" +
-                          "bundles/js-bundle-2.min.js').wait();\n"
-          expected << '</script>'
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(loader_filename, :js).and_return(false)
+            flexmock(AssetHat).should_receive(:asset_exists?).
+              with(vendor_filename, :js).and_return(true)
+            assert AssetHat.asset_exists?(vendor_filename, :js),
+              'Precondition'
 
-          assert_equal expected, include_js(:jquery, 'foo',
-                                  :bundles => %w[js-bundle-1 js-bundle-2],
-                                  :loader  => :lab_js,
-                                  :cache   => true)
-        end
+            expected =  %{<script src="#{loader_url}" } +
+                          %{type="text/javascript"></script>\n}
+            expected << %{<script type="text/javascript">\n}
+            expected << "window.$LABinst=$LAB.\n"
+            expected << "  script('/javascripts/#{vendor_filename}').wait().\n"
+            expected << "  script('/javascripts/foo.js').wait();\n"
+            expected << '</script>'
+
+            assert_equal expected,
+              include_js(:jquery, 'foo', :loader => :lab_js)
+          end
+        end # context 'with local requests'
+
+        context 'with remote requests' do
+          setup do
+            flexmock(AssetHat, :consider_all_requests_local? => false)
+          end
+
+          should 'render with caching enabled and remote vendors' do
+            lab_js_url = 'http://ajax.cdnjs.com/ajax/libs/labjs/' +
+                          @lab_js_version + '/LAB.min.js'
+            jquery_url = 'http://ajax.googleapis.com/ajax/libs/jquery/' +
+                          @jquery_version + '/jquery.min.js'
+
+            expected =  %{<script src="#{lab_js_url}" } +
+                          %{type="text/javascript"></script>\n}
+            expected << %{<script type="text/javascript">\n}
+            expected << "window.$LABinst=$LAB.\n"
+            expected << "  script('#{jquery_url}').wait().\n"
+            expected << "  script('/javascripts/foo.js').wait().\n"
+            expected << "  script('/javascripts/" +
+                            "bundles/js-bundle-1.min.js').wait().\n"
+            expected << "  script('/javascripts/" +
+                            "bundles/js-bundle-2.min.js').wait();\n"
+            expected << '</script>'
+
+            assert_equal expected, include_js(:jquery, 'foo',
+                                    :bundles => %w[js-bundle-1 js-bundle-2],
+                                    :loader  => :lab_js,
+                                    :cache   => true)
+          end
+        end # context 'with remote requests'
       end # context 'with LABjs version config, vendor, and multiple bundles'
     end # context 'with LABjs'
 

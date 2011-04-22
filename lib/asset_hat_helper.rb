@@ -251,8 +251,8 @@ module AssetHatHelper
   #   include_js 'json2', 'application', :only_url => true
   #   => ['/javascripts/json2.js', '/javascripts/application.js']
   #
-  # Load JS files with LABjs (You must first download the latest LABjs
-  # manually from <http://labjs.com/>):
+  # Load JS files with {LABjs}[http://labjs.com] (hosted either from cdnjs or
+  # your own web server, if found in <code>public/javascripts/</code>):
   #
   #   # config/assets.yml:
   #   js:
@@ -262,12 +262,24 @@ module AssetHatHelper
   #
   #   # Usage:
   #   include_js :jquery, :bundle => 'application', :loader => :lab_js
-  #   =>  <script src="/javascripts/LAB-1.x.x.min.js" ...></script>
+  #   =>  <script src="http://ajax.cdnjs.com/.../1.x.x/LAB.min.js" ...></script>
   #       <script type="text/javascript">
   #       window.$LABinst=$LAB.
   #         script('http://ajax.googleapis.com/.../jquery.min.js').wait().
   #         script('/javascripts/bundles/application.min.js').wait();
   #       </script>
+  #
+  #   # For advanced fine-tuning, build the LABjs calls manually (based on
+  #   # example from http://labjs.com/documentation.php ):
+  #   <script>
+  #      window.$LABinst = $LAB.
+  #        script('<%= include_js 'framework', :only_url => true %>').wait().
+  #        script('<%= include_js 'plugin.framework.js',
+  #                               :only_url => true %>').
+  #        script('<%= include_js 'myplugin.framework.js',
+  #                               :only_url => true %>').wait().
+  #        script('<%= include_js 'init.js', :only_url => true %>').wait();
+  #   </script>
   #
   #   # If you want to execute an inline <script> block that relies on any
   #   # of these dependencies, use the JS variable `window.$LABinst`.
