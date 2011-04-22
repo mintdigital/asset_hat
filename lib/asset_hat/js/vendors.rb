@@ -102,14 +102,16 @@ module AssetHat
           # warning below) in the logs. This needs to be fixed in the app,
           # rather than relying on a CDN to provide the latest stable vendor
           # version.
-          src ||= local_src
-          Rails.logger.warn "\n\nAssetHat WARNING (#{Time.now}):\n" + %{
-            Tried to reference the vendor JS `:#{vendor}`, but
-            #{AssetHat.assets_dir(:js)}/#{local_src} couldn't be found, and
-            no vendor version was given in
-            #{AssetHat::RELATIVE_CONFIG_FILEPATH}.
-          }.squish!
-            # TODO: Create `AssetHat::Logger.warn`, etc. methods
+          if src.blank?
+            src = local_src
+            Rails.logger.warn "\n\nAssetHat WARNING (#{Time.now}):\n" + %{
+              Tried to reference the vendor JS `:#{vendor}`, but
+              #{AssetHat.assets_dir(:js)}/#{local_src} couldn't be found, and
+              no vendor version was given in
+              #{AssetHat::RELATIVE_CONFIG_FILEPATH}.
+            }.squish!
+              # TODO: Create `AssetHat::Logger.warn`, etc. methods
+          end
         end
 
         src
