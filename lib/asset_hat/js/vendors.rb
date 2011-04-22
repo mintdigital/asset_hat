@@ -7,16 +7,16 @@ module AssetHat
       # Homepages:
       #
       # * Frameworks/libraries:
-      #   * {jQuery}[http://jquery.com/]
+      #   * {Dojo}[http://dojotoolkit.org/]
+      #   * {Ext Core}[http://extjs.com/products/extcore/]
       #   * {jQuery UI}[http://jqueryui.com/]
+      #   * {jQuery}[http://jquery.com/]
+      #   * {MooTools}[http://mootools.net/]
       #   * {Prototype}[http://www.prototypejs.org/]
       #   * {script.aculo.us}[http://script.aculo.us/]
-      #   * {MooTools}[http://mootools.net/]
-      #   * {Dojo}[http://dojotoolkit.org/]
       #   * {SWFObject}[http://code.google.com/p/swfobject/]
-      #   * {YUI}[http://developer.yahoo.com/yui/]
-      #   * {Ext Core}[http://extjs.com/products/extcore/]
       #   * {WebFont Loader}[http://code.google.com/apis/webfonts/docs/webfont_loader.html]
+      #   * {YUI}[http://developer.yahoo.com/yui/]
       # * Loaders:
       #   * {LABjs}[http://labjs.com]
       VENDORS_ON_GOOGLE_CDN = [
@@ -161,23 +161,29 @@ module AssetHat
           uris[:remote] = "http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/webfont/#{version}/webfont.js"
         when :lab_js
           uris[:local ] = "#{['LAB', version].compact.join('-')}.min.js"
-          unless use_ssl
-            uris[:remote] = "http://ajax.cdnjs.com/ajax/libs/labjs/#{version}/LAB.min.js"
-            # SSL support at cdnjs.com is currently unreliable, as per these
-            # discussions about Amazon CloudFront not supporting SSL:
-            # - <http://www.cdnjs.com/#IDComment130405257>
-            # - <https://forums.aws.amazon.com/message.jspa?messageID=141951>
-            #
-            # As a result, a remote URL is provided for this vendor only if
-            # the non-SSL version is needed. Two workarounds are:
-            #
-            # 1.  Hardcode cdnjs.com's specific CloudFront bucket ID
-            #     ("d3eee1nukb5wg") into your app's assets.yml as
-            #     `remote_ssl_url`. Example URL:
-            #     <https://d3eee1nukb5wg.cloudfront.net/ajax/libs/backbone.js/0.3.3/backbone-min.js>
-            # 2.  Download a copy of the vendor JS and host it on a server
-            #     where you control SSL certificates.
-          end
+
+          remote_host =
+            if use_ssl
+              'https://d3eee1nukb5wg.cloudfront.net/'
+                # This must match the value in the cdnjs repo:
+                # https://github.com/cdnjs/cdnjs/raw/master/https_location
+                #
+                # Amazon CloudFront doesn't support SSL, as discussed here:
+                # - http://www.cdnjs.com/#IDComment130405257
+                # - https://forums.aws.amazon.com/message.jspa?messageID=141951
+                # As a result, the SSL certificate at <https://cdnjs.com> is
+                # invalid. To work around this, we instead load assets via
+                # cdnjs's CloudFront bucket ID. The bucket ID may change in
+                # the future, so it should be synced with the host published
+                # in the cdnjs repo, as noted above.
+                #
+                # For complete control over this, you can simply download the
+                # vendor JS and host it on a server where you can maintain
+                # SSL certificates.
+            else
+              'http://ajax.cdnjs.com'
+            end
+          uris[:remote] = "#{remote_host}/ajax/libs/labjs/#{version}/LAB.min.js"
         else nil # TODO: Write to log
         end
 
