@@ -872,7 +872,7 @@ class AssetHatHelperTest < ActionView::TestCase
         setup do
           @config = AssetHat.config
           @config['js']['vendors'] = {
-            'jquery' => {'version' => '1.4.4'},
+            'jquery' => {'version' => '1.5.2'},
             'lab_js' => {'version' => '1.2.0'}
           }
           flexmock(AssetHat).should_receive(:config => @config).by_default

@@ -60,7 +60,7 @@ module AssetHat
       #
       # [ssl]     Boolean for whether to include vendor JS via HTTPS. Defaults
       #           to false.
-      # [version] The vendor version, e.g., '1.4.0' for jQuery 1.4. By
+      # [version] The vendor version, e.g., '1.5.0' for jQuery 1.5. By
       #           default, each vendor version is taken from
       #           <code>config/assets.yml</code>; use this option to override
       #           the configuration.
@@ -100,15 +100,15 @@ module AssetHat
           # Use local URL as final resort, even though the file doesn't
           # exist, in hopes that the app maintainer finds the 404 (or the
           # warning below) in the logs. This needs to be fixed in the app,
-          # rather than relying on a CDN to provide the latest stable vendor
-          # version.
+          # rather than relying on a CDN to dynamically provide the latest
+          # stable vendor version.
           if src.blank?
             src = local_src
             Rails.logger.warn "\n\nAssetHat WARNING (#{Time.now}):\n" + %{
               Tried to reference the vendor JS `:#{vendor}`, but
               #{AssetHat.assets_dir(:js)}/#{local_src} couldn't be found, and
-              no vendor version was given in
-              #{AssetHat::RELATIVE_CONFIG_FILEPATH}.
+              couldn't use a remote fallback because no vendor version was
+              given in #{AssetHat::RELATIVE_CONFIG_FILEPATH}.
             }.squish!
               # TODO: Create `AssetHat::Logger.warn`, etc. methods
           end
