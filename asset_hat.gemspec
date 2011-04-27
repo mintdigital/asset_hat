@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2011-04-02}
-  s.description = %q{Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular JS frameworks (like jQuery and Prototype) from localhost in development, and auto-switches to Google's CDN in production. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
+  s.date = %q{2011-04-27}
+  s.description = %q{Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular third-party JS (like jQuery, YUI, and Ext JS) from localhost in development, and auto-switches to Google's CDN in production. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
   s.email = %q{hello@rondevera.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -64,6 +64,7 @@ Gem::Specification.new do |s|
     "lib/asset_hat/tasks.rb",
     "lib/asset_hat/tasks/css.rb",
     "lib/asset_hat/tasks/js.rb",
+    "lib/asset_hat/unicorn.rb",
     "lib/asset_hat/vcs.rb",
     "lib/asset_hat/version.rb",
     "lib/asset_hat_helper.rb",
@@ -102,7 +103,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = %q{http://mintdigital.github.com/asset_hat}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.2}
+  s.rubygems_version = %q{1.4.2}
   s.summary = %q{Your assets are covered.}
   s.test_files = [
     "test/asset_hat_helper_test.rb",
@@ -113,7 +114,16 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<asset_hat>, [">= 0"])
+      s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
+      s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
+      s.add_development_dependency(%q<shoulda>, ["~> 2.10.2"])
+      s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
+      s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
+      s.add_development_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_development_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
@@ -121,6 +131,15 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_runtime_dependency(%q<jsmin>, ["~> 1.0.1"])
     else
+      s.add_dependency(%q<asset_hat>, [">= 0"])
+      s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
+      s.add_dependency(%q<hanna>, ["~> 0.1.12"])
+      s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+      s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
+      s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
+      s.add_dependency(%q<hanna>, ["~> 0.1.12"])
+      s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+      s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
@@ -129,6 +148,15 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
     end
   else
+    s.add_dependency(%q<asset_hat>, [">= 0"])
+    s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
+    s.add_dependency(%q<hanna>, ["~> 0.1.12"])
+    s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+    s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
+    s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
+    s.add_dependency(%q<hanna>, ["~> 0.1.12"])
+    s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
+    s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
     s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
     s.add_dependency(%q<hanna>, ["~> 0.1.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.1"])

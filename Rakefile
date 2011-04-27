@@ -13,7 +13,7 @@ begin
       and Ext JS) from localhost in development, and auto-switches to Google's
       CDN in production. Can rewrite stylesheets to use CDN hosts (not just
       your web server) and cache-busting hashes for updated images.
-    }.strip.gsub(/\s+/, ' ')
+    }.strip.split.join(' ')
     gemspec.homepage    = 'http://mintdigital.github.com/asset_hat'
 
     gemspec.authors     = ['Ron DeVera', 'Mint Digital']
