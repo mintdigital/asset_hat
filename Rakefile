@@ -11,8 +11,9 @@ begin
       Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on
       deploy), not at runtime. Loads popular third-party JS (like jQuery, YUI,
       and Ext JS) from localhost in development, and auto-switches to Google's
-      CDN in production. Can rewrite stylesheets to use CDN hosts (not just
-      your web server) and cache-busting hashes for updated images.
+      CDN in production. Lets you switch on LABjs to load more scripts in
+      parallel. Can rewrite stylesheets to use CDN hosts (not just your web
+      server) and cache-busting hashes for updated images.
     }.strip.split.join(' ')
     gemspec.homepage    = 'http://mintdigital.github.com/asset_hat'
 
