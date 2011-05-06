@@ -450,7 +450,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
         context 'with a mock config containing a version number' do
           setup do
-            @vendor_version = '1.5.2'
+            @vendor_version = '1.6.0'
             config = AssetHat.config
             config['js']['vendors'] = {
               'jquery' => {'version' => @vendor_version}
@@ -549,7 +549,7 @@ class AssetHatHelperTest < ActionView::TestCase
 
         context 'with a mock config containing custom CDN URLs' do
           setup do
-            @vendor_version = '1.5.2'
+            @vendor_version = '1.6.0'
             config = AssetHat.config
             config['js']['vendors'] = {
               'jquery' => {
@@ -872,7 +872,7 @@ class AssetHatHelperTest < ActionView::TestCase
         setup do
           @config = AssetHat.config
           @config['js']['vendors'] = {
-            'jquery' => {'version' => '1.5.2'},
+            'jquery' => {'version' => '1.6.0'},
             'lab_js' => {'version' => '1.2.0'}
           }
           flexmock(AssetHat).should_receive(:config => @config).by_default

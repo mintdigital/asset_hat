@@ -199,7 +199,7 @@ module AssetHatHelper
   #   include_js :jquery
   #   =>  <script src="http://ajax.googleapis.com/.../jquery.min.js" ...></script>
   #     # Set jQuery versions either in `config/assets.yml`, or by using
-  #     # `include_js :jquery, :version => '1.5.2'`.
+  #     # `include_js :jquery, :version => '1.6.0'`.
   #
   # Include a bundle of JS files (i.e., a concatenated set of files;
   # configure in <code>config/assets.yml</code>):
