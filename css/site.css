@@ -1,0 +1,671 @@
+/*!
+ * BloomBox Social Networking and UGC Toolkit
+ * Copyright 2006-2011, Mint Digital Limited, All rights reserved.
+ */
+
+/*** Colors ***
+ * Dark gray:   #191919   Backgrounds
+ * Off-white:   #e6e6e6   Text
+ * Yellow:      #fcc000   Links
+ */
+
+
+
+/*** Reset ***/
+/*  Adapted from:
+    http://meyerweb.com/eric/tools/css/reset/
+    v2.0 | 20110126 | License: none (public domain) */
+
+/*
+html,body,div,span,applet,object,iframe,
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+a,abbr,acronym,address,big,cite,code,
+del,dfn,em,img,ins,kbd,q,s,samp,
+small,strike,strong,sub,sup,tt,var,
+b,u,i,center,
+dl,dt,dd,ol,ul,li,
+fieldset,form,label,legend,
+table,caption,tbody,tfoot,thead,tr,th,td,
+article,aside,canvas,details,embed,
+figure,figcaption,footer,header,hgroup,
+menu,nav,output,ruby,section,summary,
+time,mark,audio,video
+*/
+html,body,div,span,
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+a,abbr,acronym,address,big,cite,code,
+del,dfn,em,img,ins,kbd,q,samp,
+small,strike,strong,sub,sup,tt,var,
+b,i,
+dl,dt,dd,ol,ul,li,
+table,caption,tbody,tfoot,thead,tr,th,td,
+aside,details,
+figure,figcaption,footer,header,hgroup,
+menu,nav,output,section,summary,
+time,mark{
+margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}
+/*
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section{display:block}
+*/
+aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section{display:block}
+body{line-height:1}
+ol,ul{list-style:none}
+blockquote,q{quotes:none}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}
+table{border-collapse:collapse;border-spacing:0}
+/*pre,code{font-family:"Courier New",Courier,monospace}*/
+pre,code{font-family:Courier,monospace}
+
+
+
+/*** Global ***/
+
+html, body {
+  height: 100%;
+  background: #191919;
+  color: #e6e6e6;
+  font-family: Helvetica, Arial, sans-serif;
+}
+a {
+  color: #fcc000;
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+div.ie-error {
+  margin: 4em 0 0;
+  padding: 1em;
+  background: #600;
+  color: #fff;
+  line-height: 1.25;
+}
+div.ie-error a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+
+
+/*** Global > Layout ***/
+
+div#page {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+header.site {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 261px;
+  background: #262626 url(../img/nav-bg.png) 0 0 repeat;
+  border-right: 1px solid #191919;
+  z-index: 9;
+}
+header.site h1 {
+  width: 225px; /* = <a> bg image width */
+  height: 43px; /* = <a> bg image height */
+  margin: 80px 0 0 auto;
+}
+header.site h1 a {
+  position: relative;
+  display: block;
+  height: 100%;
+  background: transparent url(../img/logo-asset-hat.png) 0 0 no-repeat;
+  text-indent: -999em;
+}
+header.site h1 a:hover:before,
+header.site h1 a:focus:before {
+  position: absolute;
+  left: 105px;
+  top: 1px;
+  display: block;
+  width: 41px;
+  height: 41px;
+  background: inherit;
+  background-position: -105px -1px;
+  content: "";
+    -moz-transform:    rotate(-5deg);
+    -o-transform:      rotate(-5deg);
+    -webkit-transform: rotate(-5deg);
+  transform:           rotate(-5deg);
+}
+header.site nav {
+  margin: 154px 0 0;
+}
+header.site nav ul {
+  border-bottom: 1px solid #191919;
+}
+header.site nav ul li {
+  border-top: 1px solid #191919;
+}
+header.site nav ul li a {
+  display: block;
+  padding: 0.75em;
+  border-left: 0 solid transparent;
+  color: #e6e6e6;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  text-align: right;
+  text-decoration: none;
+    -moz-transition:    linear 0.25s color, ease-out 0.5s margin-left, ease-out 0.5s border-left;
+    -o-transition:      linear 0.25s color, ease-out 0.5s margin-left, ease-out 0.5s border-left;
+    -webkit-transition: linear 0.25s color, ease-out 0.5s margin-left, ease-out 0.5s border-left;
+  transition:           linear 0.25s color, ease-out 0.5s margin-left, ease-out 0.5s border-left;
+}
+header.site nav ul li a:hover,
+header.site nav ul li a:focus {
+  color: #fcc000;
+}
+header.site nav ul li a:focus {
+  text-decoration: underline;
+}
+header.site nav ul li.current a {
+  margin-left: 39px;
+  background: #191919;
+  border-left: 3px solid #bbb;
+  color: #fcc000;
+}
+section {
+  min-height: 100%;
+  margin: 0 0 0 261px; /* margin-right = header.site width */
+  padding: 0 40px 0 15px;
+}
+footer.site {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 0 5em;
+  overflow: hidden;
+  font-size: 0.675em;
+  z-index: 9;
+}
+footer.site div.author,
+footer.site div.legal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+footer.site div.author,
+footer.site div.legal p {
+  padding: 1em 0 4em;
+  border-top: 2px solid #e6e6e6;
+}
+footer.site div.author {
+  left: 40px;
+  width: 221px; /* = header.site width - left */
+}
+footer.site div.author a {
+  display: inline-block;
+  width: 88px;
+  height: 12px;
+  background: transparent url(../img/logo-mintdigital.png) 0 0 no-repeat;
+  text-indent: -999em;
+  vertical-align: bottom;
+}
+footer.site div.legal {
+  /*  This is precariously positioned with a solid background color to
+      obscure the content as its scrolls by. */
+  position: absolute;
+  left: 261px; /* = header.site width */
+  right: 0;
+  background: #191919;
+  text-align: right;
+}
+footer.site div.legal p {
+  margin-right: 40px;
+}
+div#fork-on-github {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 135px;   /* = <a> bg image width */
+  height: 135px;  /* = <a> bg image height */
+}
+div#fork-on-github a {
+  display: block;
+  height: 100%;
+  background: transparent url(../img/github-fork-ribbon.png) 0 0 no-repeat;
+  text-indent: -999em;
+}
+
+
+
+/*** Global > Code ***/
+
+div.code {
+  position: relative;
+  background: #1f1f1f;
+    -moz-border-radius:    3px;
+    -webkit-border-radius: 3px;
+  border-radius:           3px;
+}
+div.code h3 {
+  position: absolute;
+  left: 2em;
+  top: 0;
+  padding: 0.5em 2em;
+  background: #191919; /* = main bg */
+    -webkit-border-bottom-left-radius:  3px;
+    -webkit-border-bottom-right-radius: 3px;
+    -moz-border-radius: 0 0 3px 3px;
+  border-radius:        0 0 3px 3px;
+  font-size: 0.75em;
+}
+div.code pre {
+  overflow: auto;
+  padding: 2em 2em 2em 0.5em;
+  font-size: 0.75em;
+  line-height: 1.25;
+}
+div.code pre::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border: 9px solid #191919;
+}
+div.code pre::-webkit-scrollbar-track,
+div.code pre::-webkit-scrollbar-corner {
+  background: #191919;
+}
+div.code pre::-webkit-scrollbar-thumb {
+  background: #838383;
+    -webkit-border-radius: 2px;
+  border-radius:           2px;
+}
+div.code code span.comment {
+  color: #838383;
+}
+div.code code strong {
+  color: #a9a9a9;
+  font-weight: bold;
+}
+
+
+
+/*** Sections ***/
+
+section h2 {
+  padding: 94px 0 0.25em;
+  clear: both;
+  border-bottom: 2px solid #e6e6e6;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+}
+section p {
+  margin: 2em 0 0;
+  font-size: 0.75em;
+  line-height: 1.5;
+}
+
+
+
+/*** Sections > Home ***/
+
+section#home h2 {
+  padding: 82px 0 0;
+  border: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 83px;
+  font-style: normal;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  text-shadow: 0 -1px 1px #000;
+  text-transform: uppercase;
+}
+section#home h2 span.sub {
+  display: block;
+  opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+section#home ul {
+  margin: 55px 0 0;
+  overflow: hidden;
+}
+section#home ul li {
+  float: left;
+  width: 30%;
+  margin: 0 15px 0 0;
+  font-size: 0.75em;
+  line-height: 1.5;
+}
+section#home ul li:last-child {
+  margin-right: 0;
+}
+section#home ul li:before {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 0 1em;
+  background: transparent url(../img/icons.png) 0 0 no-repeat;
+  content: "";
+}
+section#home ul li.vendors:before { background-position: -30px 0; }
+section#home ul li.images:before  { background-position: -60px 0; }
+section#home ul li.vendors code {
+  white-space: nowrap;
+}
+section#home ul li strong {
+  color: #fff;
+  font-weight: bold;
+}
+
+
+
+/*** Sections > Usage ***/
+
+section#usage div.before {
+  margin: 2em 0 0;
+}
+section#usage div.after {
+  margin: 0.25em 0 0;
+}
+section#usage div.code pre {
+  padding-left: 7em;
+}
+html.js section#usage div.after pre code span.config {
+  display: none;
+}
+html.js section#usage div.after pre code span.config.expanded {
+  display: inline;
+}
+
+
+
+/*** Sections > Installation ***/
+
+section#install div.setup {
+  overflow: hidden;
+}
+section#install div.setup div.code {
+  float: left;
+  width: 48%;
+  margin: 1em 0 0;
+}
+section#install div.setup div.code pre {
+  height: 15.5em;
+}
+section#install div.setup div.installation {
+  margin-right: 15px;
+}
+section#install div.setup div.configuration {
+  float: right;
+}
+section#install div.tips {
+  clear: both;
+  margin: 2em 0 0;
+}
+section#install div.tips ul li {
+  position: relative;
+  min-height: 3em;
+  margin: 2em 0 0;
+  padding: 0 0 0 45px;
+  font-size: 0.75em;
+  line-height: 1.5;
+}
+section#install div.tips ul li:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 30px;
+  height: 30px;
+  background: transparent url(../img/icons.png) -90px 0 no-repeat;
+  content: "";
+}
+section#install div.tips ul li.bundles:before { background-position: -120px 0; }
+section#install div.tips ul li.convert:before { background-position: -150px 0; }
+section#install div.tips ul li p {
+  font-size: 1em;
+}
+section#install div.tips ul li code {
+  color: #999;
+}
+section#install div.tips ul li div.code {
+  margin: 0.5em 0 0;
+  padding: 0.5em 1em;
+}
+
+
+
+/*** Sections > More info ***/
+
+section#more-info {
+  padding-bottom: 4em;
+    /* Keeps bottom content above footer for short viewports */
+}
+section#more-info ul {
+  overflow: hidden;
+  margin: 6.5em 0 0;
+}
+section#more-info ul li {
+  position: relative;
+  float: left; /* For automatically collapsed widths */
+  clear: left;
+  margin: 0 0 3em;
+  padding: 0 0 0 45px;
+}
+section#more-info ul li:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  top: 0.125em;
+  display: block;
+  width: 30px;
+  height: 30px;
+  background: transparent url(../img/icons.png) -180px 0 no-repeat;
+  content: "";
+}
+section#more-info ul li.rdoc:before  { background-position: -210px 0; }
+section#more-info ul li.issue:before { background-position: -240px 0; }
+section#more-info ul li h3 {
+  font-size: 0.75em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+section#more-info ul li p {
+  margin: 0;
+}
+section#more-info ul li.readme p a,
+section#more-info ul li.rdoc p a {
+  position: relative;
+  margin: 0 0 0 0.25em;
+  padding: 0.125em 0.375em;
+    -moz-border-radius:    3px;
+    -webkit-border-radius: 3px;
+  border-radius:           3px;
+    -moz-transition:    all 0.25s linear;
+    -o-transition:      all 0.25s linear;
+    -webkit-transition: all 0.25s linear;
+  transition:           all 1s linear;
+  white-space: nowrap;
+}
+section#more-info ul li.readme p a:after,
+section#more-info ul li.rdoc p a:after {
+  content: " \00BB"; /* = `&raquo;` */
+}
+section#more-info ul li.readme p a:hover,
+section#more-info ul li.readme p a:focus,
+section#more-info ul li.rdoc p a:hover,
+section#more-info ul li.rdoc p a:focus {
+  background: #fcc000;
+  color: #000;
+  text-decoration: none;
+}
+section#more-info p.source {
+  margin: -10em 0 0;
+  padding: 260px 0 38px; /* padding-top + padding-bottom + 10 = bg image height */
+  background: transparent url(../img/logo-asset-hat-lg.png) right top no-repeat;
+}
+
+
+
+/*** Global > Layout > Large viewports ***/
+
+@media screen     and (min-width: 1024px),
+       projection and (min-width: 1024px) {
+
+  header.site {
+    right: 75%;
+    width: auto;
+    min-width: 261px; /* = original width */
+  }
+  footer.site div.author {
+    width: 25%; /* = header.site width - left */
+  }
+  footer.site div.legal {
+    left: 25%; /* = header.site width - left */
+  }
+  section {
+    margin: 0 0 0 25.5%;
+  }
+}
+
+
+
+/*** Global > Layout > Small viewports ***/
+
+@media screen     and (max-width: 800px),
+       projection and (max-width: 800px) {
+
+  header.site {
+    width: 235px;
+  }
+  section {
+    margin-left: 235px; /* = header.site width */
+  }
+  section#home h2 {
+    font-size: 4.5em;
+  }
+  section#usage div.code pre {
+    padding-left: 0;
+  }
+  section#more-info p.source {
+    margin-top: 0;
+    padding-top: 270px; /* = original + 10px */
+  }
+}
+
+
+
+/*** Global > Layout > Tiny viewports ***/
+
+@media screen     and (max-width: 600px),
+       projection and (max-width: 600px) {
+
+  div#page,
+  header.site,
+  footer.site,
+  div#fork-on-github {
+    position: static;
+    width: auto;
+    height: auto;
+  }
+  header.site {
+    padding-top: 1em;
+  }
+  header.site h1 {
+    margin: 0 0 0 0.5em;
+  }
+  header.site nav {
+    margin-top: 1em;
+  }
+  header.site nav ul li a {
+    text-align: left;
+  }
+  header.site nav ul li.current a {
+    margin-left: 0;
+  }
+  section {
+    margin: 5em 0;
+    padding: 0 15px;
+  }
+  section h2 {
+    padding-top: 1em;
+  }
+  section#home {
+    margin-top: 2em;
+  }
+  section#home h2 {
+    padding: 0;
+    font-size: 3em;
+  }
+  section#home ul {
+    margin-top: 0;
+  }
+  section#home ul li {
+    float: none;
+    width: auto;
+    margin: 3em 0 0;
+  }
+  section#usage div.after {
+    margin-top: 2em;
+  }
+  section#usage div.code pre {
+    padding-left: 0;
+  }
+  section#install div.setup div.code {
+    float: none;
+    width: 100%;
+    height: auto;
+  }
+  section#install div.setup div.code pre {
+    height: auto;
+  }
+  section#more-info ul {
+    margin-top: 2em;
+  }
+  section#more-info ul li.readme p a,
+  section#more-info ul li.rdoc p a {
+    padding: 0.125em;
+  }
+  section#more-info p.source {
+    margin-top: 0;
+    padding: 145px 0 19px; /* padding-top    = 1/2 original value + 20px */
+                           /* padding-bottom = 1/2 original value + 20px */
+      -moz-background-size:    169px 144px;
+      -webkit-background-size: 169px 144px;
+    background-size:           169px 144px;
+  }
+  footer.site {
+    margin: 2em 1em 0;
+    padding-bottom: 0;
+    border-top: 2px solid #e6e6e6;
+    font-size: 0.75em;
+    line-height: 1.5;
+  }
+  footer.site div.author,
+  footer.site div.legal {
+    position: static;
+    float: none;
+    padding: 1em 0 0;
+    border: 0;
+  }
+  footer.site div.legal p {
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+  footer.site div.author a {
+    line-height: 1;
+    vertical-align: baseline;
+  }
+  div#fork-on-github {
+    padding: 0.675em 0.675em 1.5em;
+  }
+  div#fork-on-github a {
+    height: auto;
+    background: transparent;
+    font-size: 0.75em;
+    text-indent: 0;
+  }
+}

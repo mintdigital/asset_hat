@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html lang="en-us" class="ie8"><![endif]-->
+<!--[if IE 9]><html lang="en-us" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html lang="en-us"><!--<![endif]-->
+
+<head>
+  <script>document.documentElement.className+=' js';</script>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" media="handheld,screen,projection"
+    href="css/site.min.css" />
+  <!--[if lt IE 9]><script src="js/html5.js"></script><![endif]-->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AssetHat: Load CSS &amp; JS faster. Your assets are covered.</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114"
+    href="img/ios-icon-114x114-precomposed.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72"
+    href="img/ios-icon-72x72-precomposed.png" />
+  <link rel="apple-touch-icon-precomposed"
+    href="img/ios-icon-57x57-precomposed.png" />
+</head>
+<body>
+
+<div id="page">
+
+<header class="site">
+  <h1><a href="#home">AssetHat</a></h1>
+
+  <!--[if lt IE 8]>
+  <div class="ie-error">
+    This version of Internet Explorer is outdated, and it&rsquo;s probably
+    making this site look strange. Please
+    <a href="http://www.microsoft.com/windows/internet-explorer/"
+    >download the latest version from Microsoft</a>.
+  </div>
+  <![endif]-->
+
+  <nav>
+    <ul>
+      <li><a href="#usage">How do I use it?</a></li>
+      <li><a href="#install">Quick install</a></li>
+      <li><a href="#more-info">More info</a></li>
+    </ul>
+  </nav>
+</header> <!-- .site -->
+
+<section id="home">
+  <h2>
+    Load <abbr title="Cascading StyleSheets">CSS</abbr> &amp;
+      <abbr title="JavaScript">JS</abbr> faster.
+    <span class="sub">Your assets are covered.</span>
+  </h2>
+
+  <ul>
+    <li class="minify">
+      Automatically <strong>minify</strong> (remove whitespace/comments) and
+      <strong>bundle</strong> (combine into a single file)
+      <abbr title="Cascading StyleSheets">CSS</abbr> and
+      <abbr title="JavaScript">JS</abbr> on deploy (not at runtime). Cut down
+      on bytes and HTTP requests.
+    </li>
+    <li class="vendors">
+      Load <strong>jQuery, YUI, Ext JS, and more</strong> from
+      <strong><a href="http://code.google.com/apis/libraries/"
+        >Google&rsquo;s CDN</a></strong>
+      in production, or your local copy in development. Loading from Google is
+      as simple as <code>&lt;%= include_js :jquery %&gt;</code>. Switch
+      on <strong><a href="http://labjs.com/">LABjs</a> mode</strong> to load
+      plenty of JS in parallel.
+    </li>
+    <li class="images">
+      Auto-rewrite production CSS to <strong>load images from your
+      CDN</strong>, and to override browsers&rsquo; image caches whenever you
+      update an image.
+    </li>
+  </ul>
+</section> <!-- #home -->
+
+<section id="usage">
+  <h2>How do I use it?</h2>
+
+  <p>
+    AssetHat lets you keep your layouts lightweight, and move all the
+    repetitive stuff to a config file.
+  </p>
+
+  <div class="before code">
+    <h3>Before</h3>
+    <pre><code>
+      <span class="comment"># app/views/layouts/application.html.erb:</span>
+      &lt;%= stylesheet_link_tag 'reset', 'application', :cache =&gt; 'application' %&gt;
+      &lt;%= javascript_include_tag Rails.env.production? ?
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js' :
+            'jquery-1.6.0' %&gt;
+      &lt;%= javascript_include_tag 'plugin1', 'plugin2', :cache =&gt; 'plugins' %&gt;
+      &lt;%= javascript_include_tag 'application' %&gt;
+
+      <span class="comment"># app/views/layouts/admin.html.erb:</span>
+      &lt;%= stylesheet_link_tag 'reset', 'admin', :cache =&gt; 'admin' %&gt;
+      &lt;%= javascript_include_tag Rails.env.production? ?
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js' :
+            'jquery-1.6.0' %&gt;
+      &lt;%= javascript_include_tag 'plugin1', 'plugin2', :cache =&gt; 'plugins' %&gt;
+      &lt;%= javascript_include_tag 'admin' %&gt;
+    </code></pre>
+  </div>
+
+  <div class="after code">
+    <h3>After</h3>
+    <pre><code>
+      <span class="comment"># app/views/layouts/application.html.erb:</span>
+      &lt;%= include_css :bundle =&gt; 'application' %&gt;
+      &lt;%= include_js  :jquery, :bundles =&gt; ['plugins', 'application'] %&gt;
+
+      <span class="comment"># app/views/layouts/admin.html.erb:</span>
+      &lt;%= include_css :bundle =&gt; 'admin' %&gt;
+      &lt;%= include_js  :jquery, :bundles =&gt; ['plugins', 'admin'] %&gt;
+
+      <span class="comment comment-config"># config/assets.yml:</span>
+      <span class="config"><span class="comment"># Use a config file to keep your layouts lightweight:</span>
+      css:
+        bundles:
+          application: ['reset', 'application']
+          admin:       ['reset', 'admin']
+      js:
+        vendors:
+          jquery:
+            version: 1.6.0
+        bundles:
+          plugins:     ['plugin1', 'plugin2']
+          application: ['application']
+          admin:       ['admin']
+      </span> <!-- .config -->
+    </code></pre>
+  </div>
+</section> <!-- #usage -->
+
+<section id="install">
+  <h2>Quick install</h2>
+
+  <p>
+    AssetHat is super-easy to set up for Rails 3 (or Rails 2.3 with Bundler):
+  </p>
+
+  <div class="setup">
+    <div class="installation code">
+      <h3>Installation</h3>
+      <pre><code>
+      <span class="comment"># Add to your Gemfile:</span>
+      gem 'asset_hat', '0.x.x'
+
+      <span class="comment"># Command-line:</span>
+      bundle install
+
+      <span class="comment"># Add to your Rakefile</span>
+      <span class="comment"># (Rails 2.3.x only):</span>
+      require 'asset_hat/tasks'
+      </code></pre>
+    </div>
+
+    <div class="configuration code">
+      <h3>Configuration</h3>
+      <pre><code>
+      <span class="comment"># Generate config/assets.yml:</span>
+      rake asset_hat:config
+
+      <span class="comment"># Set your CSS and JS bundles:</span>
+      vim config/assets.yml
+
+      <span class="comment"># Minify / bundle CSS and JS,</span>
+      <span class="comment"># and change CSS image URLs</span>
+      <span class="comment"># to bust caches / use CDNs:</span>
+      rake asset_hat:minify
+      </code></pre>
+    </div>
+  </div>
+
+  <div class="tips">
+    <p>Some tips:</p>
+    <ul>
+      <li class="deploy">
+        You&rsquo;ll most likely want to update your deploy script to run
+        <code>rake asset_hat:minify</code>. If you deploy with
+        <a href="http://www.capify.org/">Capistrano</a>, AssetHat has an
+        <a href="https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/capistrano.rb"
+          >example Capistrano hook</a>.
+      </li>
+      <li class="bundles">
+        If you made a
+        <abbr title="Cascading StyleSheets">CSS</abbr> bundle called
+        <code>application</code>, then
+        <code>rake asset_hat:minify</code> creates a bundle at
+        <code>public/<wbr />stylesheets/<wbr />bundles/<wbr />application.min.css</code>.
+        Likewise, if you have a <abbr title="JavaScript">JS</abbr> bundle
+        called <code>plugins</code>, then <code>rake asset_hat:minify</code>
+        creates
+        <code>public/<wbr />javascripts/<wbr />bundles/<wbr />plugins.min.js</code>.
+      </li>
+      <li class="convert">
+        <p>
+          Already have an enormous app? You can convert gradually, using
+          AssetHat&rsquo;s <code>include_css</code> and
+          <code>include_js</code> alongside Rails&rsquo;
+          <code>stylesheet_link_tag</code> and
+          <code>javascript_include_tag</code>. If you have plenty of JS files,
+          you can load them in parallel just by enabling
+          <a href="http://labjs.com/">LABjs</a> mode:
+        </p>
+        <div class="code">
+          <code>
+            &lt;%= include_js 'file1', 'file2', 'file3',
+              <strong>:loader =&gt; :lab_js</strong> %&gt;<br />
+            <span class="comment">
+              # Loads JS files with LABjs from
+              <a href="http://www.cdnjs.com/">cdnjs</a>, and uses the version
+              you set in config/assets.yml
+            </span>
+          </code>
+        </div>
+      </li>
+    </ul>
+  </div> <!-- .tips -->
+</section> <!-- #install -->
+
+<section id="more-info">
+  <h2>More info</h2>
+
+  <ul>
+    <li class="readme">
+      <h3>Readme</h3>
+      <p>
+        Walkthrough of configuring and integrating AssetHat.
+        <a href="https://github.com/mintdigital/asset_hat#readme">Go</a>
+      </p>
+    </li>
+    <li class="rdoc">
+      <h3>Rdoc</h3>
+      <p>
+        Deeper details of how AssetHat works.
+        <a href="http://mintdigital.github.com/asset_hat/doc/index.html">Go</a>
+      </p>
+    </li>
+    <li class="issue">
+      <p>Have an idea, problem, or bug report?</p>
+      <p>
+        <a href="https://github.com/mintdigital/asset_hat/issues">Open an issue.</a>
+        Attach a patch or fork away.
+      </p>
+    </li>
+  </ul>
+
+  <p class="source">
+    Get the source code on GitHub:
+    <a href="https://github.com/mintdigital/asset_hat">mintdigital/asset_hat</a>
+  </p>
+</section> <!-- #more-info -->
+
+<footer class="site">
+  <div class="author">
+    by <a href="http://mintdigital.com" rel="author">Mint Digital</a>
+  </div>
+  <div class="legal">
+    <p>
+      Copyright &copy; 2011 Mint Digital Ltd. Released under the
+      <a href="https://github.com/mintdigital/asset_hat/blob/master/LICENSE"
+        rel="license">MIT License</a>.
+      Latest version: <a href="https://github.com/mintdigital/asset_hat"
+        >0.4</a>
+    </p>
+  </div>
+</footer> <!-- .site -->
+
+</div> <!-- #page -->
+
+<div id="fork-on-github">
+  <a href="https://github.com/mintdigital/asset_hat">Fork me on GitHub</a>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script>!window.jQuery&&document.write(unescape('%3Cscript src="js/jquery-1.5.2.min.js"%3E%3C/script%3E'))</script>
+<script src="js/site.min.js"></script>
+
+</body>
+</html>
