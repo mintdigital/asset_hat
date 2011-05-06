@@ -1,6 +1,7 @@
 = HISTORY
 
-* FIX: Stopped `gem install asset_hat` from requiring itself.
+== Version 0.4.1 (2011-05-06)
+* FIX: Stopped `gem install asset_hat` from foolishly requiring itself.
 
 == Version 0.4.0 (2011-05-06)
 * FEATURE: Added Rails 3 support.
