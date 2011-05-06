@@ -1,5 +1,7 @@
 = HISTORY
 
+* FIX: Stopped `gem install asset_hat` from requiring itself.
+
 == Version 0.4.0 (2011-05-06)
 * FEATURE: Added Rails 3 support.
 * FEATURE: Added support for loading JavaScript files via LABjs:
