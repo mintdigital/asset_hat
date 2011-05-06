@@ -31,17 +31,31 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Sat Apr 02 23:06:23 -0400 2011</span>
+          <span class='datetime'>Fri May 06 12:23:46 -0400 2011</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
             <h1><a href="HISTORY.html">HISTORY</a></h1>
+            <h2>Version 0.4.0 (2011-05-06)</h2>
             <ul>
             <li>FEATURE: Added Rails 3 support.
 
             </li>
+            <li>FEATURE: Added support for loading JavaScript files via LABjs: `<%=
+            include_js :jquery, :bundles => %[plugins app], :loader => :lab_js %>`.
+            (Provides only basic LABjs support. To build custom JS logic, use the new
+            `:only_url` option.)
+
+            </li>
+            <li>FEATURE: Added support for getting asset URLs, e.g.: `<%= include_css
+            &#8216;foo&#8217;, :bundle => &#8216;bar&#8217;, :only_url => true %>`,
+            `<%= include_js :jquery, &#8216;foo&#8217;, :bundle => &#8216;bar&#8217;,
+            :only_url => true %>`.
+
+            </li>
+            </ul>
             <h2>Version 0.3.1 (2011-04-02)</h2>
             <ul>
             <li>IMPROVEMENT: Added tolerance for `.css` and `.js` extensions in assets.yml,
@@ -157,7 +171,7 @@
             <h2>Version 0.1.2 (2010-01-27)</h2>
             <ul>
             <li>IMPROVEMENT: Memoized HTML output from `include_css` and `include_js` when
-            `<a href="../classes/AssetHat.html#M000009">AssetHat.cache?</a>` is true.
+            `<a href="../classes/AssetHat.html#M000011">AssetHat.cache?</a>` is true.
 
             </li>
             </ul>

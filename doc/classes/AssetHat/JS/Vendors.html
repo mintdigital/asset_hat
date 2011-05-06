@@ -47,7 +47,7 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000024">source_for</a></li>
+              <li><a href="#M000027">source_for</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -56,19 +56,31 @@
               <div class='name-list'>
                 <table summary='Constants'>
                   <tr class='top-aligned-row context-row'>
-                    <td class='context-item-name'>VENDORS</td>
+                    <td class='context-item-name'>VENDORS_ON_GOOGLE_CDN</td>
                     <td>=</td>
-                    <td class='context-item-value'>[         :jquery, :jquery_ui,         :prototype, :scriptaculous,         :mootools,         :dojo,         :swfobject,         :yui,         :ext_core,         :webfont       ]</td>
+                    <td class='context-item-value'>[         :dojo,         :ext_core,         :jquery,         :jquery_ui,         :mootools,         :prototype,         :scriptaculous,         :swfobject,         :webfont,         :yui       ]</td>
                     <td>&nbsp;</td>
                     <td class='context-item-desc'>
                       
                       A list of supported 3rd-party JavaScript plugin/vendor names. Homepages:
                       
                       <ul>
-                      <li><a href="http://jquery.com/">jQuery</a>
+                      <li>Frameworks/libraries:
+                      
+                      <ul>
+                      <li><a href="http://dojotoolkit.org/">Dojo</a>
+                      
+                      </li>
+                      <li><a href="http://extjs.com/products/extcore/">Ext Core</a>
                       
                       </li>
                       <li><a href="http://jqueryui.com/">jQuery UI</a>
+                      
+                      </li>
+                      <li><a href="http://jquery.com/">jQuery</a>
+                      
+                      </li>
+                      <li><a href="http://mootools.net/">MooTools</a>
                       
                       </li>
                       <li><a href="http://www.prototypejs.org/">Prototype</a>
@@ -77,19 +89,7 @@
                       <li><a href="http://script.aculo.us/">script.aculo.us</a>
                       
                       </li>
-                      <li><a href="http://mootools.net/">MooTools</a>
-                      
-                      </li>
-                      <li><a href="http://dojotoolkit.org/">Dojo</a>
-                      
-                      </li>
                       <li><a href="http://code.google.com/p/swfobject/">SWFObject</a>
-                      
-                      </li>
-                      <li><a href="http://developer.yahoo.com/yui/">YUI</a>
-                      
-                      </li>
-                      <li><a href="http://extjs.com/products/extcore/">Ext Core</a>
                       
                       </li>
                       <li><a
@@ -97,33 +97,96 @@
                       Loader</a>
                       
                       </li>
+                      <li><a href="http://developer.yahoo.com/yui/">YUI</a>
+                      
+                      </li>
+                      </ul>
+                      </li>
+                      <li>Loaders:
+                      
+                      <ul>
+                      <li><a href="http://labjs.com">LABjs</a>
+                      
+                      </li>
+                      </ul>
+                      </li>
                       </ul>
                     </td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>VENDORS_ON_CDNJS</td>
+                    <td>=</td>
+                    <td class='context-item-value'>[         :lab_js       ]</td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>VENDORS</td>
+                    <td>=</td>
+                    <td class='context-item-value'>VENDORS_ON_GOOGLE_CDN + VENDORS_ON_CDNJS</td>
                   </tr>
                 </table>
               </div>
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000024'>
-                <a name='M000024'></a>
+              <div class='method public-class' id='method-M000027'>
+                <a name='M000027'></a>
                 <div class='synopsis'>
                   <span class='name'>source_for</span>
                   <span class='arguments'>(vendor, options={})</span>
                 </div>
                 <div class='description'>
                   <p>
-                  Accepts an item from VENDORS, and returns the URL at which that vendor
-                  asset can be found. The URL is either local (relative) or external
-                  depending on the environment configuration. If external, the URL points to
-                  <a href="http://code.google.com/apis/ajaxlibs/">Google's CDN</a>. Options:
+                  Accepts an item from `VENDORS`, and returns the URL at which that vendor
+                  asset can be found. The URL is either local (relative) or remote, depending
+                  on the environment configuration:
+                  </p>
+                  <ul>
+                  <li>If `<a
+                  href="../../AssetHat.html#M000012">AssetHat.consider_all_requests_local?</a>`
+                  is true:
+                  
+                  <ul>
+                  <li>The local file takes precedence.
+                  
+                  </li>
+                  <li>If the local file is missing, the remote URL in assets.yml is used as a
+                  fallback.
+                  
+                  </li>
+                  <li>If there is no remote URL in assets.yml, the Google CDN URL is used as a
+                  fallback. (This makes setup easier: If the app doesn&#8217;t already have a
+                  local copy of the vendor file, then it&#8217;s instead loaded remotely.)
+                  
+                  </li>
+                  </ul>
+                  </li>
+                  <li>If `<a
+                  href="../../AssetHat.html#M000012">AssetHat.consider_all_requests_local?</a>`
+                  is false:
+                  
+                  <ul>
+                  <li>The remote URL in assets.yml takes precedence.
+                  
+                  </li>
+                  <li>The <a href="http://code.google.com/apis/ajaxlibs/">Google CDN</a> URL is
+                  used as a fallback, but only if a version number can be found (either in
+                  assets.yml or via the helper&#8217;s `:version` option). If no version
+                  number is found, the remote URL cannot be built, so the local file (if any)
+                  is used as a fallback.
+                  
+                  </li>
+                  </ul>
+                  </li>
+                  </ul>
+                  <p>
+                  Options:
                   </p>
                   <dl>
                   <dt>ssl</dt><dd>Boolean for whether to include vendor <a href="../JS.html">JS</a> via
                   HTTPS. Defaults to false.
                   
                   </dd>
-                  <dt>version</dt><dd>The vendor version, e.g., &#8216;1.4.0&#8217; for jQuery 1.4. By default,
+                  <dt>version</dt><dd>The vendor version, e.g., &#8216;1.5.0&#8217; for jQuery 1.5. By default,
                   each vendor version is taken from <tt>config/assets.yml</tt>; use this
                   option to override the configuration.
                   
@@ -131,10 +194,10 @@
                   </dl>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000024-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000024-source'>     <span class="ruby-comment cmt"># File lib/asset_hat/js/vendors.rb, line 42</span>&#x000A; 42:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">source_for</span>(<span class="ruby-identifier">vendor</span>, <span class="ruby-identifier">options</span>={})&#x000A; 43:         <span class="ruby-identifier">vendor_config</span> =&#x000A; 44:           <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-value str">'js'</span>][<span class="ruby-value str">'vendors'</span>][<span class="ruby-identifier">vendor</span>.<span class="ruby-identifier">to_s</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A; 45:         <span class="ruby-identifier">use_local</span> = <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">defined?</span>(<span class="ruby-constant">Rails</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:application</span>)&#x000A; 46:                       <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">consider_all_requests_local</span>&#x000A; 47:                     <span class="ruby-keyword kw">else</span>&#x000A; 48:                       <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">consider_all_requests_local</span>&#x000A; 49:                     <span class="ruby-keyword kw">end</span>&#x000A; 50:         <span class="ruby-identifier">use_ssl</span>   = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">options</span>[<span class="ruby-identifier">:ssl</span>]&#x000A; 51:         <span class="ruby-identifier">version</span>   = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:version</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'version'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A; 52: &#x000A; 53:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">use_local</span>&#x000A; 54:           <span class="ruby-identifier">src</span> = <span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'remote_url'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A; 55:           <span class="ruby-identifier">src</span> = (<span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'remote_ssl_url'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">use_ssl</span>&#x000A; 56:         <span class="ruby-keyword kw">end</span>&#x000A; 57: &#x000A; 58:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">src</span>.<span class="ruby-identifier">blank?</span>&#x000A; 59:           <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">vendor</span>&#x000A; 60:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:jquery</span>&#x000A; 61:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 62: </span>              <span class="ruby-node">&quot;#{['jquery', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 63:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js&quot;</span>&#x000A; 64:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:jquery_ui</span>&#x000A; 65:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 66: </span>              <span class="ruby-node">&quot;#{['jquery-ui', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 67:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/jqueryui/#{version}/jquery-ui.min.js&quot;</span>&#x000A; 68:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:prototype</span>&#x000A; 69:             <span class="ruby-comment cmt"># Prototype currently doesn't provide an official minified version.</span>&#x000A; 70:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 71: </span>              <span class="ruby-node">&quot;#{['prototype', version].compact.join('-')}.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 72:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/prototype/#{version}/prototype.js&quot;</span>&#x000A; 73:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:scriptaculous</span>&#x000A; 74:             <span class="ruby-comment cmt"># script.aculo.us currently doesn't provide an official minified version.</span>&#x000A; 75:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 76: </span>              <span class="ruby-node">&quot;#{['scriptaculous', version].compact.join('-')}.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 77:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/scriptaculous/#{version}/scriptaculous.js&quot;</span>&#x000A; 78:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:mootools</span>&#x000A; 79:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 80: </span>              <span class="ruby-node">&quot;#{['mootools', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 81:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/mootools/#{version}/mootools-yui-compressed.js&quot;</span>&#x000A; 82:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:dojo</span>&#x000A; 83:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 84: </span>              <span class="ruby-node">&quot;#{['dojo', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 85:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/dojo/#{version}/dojo/dojo.xd.js&quot;</span>&#x000A; 86:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:swfobject</span>&#x000A; 87:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 88: </span>              <span class="ruby-node">&quot;#{['swfobject', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 89:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/swfobject/#{version}/swfobject.js&quot;</span>&#x000A; 90:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:yui</span>&#x000A; 91:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 92: </span>              <span class="ruby-node">&quot;#{['yui', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 93:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/yui/#{version}/build/yuiloader/yuiloader-min.js&quot;</span>&#x000A; 94:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:ext_core</span>&#x000A; 95:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A; 96: </span>              <span class="ruby-node">&quot;#{['ext_core', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A; 97:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/ext-core/#{version}/ext-core.js&quot;</span>&#x000A; 98:           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:webfont</span>&#x000A; 99:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">?&#x000A;100: </span>              <span class="ruby-node">&quot;#{['webfont', version].compact.join('-')}.min.js&quot;</span> <span class="ruby-operator">:</span>&#x000A;101:               <span class="ruby-node">&quot;http#{'s' if use_ssl}://ajax.googleapis.com/ajax/libs/webfont/#{version}/webfont.js&quot;</span>&#x000A;102:           <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-comment cmt"># TODO: Write to log</span>&#x000A;103:           <span class="ruby-keyword kw">end</span>&#x000A;104:         <span class="ruby-keyword kw">end</span>&#x000A;105: &#x000A;106:         <span class="ruby-identifier">src</span>&#x000A;107:       <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000027-source'>     <span class="ruby-comment cmt"># File lib/asset_hat/js/vendors.rb, line 67</span>&#x000A; 67:       <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">source_for</span>(<span class="ruby-identifier">vendor</span>, <span class="ruby-identifier">options</span>={})&#x000A; 68:         <span class="ruby-identifier">vendor_config</span> =&#x000A; 69:           <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">config</span>[<span class="ruby-value str">'js'</span>][<span class="ruby-value str">'vendors'</span>][<span class="ruby-identifier">vendor</span>.<span class="ruby-identifier">to_s</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A; 70:         <span class="ruby-identifier">use_local</span> = <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">consider_all_requests_local?</span>&#x000A; 71:         <span class="ruby-identifier">use_ssl</span>   = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">options</span>[<span class="ruby-identifier">:ssl</span>]&#x000A; 72:         <span class="ruby-identifier">version</span>   = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:version</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">vendor_config</span>[<span class="ruby-value str">'version'</span>] <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A; 73: &#x000A; 74:         <span class="ruby-comment cmt"># Prepare local path and default remote URL</span>&#x000A; 75:         <span class="ruby-identifier">srcs</span> = <span class="ruby-constant">Vendors</span>.<span class="ruby-identifier">vendor_uris</span>(<span class="ruby-identifier">vendor</span>,&#x000A; 76:           <span class="ruby-identifier">:use_ssl</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">use_ssl</span>, <span class="ruby-identifier">:version</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">version</span>)&#x000A; 77:         <span class="ruby-identifier">local_src</span>, <span class="ruby-identifier">remote_src</span> = <span class="ruby-identifier">srcs</span>[<span class="ruby-identifier">:local</span>], <span class="ruby-identifier">srcs</span>[<span class="ruby-identifier">:remote</span>]&#x000A; 78: &#x000A; 79:         <span class="ruby-comment cmt"># Using the local URL requires that the vendor file exists locally. If</span>&#x000A; 80:         <span class="ruby-comment cmt"># the vendor file doesn't exist, use the remote URL as fallback.</span>&#x000A; 81:         <span class="ruby-identifier">use_local</span> <span class="ruby-operator">&amp;&amp;=</span> <span class="ruby-constant">AssetHat</span>.<span class="ruby-identifier">asset_exists?</span>(<span class="ruby-identifier">local_src</span>, <span class="ruby-identifier">:js</span>)&#x000A; 82: &#x000A; 83:         <span class="ruby-comment cmt"># If no version given, can't determine the remote URL; use the local</span>&#x000A; 84:         <span class="ruby-comment cmt"># URL as fallback.</span>&#x000A; 85:         <span class="ruby-identifier">use_local</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">version</span>.<span class="ruby-identifier">blank?</span>&#x000A; 86: &#x000A; 87:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">use_local</span>&#x000A; 88:           <span class="ruby-identifier">src</span> = <span class="ruby-identifier">local_src</span>&#x000A; 89:         <span class="ruby-keyword kw">else</span>&#x000A; 90:           <span class="ruby-comment cmt"># To ease setup, if no local copy of the vendor code is found,</span>&#x000A; 91:           <span class="ruby-comment cmt"># use a remote URL as a fallback.</span>&#x000A; 92: &#x000A; 93:           <span class="ruby-comment cmt"># Give precedence to configured remote URLs</span>&#x000A; 94:           <span class="ruby-identifier">src</span>   = <span class="ruby-identifier">vendor_config</span>.<span class="ruby-identifier">try</span>(<span class="ruby-identifier">:[]</span>, <span class="ruby-value str">'remote_ssl_url'</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">use_ssl</span>&#x000A; 95:           <span class="ruby-identifier">src</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">vendor_config</span>.<span class="ruby-identifier">try</span>(<span class="ruby-identifier">:[]</span>, <span class="ruby-value str">'remote_url'</span>)&#x000A; 96: &#x000A; 97:           <span class="ruby-comment cmt"># Use default remote URL as fallback</span>&#x000A; 98:           <span class="ruby-identifier">src</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">remote_src</span>&#x000A; 99: &#x000A;100:           <span class="ruby-comment cmt"># Use local URL as final resort, even though the file doesn't</span>&#x000A;101:           <span class="ruby-comment cmt"># exist, in hopes that the app maintainer finds the 404 (or the</span>&#x000A;102:           <span class="ruby-comment cmt"># warning below) in the logs. This needs to be fixed in the app,</span>&#x000A;103:           <span class="ruby-comment cmt"># rather than relying on a CDN to dynamically provide the latest</span>&#x000A;104:           <span class="ruby-comment cmt"># stable vendor version.</span>&#x000A;105:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">src</span>.<span class="ruby-identifier">blank?</span>&#x000A;106:             <span class="ruby-identifier">src</span> = <span class="ruby-identifier">local_src</span>&#x000A;107:             <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;\n\nAssetHat WARNING (#{Time.now}):\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-node">%{&#x000A;108:               Tried to reference the vendor JS `:#{vendor}`, but&#x000A;109:               #{AssetHat.assets_dir(:js)}/#{local_src} couldn't be found, and&#x000A;110:               couldn't use a remote fallback because no vendor version was&#x000A;111:               given in #{AssetHat::RELATIVE_CONFIG_FILEPATH}.&#x000A;112:             }</span>.<span class="ruby-identifier">squish!</span>&#x000A;113:               <span class="ruby-comment cmt"># TODO: Create `AssetHat::Logger.warn`, etc. methods</span>&#x000A;114:           <span class="ruby-keyword kw">end</span>&#x000A;115:         <span class="ruby-keyword kw">end</span>&#x000A;116: &#x000A;117:         <span class="ruby-identifier">src</span>&#x000A;118:       <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

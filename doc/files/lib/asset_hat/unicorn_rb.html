@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>File: css.rb [AssetHat]</title>
+    <title>File: unicorn.rb [AssetHat]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -25,17 +25,26 @@
   <body class='page'>
     <div class='file' id='wrapper'>
       <div class='header'>
-        <h1 class='name'>css.rb</h1>
+        <h1 class='name'>unicorn.rb</h1>
         <div class='paths'>
-          lib/asset_hat/tasks/css.rb
+          lib/asset_hat/unicorn.rb
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Wed Apr 13 17:53:49 -0400 2011</span>
+          <span class='datetime'>Wed Apr 20 18:30:55 -0400 2011</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
+          <div id='description'>
+            <p>
+            Add the code below to your app&#8217;s unicorn.conf.rb or similar so that
+            assets&#8217; commit IDs are precached only once by the Unicorn master,
+            then propagated out to workers. (Otherwise, each worker will precache
+            commit IDs, which wastes resources.) More on configuring Unicorn: <a
+            href="http://unicorn.bogomips.org/Unicorn/Configurator.html">unicorn.bogomips.org/Unicorn/Configurator.html</a>
+            </p>
+          </div>
           <div id='section'>
           </div>
         </div>
