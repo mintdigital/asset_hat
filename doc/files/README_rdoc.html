@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Wed Dec 08 14:43:30 -0500 2010</span>
+          <span class='datetime'>Sun Apr 24 13:42:43 -0400 2011</span>
         </div>
       </div>
       <div id='content'>
@@ -44,16 +44,18 @@
             <p>
             With Rails&#8217; default asset caching, CSS and JS are concatenated (not
             even minified) at runtime when that bundle is first requested. Not good
-            enough. <a href="../classes/AssetHat.html">AssetHat</a> can automatically:
+            enough. To make your pages load faster, <a
+            href="../classes/AssetHat.html">AssetHat</a> can automatically:
             </p>
             <ul>
-            <li>Easily <b>minify</b> and <b>bundle</b> CSS and JS on deploy to reduce file
-            sizes and HTTP requests.
+            <li>Easily <b>minify</b> and <b>bundle</b> CSS and JS to reduce file sizes and
+            HTTP requests. Do this on deploy, and avoid any performance hit at runtime.
             
             </li>
-            <li>Load popular <b>third-party JS</b> (like jQuery and Prototype) from <a
+            <li>Load popular <b>third-party JS</b> (like jQuery, YUI, and Ext JS) from <a
             href="http://code.google.com/apis/ajaxlibs/">Google's CDN</a> when in
-            production, or from localhost in development.
+            production, or from localhost in development. It&#8217;s as simple as
+            <tt>&lt;%= include_js :jquery %&gt;</tt> to load straight from Google.
             
             </li>
             <li>Force image URLs in your CSS to use <b>CDN subdomains</b> (including SSL
@@ -71,11 +73,18 @@
             </p>
             <pre>&lt;%= include_css :bundle =&gt; 'application' %&gt;&#x000A;&lt;%= include_js  :jquery, :bundles =&gt; ['plugins', 'common'] %&gt;</pre>
             <p>
-            Which turns into:
+            Which expands into:
             </p>
             <pre>&lt;link href=&quot;/stylesheets/bundles/application.min.css&quot;&#x000A;  media=&quot;screen,projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;&#x000A;&lt;script src=&quot;/javascripts/jquery-1.x.x.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;  &lt;!-- In production, jQuery loads from Google's CDN instead. --&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/plugins.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;&#x000A;&lt;script src=&quot;/javascripts/bundles/common.min.js&quot;&#x000A;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
             <p>
-            And this in your deploy script:
+            Don&#8217;t have your own copy of jQuery? <a
+            href="../classes/AssetHat.html">AssetHat</a> detects this and loads jQuery
+            from Google&#8217;s CDN instead, whether you&#8217;re in development or
+            production.
+            </p>
+            <p>
+            Add this to your deploy script, and your CSS/JS will be optimized
+            automatically:
             </p>
             <pre>rake asset_hat:minify</pre>
             <p>
@@ -88,12 +97,8 @@
             history</a>.
             </p>
             <h2>Installation</h2>
-            <ol>
-            <li>Configure the gem:
-            
             <ul>
-            <li>If you&#8217;re using Rails 3 and/or <a
-            href="http://github.com/carlhuda/bundler">Bundler 0.9+</a>:
+            <li>Rails 3.x:
             
             <ol>
             <li>Add to your app&#8217;s Gemfile: <tt>gem 'asset_hat', '0.x.x'</tt>
@@ -104,7 +109,25 @@
             </li>
             </ol>
             </li>
-            <li>If you&#8217;re using Rails 2.x&#8217;s <tt>config.gem</tt>:
+            <li>Rails 2.3.x:
+            
+            <ol>
+            <li>Add the gem:
+            
+            <ul>
+            <li>If you&#8217;re using <a href="http://github.com/carlhuda/bundler">Bundler
+            0.9+</a>:
+            
+            <ol>
+            <li>Add to your app&#8217;s Gemfile: <tt>gem 'asset_hat', '0.x.x'</tt>
+            
+            </li>
+            <li>Command-line: <tt>bundle install</tt>
+            
+            </li>
+            </ol>
+            </li>
+            <li>If you&#8217;re using Rails 2.3.x&#8217;s <tt>config.gem</tt>:
             
             <ol>
             <li>Add to your app&#8217;s <tt>config/environment.rb</tt>: <tt>config.gem
@@ -122,8 +145,16 @@
             
             </li>
             </ol>
-            <h2>Configuration</h2>
+            </li>
+            </ul>
+            <h2>Quick start &amp; configuration</h2>
             <ol>
+            <li>In all of your layouts and views, change <tt>stylesheet_link_tag</tt> to
+            <tt>include_css</tt>, and change <tt>javascript_include_tag</tt> to
+            <tt>include_js</tt>. (Don&#8217;t worry, these helpers use the same
+            arguments as Rails&#8217; helpers. Nothing will break.)
+            
+            </li>
             <li>Create the default config file:
             
             <pre>rake asset_hat:config</pre>
@@ -132,7 +163,16 @@
             your CSS/JS bundles according to that file&#8217;s example.
             
             </li>
-            <li>Minify your bundles:
+            <li>In your layouts and views, switch to the new bundles. For example, if you
+            originally had this:
+            
+            <pre>&lt;%# app/views/layouts/application.html.erb: %&gt;&#x000A;&lt;%= stylesheet_include_tag 'reset', 'application' %&gt;</pre>
+            <p>
+            Then you&#8217;ll now have:
+            </p>
+            <pre># config/assets.yml:&#x000A;css:&#x000A;  bundles:&#x000A;    application: ['reset', 'application']&#x000A;&#x000A;&lt;%# app/views/layouts/application.html.erb: %&gt;&#x000A;&lt;%= include_css :bundle =&gt; 'application' %&gt;</pre>
+            </li>
+            <li>Add this to your deployment script:
             
             <pre>rake asset_hat:minify</pre>
             <p>
@@ -141,15 +181,11 @@
             and cache-busting commit IDs to image URLs in your CSS.
             </p>
             <p>
-            Bundles are created as new files in <tt>public/stylesheets/bundles/</tt>
-            and <tt>public/javascripts/bundles/</tt>. Your original CSS/JS files remain
-            untouched.
+            Any previously minified bundles are overwritten; your original CSS/JS files
+            remain untouched. Bundles are created as new files in
+            <tt>public/stylesheets/bundles/</tt> and
+            <tt>public/javascripts/bundles/</tt>.
             </p>
-            </li>
-            <li>Set your deployment script to run <tt>rake asset_hat:minify</tt> after
-            deploying your latest CSS/JS. This overwrites previously minified bundles,
-            and leaves your original CSS/JS files untouched.
-            
             </li>
             </ol>
             <h3>Advanced configuration</h3>
@@ -157,7 +193,13 @@
             If you manage deployments with <a
             href="http://www.capify.org/">Capistrano</a>, see the gem&#8217;s packaged
             example at <tt><a
-            href="lib/asset_hat/capistrano_rb.html">lib/asset_hat/capistrano.rb</a></tt>.
+            href="https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/capistrano.rb">lib/asset_hat/capistrano.rb</a></tt>.
+            </p>
+            <p>
+            If your stack uses <a href="http://unicorn.bogomips.org/">Unicorn</a>,
+            you&#8217;ll want to configure it so that assets&#8217; commit IDs are
+            precached only once. See the gem&#8217;s packaged example at <tt><a
+            href="https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/unicorn.rb">lib/asset_hat/unicorn.rb</a></tt>.
             </p>
             <p>
             If you want shorter output during deployments, you can use `rake
@@ -185,13 +227,13 @@
             or other external source. The following example configures jQuery and
             jQuery UI for use throughout the app:
             
-            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version:        1.4.4&#x000A;    jquery_ui:&#x000A;      version:        1.8.5&#x000A;      remote_url:     http://cdn.example.com/js/jquery-ui-1.8.5.min.js&#x000A;      remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.5.min.js</pre>
+            <pre>js:&#x000A;  vendors:&#x000A;    jquery:&#x000A;      version:        1.5.2&#x000A;    jquery_ui:&#x000A;      version:        1.8.12&#x000A;      remote_url:     http://cdn.example.com/js/jquery-ui-1.8.12.min.js&#x000A;      remote_ssl_url: https://cdn-ssl.example.com/js/jquery-ui-1.8.12.min.js</pre>
             <p>
             Configuration keys per vendor:
             </p>
             <ul>
             <li><tt>version</tt>: Sets the default version across the app. In the example
-            above, <tt>&lt;%= include_js :jquery %&gt;</tt> uses version 1.4.4 by
+            above, <tt>&lt;%= include_js :jquery %&gt;</tt> uses version 1.5.2 by
             default. You can override this for special layouts/views with <tt>&lt;%=
             include_js :jquery, :version =&gt; '1.3.2' %&gt;</tt>.
             
@@ -277,14 +319,28 @@
             When including multiple bundles at once, this yields one
             <tt>&lt;link&gt;</tt> or <tt>&lt;script&gt;</tt> element per bundle.
             </p>
+            <h3>Bundle tips</h3>
             <p>
-            You may want to use multiple bundles to separate plugins (rarely changed)
-            from application code (frequently changed). If all code is in one huge
-            bundle, then whenever there&#8217;s a change, browsers have to re-download
-            the whole bundle. By using multiple bundles based on update frequency,
-            browsers cache the rarely updated code, and only re-download the frequently
-            updated code.
+            Don&#8217;t go overboard with huge bundles:
             </p>
+            <ul>
+            <li>Mobile browsers may not cache CSS/JS files that are too large, regardless
+            of gzipping. Check the latest specs for each mobile browser you support.
+            
+            </li>
+            <li>You might want to put plugins (rarely changed) in one bundle, and
+            application code (frequently changed) in another bundle. This way, when the
+            app code changes, the browser re-downloads only the new app code, and uses
+            the cached plugin code.
+            
+            </li>
+            <li>Regardless of code-change frequency, it&#8217;s sometimes faster to split a
+            bundle in half, and load each half in parallel (i.e., two HTTP requests
+            instead of one). Your own tests will tell what&#8217;s optimal for your
+            situation.
+            
+            </li>
+            </ul>
             <h2><a href="http://www.youtube.com/watch?v=V30tyaXv6EI">What is best in AssetHat?</a></h2>
             <ul>
             <li>To crush your assets;
