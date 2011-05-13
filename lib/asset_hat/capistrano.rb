@@ -7,7 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :minify, :roles => :assets, :except => {:no_release => true} do
         rake = fetch(:rake, "rake")
         env  = fetch(:environment, fetch(:rails_env, "production"))
-        run "cd #{current_path} ; " +
+        run "cd #{release_path} ; " +
             "#{rake} RAILS_ENV=#{env} FORMAT=short asset_hat:minify"
       end
     end
