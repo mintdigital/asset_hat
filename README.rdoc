@@ -1,6 +1,6 @@
 = AssetHat
 
-Your assets are covered.
+Load CSS and JS faster. Your assets are covered.
 
 With Rails' default asset caching, CSS and JS are concatenated (not even
 minified) at runtime when that bundle is first requested. Not good enough.
@@ -8,10 +8,13 @@ To make your pages load faster, AssetHat can automatically:
 
 * Easily *minify* and *bundle* CSS and JS to reduce file sizes and
   HTTP requests. Do this on deploy, and avoid any performance hit at runtime.
-* Load popular <b>third-party JS</b> (like jQuery, YUI, and Ext JS)
-  from {<b>Google's CDN</b>}[http://code.google.com/apis/ajaxlibs/]
+* Load <b>popular libraries from the JS community</b> -- like jQuery, YUI, and
+  Dojo -- from {<b>Google's CDN</b>}[http://code.google.com/apis/ajaxlibs/]
   when in production, or from localhost in development. It's as simple as
   <code><%= include_js :jquery %></code> to load straight from Google.
+* Load plenty of JS files in parallel in <b>{LABjs}[http://labjs.com/]
+  mode</b>. When calling <code>include_js</code>, just add <code>:loader =>
+  :lab_js</code>.
 * Force image URLs in your CSS to use <b>CDN subdomains</b>
   (including SSL support), not just the current host.
 * Add an image's last Git[http://git-scm.com/] commit ID to its CSS URLs to
@@ -35,16 +38,19 @@ Which expands into:
   <script src="/javascripts/bundles/common.min.js"
     type="text/javascript"></script>
 
-Don't have your own copy of jQuery? AssetHat detects this and loads jQuery
-from Google's CDN instead, whether you're in development or production.
+Don't have your own copy of jQuery? AssetHat detects this and knows how to
+load jQuery from Google's CDN instead, whether you're in development or
+production.
 
 Add this to your deploy script, and your CSS/JS will be optimized
 automatically:
 
   rake asset_hat:minify
 
-Tested with Rails 3, and Rails 2.3.x with Bundler. For a quick overview, see
-{the AssetHat website}[http://mintdigital.github.com/asset_hat/].
+Tested with Rails 3 and Rails 2.3.x (with Bundler). For a quick overview, see
+{the AssetHat website}[http://mintdigital.github.com/asset_hat/]. To see how
+AssetHat performs in production,
+{check some stats}[http://logicalfriday.com/2011/05/06/assethat-0-4-load-css-and-js-faster-your-assets-are-covered/].
 For the gritty details, check the
 {complete docs}[http://mintdigital.github.com/asset_hat/doc/] and
 {change history}[http://mintdigital.github.com/asset_hat/doc/files/HISTORY.html].
@@ -53,27 +59,27 @@ For the gritty details, check the
 
 == Installation
 
-* Rails 3.x:
+=== Rails 3.x
 
-  1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
-  2.  Command-line: <code>bundle install</code>
+1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
+2.  Command-line: <code>bundle install</code>
 
-* Rails 2.3.x:
+=== Rails 2.3.x
 
-  1.  Add the gem:
+1.  Add the gem:
 
-      * If you're using {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
+    * If you're using {Bundler 0.9+}[http://github.com/carlhuda/bundler]:
 
-        1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
-        2.  Command-line: <code>bundle install</code>
+      1.  Add to your app's Gemfile: <code>gem 'asset_hat', '0.x.x'</code>
+      2.  Command-line: <code>bundle install</code>
 
-      * If you're using Rails 2.3.x's <code>config.gem</code>:
+    * If you're using Rails 2.3.x's <code>config.gem</code>:
 
-        1.  Add to your app's <code>config/environment.rb</code>:
-            <code>config.gem 'asset_hat', :version => '0.x.x'</code>
-        2.  Command-line: <code>gem install asset_hat</code>
+      1.  Add to your app's <code>config/environment.rb</code>:
+          <code>config.gem 'asset_hat', :version => '0.x.x'</code>
+      2.  Command-line: <code>gem install asset_hat</code>
 
-  2.  Add to your app's Rakefile: <code>require 'asset_hat/tasks'</code>
+2.  Add to your app's Rakefile: <code>require 'asset_hat/tasks'</code>
 
 
 
@@ -178,7 +184,8 @@ Additional settings are supported in <code>config/assets.yml</code>:
     different CDN, specify its SSL/non-SSL URLs, and the appropriate URL will
     be used per request.
 
-  A full list of supported vendors is in the AssetHat::JS::Vendors module.
+  A full list of supported vendors is in the
+  <code>AssetHat::JS::Vendors</code> module.
 
 === SSL configuration
 
@@ -251,6 +258,62 @@ Or include multiple bundles at once:
 When including multiple bundles at once, this yields one
 <code><link></code> or <code><script></code> element per bundle.
 
+=== LABjs mode
+
+Say you're loading several JS bundles. However, because there are so many, you
+decide to try a popular script loader like {LABjs}[http://labjs.com/] to see
+how much it improves performance. Here's how it's done the old Rails way:
+
+  <%= javascript_include_tag 'LAB-1.2.0.min.js' %>
+  <script>
+    $LAB.
+      script('/javascripts/jquery-1.6.1.min.js').wait().
+      script('/javascripts/common.js').wait().
+      script('/javascripts/search.js').wait().
+      script('/javascripts/app.js').wait();
+  </script>
+
+What a hassle. With AssetHat, just set up a bundle in
+<code>config/assets.yml</code>:
+
+  js:
+    bundles:
+      app:
+        - common
+        - search
+        - app
+
+Ready to go. Here's how to load jQuery and your bundle normally:
+
+  <%= include_js :jquery, :bundle => 'app' %>
+
+And here's how to switch on LABjs mode:
+
+  <%= include_js :jquery, :bundle => 'app',
+                          :loader => :lab_js %>
+
+Add your preferred jQuery and LABjs versions to the config file if you haven't
+already, and that's it. If you don't have a copy of LABjs locally, AssetHat
+knows how to instead load it from {cdnjs}[http://cdnjs.com/], which uses
+high-speed Amazon Cloudfront servers.
+
+This is just the most common LABjs use case. If you want to fine-tune it even
+further, you can have the best of both worlds:
+
+  <%= include_js :lab_js %>
+  <script>
+    $LAB.
+      script('<%= include_js :jquery,  :only_url => true %>').wait().
+      script('<%= include_js "common", :only_url => true %>'). // Non-blocking
+      script('<%= include_js "search", :only_url => true %>').wait().
+      script('<%= include_js "app",    :only_url => true %>').wait();
+  </script>
+
+In this example, <code>common</code> is not a dependency for
+<code>search</code>, so allow either to execute as soon as possible --
+whichever happens to load first -- rather than always forcing
+<code>common</code> to execute first.
+
 === Bundle tips
 
 Don't go overboard with huge bundles:
@@ -263,7 +326,8 @@ Don't go overboard with huge bundles:
   the cached plugin code.
 * Regardless of code-change frequency, it's sometimes faster to split a bundle
   in half, and load each half in parallel (i.e., two HTTP requests instead of
-  one). Your own tests will tell what's optimal for your situation.
+  one). LABjs mode can help with loading several smaller bundles in parallel.
+  Your own tests will tell what's optimal for your situation.
 
 
 
@@ -284,6 +348,7 @@ patch or fork away.
 Contributors:
 
 * {rondevera}[https://github.com/rondevera]
+  (maintainer; Twitter: {@ronalddevera}[https://twitter.com/#!/ronalddevera])
 * {dstrelau}[https://github.com/dstrelau]
 * {daphonz}[https://github.com/daphonz]
 * {sauliusg}[https://github.com/sauliusg]
