@@ -269,9 +269,11 @@ Don't go overboard with huge bundles:
 
 == More info
 
-Released under the
-{MIT license}[https://github.com/mintdigital/asset_hat/blob/master/LICENSE].
-Full documentation: http://mintdigital.github.com/asset_hat/doc/
+* {Official website}[http://mintdigital.github.com/asset_hat/]
+* {Full documentation}[http://mintdigital.github.com/asset_hat/doc/]
+* {History/changelog}[http://mintdigital.github.com/asset_hat/doc/files/HISTORY.html]
+* Released under the
+  {MIT license}[https://github.com/mintdigital/asset_hat/blob/master/LICENSE].
 
 === Contributing
 
