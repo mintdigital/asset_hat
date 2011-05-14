@@ -43,7 +43,7 @@ automatically:
 
   rake asset_hat:minify
 
-Tested with Rails 2.3.x. For a quick overview, see
+Tested with Rails 3, and Rails 2.3.x with Bundler. For a quick overview, see
 {the AssetHat website}[http://mintdigital.github.com/asset_hat/].
 For the gritty details, check the
 {complete docs}[http://mintdigital.github.com/asset_hat/doc/] and
@@ -264,6 +264,28 @@ Don't go overboard with huge bundles:
 * Regardless of code-change frequency, it's sometimes faster to split a bundle
   in half, and load each half in parallel (i.e., two HTTP requests instead of
   one). Your own tests will tell what's optimal for your situation.
+
+
+
+== More info
+
+Released under the
+{MIT license}[https://github.com/mintdigital/asset_hat/blob/master/LICENSE].
+Full documentation: http://mintdigital.github.com/asset_hat/doc/
+
+=== Contributing
+
+Have an idea, problem, or bug report?
+{Open an issue.}[https://github.com/mintdigital/asset_hat/issues] Attach a
+patch or fork away.
+
+Contributors:
+
+* {rondevera}[https://github.com/rondevera]
+* {dstrelau}[https://github.com/dstrelau]
+* {daphonz}[https://github.com/daphonz]
+* {sauliusg}[https://github.com/sauliusg]
+
 
 
 == {What is best in AssetHat?}[http://www.youtube.com/watch?v=V30tyaXv6EI]
