@@ -103,7 +103,7 @@ module AssetHatHelper
         else nil
         end
       end.join("\n")
-      html.respond_to?(:html_safe) ? html.html_safe : html
+      make_html_safe html
     end
 
   end # def include_assets
@@ -159,15 +159,15 @@ module AssetHatHelper
   def include_css(*args)
     return if args.blank?
 
-    AssetHat.html_cache       ||= {}
-    AssetHat.html_cache[:css] ||= {}
+    initialize_html_cache :css
+    
+    options = setup_options(args,
+      :media => 'screen,projection',
+      :ssl => controller.request.ssl?
+    )
+    cache_key = setup_cache_key(args, options)
 
-    options = args.extract_options!
-    options.symbolize_keys!.reverse_merge!(
-      :media => 'screen,projection', :ssl => controller.request.ssl?)
-    cache_key = (args + [options]).inspect
-
-    if !AssetHat.cache? || AssetHat.html_cache[:css][cache_key].blank?
+    if !asset_cached?(:css, cache_key)
       # Generate HTML and write to cache
       options[:ssl] &&= AssetHat.ssl_asset_host_differs?
       html = AssetHat.html_cache[:css][cache_key] =
@@ -175,7 +175,7 @@ module AssetHatHelper
     end
 
     html ||= AssetHat.html_cache[:css][cache_key]
-    html.respond_to?(:html_safe) ? html.html_safe : html
+    make_html_safe html
   end
 
   # <code>include_js</code> is a smart wrapper for Rails'
@@ -295,24 +295,19 @@ module AssetHatHelper
   def include_js(*args)
     return if args.blank?
 
-    AssetHat.html_cache       ||= {}
-    AssetHat.html_cache[:js]  ||= {}
+    initialize_html_cache :js
 
-    options = args.extract_options!
-    options.symbolize_keys!.reverse_merge!(:ssl => controller.request.ssl?)
-    cache_key = (args + [options]).inspect
-
-    if !AssetHat.cache? || AssetHat.html_cache[:js][cache_key].blank?
+    options = setup_options(args, :ssl => controller.request.ssl?)
+    cache_key = setup_cache_key(args, options)
+    
+    if !asset_cached?(:js, cache_key)
       # Generate HTML and write to cache
 
       htmls = []
       include_assets_options = options.except(:ssl, :version)
-      loader = nil
 
-      if options[:loader].present?
-        loader = options.delete(:loader)
-        include_assets_options.merge!(:only_url => true)
-      end
+      loader = options.delete(:loader)
+      include_assets_options.merge!(:only_url => true) if loader
 
       # Get vendor HTML/URLs
       included_vendors = (args & AssetHat::JS::VENDORS)
@@ -359,7 +354,7 @@ module AssetHatHelper
     end
 
     html ||= AssetHat.html_cache[:js][cache_key]
-    html.respond_to?(:html_safe) ? html.html_safe : html
+    make_html_safe html
   end
 
   # Returns the public URL path to the given source file.
@@ -373,5 +368,28 @@ module AssetHatHelper
       raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
     end
   end
-
+  
+  private
+  
+  def initialize_html_cache(type)
+    AssetHat.html_cache ||= {}
+    AssetHat.html_cache[type] ||= {}
+  end
+  
+  def setup_options(args, defaults)
+    options = args.extract_options!
+    options.symbolize_keys!.reverse_merge!(defaults)
+  end
+  
+  def setup_cache_key(args, options)
+    (args + [options]).inspect
+  end
+  
+  def make_html_safe(html)
+    html.respond_to?(:html_safe) ? html.html_safe : html
+  end
+  
+  def asset_cached?(type, cache_key)
+    AssetHat.cache? && !AssetHat.html_cache[type.to_sym][cache_key].blank?
+  end
 end
