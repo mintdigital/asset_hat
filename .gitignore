@@ -1,3 +1,4 @@
 _site/
 pkg/
 tmp/
+Gemfile.lock
