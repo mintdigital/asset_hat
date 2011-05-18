@@ -992,6 +992,21 @@ class AssetHatHelperTest < ActionView::TestCase
       asset_path_by_type('bundles/foo.min.js', :js)
   end
 
+  should 'compute public asset inclusion tags' do
+    flexmock_rails_app
+    css_media = 'screen,projection'
+
+    assert_equal css_tag('foo.css'),
+      asset_include_tag_by_type('foo', :css, :media => css_media)
+    assert_equal css_tag('bundles/foo.min.css'),
+      asset_include_tag_by_type('bundles/foo.min.css', :css,
+        :media => css_media)
+
+    assert_equal js_tag('foo.js'), asset_include_tag_by_type('foo', :js)
+    assert_equal js_tag('bundles/foo.min.js'),
+      asset_include_tag_by_type('bundles/foo.min.js', :js)
+  end
+
 
 
   private

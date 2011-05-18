@@ -93,16 +93,12 @@ module AssetHatHelper
     options.delete :ssl
     if options[:only_url]
       # Return only asset URLs, not HTML inclusions
-      source_urls = sources.map { |source| asset_path_by_type(source, type) }
+      source_urls = sources.map { |src| asset_path_by_type(src, type) }
       source_urls.size == 1 ? source_urls.first : source_urls
     else
-      html = sources.map do |src|
-        case type
-        when :css then stylesheet_link_tag(src, options)
-        when :js  then javascript_include_tag(src, options)
-        else nil
-        end
-      end.join("\n")
+      html = sources.
+        map { |src| asset_include_tag_by_type(src, type, options) }.
+        join("\n")
       make_html_safe html
     end
 
@@ -360,7 +356,7 @@ module AssetHatHelper
   # Returns the public URL path to the given source file.
   #
   # <code>type</code> argument: <code>:css</code> or <code>:js</code>
-  def asset_path_by_type(source, type)
+  def asset_path_by_type(source, type) #:nodoc:
     case type.to_sym
     when :css ; stylesheet_path(source)
     when :js  ; javascript_path(source)
@@ -371,6 +367,21 @@ module AssetHatHelper
       }.squish!
     end
   end
+
+  # Returns the <code><link></code> tag (for stylesheets) or
+  # <code><script></code> tag (for JavaScripts) for including the given source
+  # file in an HTML document.
+  #
+  # <code>type</code> argument: <code>:css</code> or <code>:js</code>
+  def asset_include_tag_by_type(source, type, options={}) #:nodoc:
+    case type
+    when :css then stylesheet_link_tag(source, options)
+    when :js  then javascript_include_tag(source, options)
+    else nil
+    end
+  end
+
+
 
   private
 
