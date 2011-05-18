@@ -93,7 +93,7 @@ module AssetHatHelper
     options.delete :ssl
     if options[:only_url]
       # Return only asset URLs, not HTML inclusions
-      source_urls = sources.map { |source| asset_path(type, source) }
+      source_urls = sources.map { |source| asset_path_by_type(source, type) }
       source_urls.size == 1 ? source_urls.first : source_urls
     else
       html = sources.map do |src|
@@ -360,7 +360,7 @@ module AssetHatHelper
   # Returns the public URL path to the given source file.
   #
   # <code>type</code> argument: <code>:css</code> or <code>:js</code>
-  def asset_path(type, source)
+  def asset_path_by_type(source, type)
     case type.to_sym
     when :css ; stylesheet_path(source)
     when :js  ; javascript_path(source)

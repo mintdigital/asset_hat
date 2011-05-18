@@ -983,13 +983,13 @@ class AssetHatHelperTest < ActionView::TestCase
   should 'compute public asset paths' do
     flexmock_rails_app
 
-    assert_equal '/stylesheets/foo.css', asset_path(:css, 'foo')
+    assert_equal '/stylesheets/foo.css', asset_path_by_type('foo', :css)
     assert_equal '/stylesheets/bundles/foo.min.css',
-      asset_path(:css, 'bundles/foo.min.css')
+      asset_path_by_type('bundles/foo.min.css', :css)
 
-    assert_equal '/javascripts/foo.js', asset_path(:js, 'foo')
+    assert_equal '/javascripts/foo.js', asset_path_by_type('foo', :js)
     assert_equal '/javascripts/bundles/foo.min.js',
-      asset_path(:js, 'bundles/foo.min.js')
+      asset_path_by_type('bundles/foo.min.js', :js)
   end
 
 
