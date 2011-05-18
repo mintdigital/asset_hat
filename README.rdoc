@@ -349,6 +349,7 @@ Contributors:
 
 * {rondevera}[https://github.com/rondevera]
   (maintainer; Twitter: {@ronalddevera}[https://twitter.com/#!/ronalddevera])
+* {philnash}[https://github.com/philnash]
 * {dstrelau}[https://github.com/dstrelau]
 * {daphonz}[https://github.com/daphonz]
 * {sauliusg}[https://github.com/sauliusg]
