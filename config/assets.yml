@@ -3,7 +3,7 @@
 #
 #     stylesheet_link_tag 'reset', 'application'
 #     javascript_include_tag(
-#       Rails.env.production? ? '<Google CDN URL>' : 'jquery-1.5.2')
+#       Rails.env.production? ? '<Google CDN URL>' : 'jquery-1.6.1')
 #     javascript_include_tag 'utilities', 'application'
 #
 # Create matching bundles in this file (no `.css` or `.js` suffixes needed;
@@ -17,7 +17,7 @@
 #     js:
 #       vendors:
 #         jquery:
-#           version: 1.5.2
+#           version: 1.6.1
 #       bundles:
 #         application:
 #           - utilities
@@ -65,7 +65,7 @@ js:
   #
   # vendors:
   #   jquery:
-  #     version: 1.5.2
+  #     version: 1.6.1
   #
   # Supported vendors:
   # http://mintdigital.github.com/asset_hat/doc/classes/AssetHat/JS/Vendors.html

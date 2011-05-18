@@ -60,7 +60,7 @@ module AssetHat
       #
       # [ssl]     Boolean for whether to include vendor JS via HTTPS. Defaults
       #           to false.
-      # [version] The vendor version, e.g., '1.5.0' for jQuery 1.5. By
+      # [version] The vendor version, e.g., '1.6.0' for jQuery 1.6. By
       #           default, each vendor version is taken from
       #           <code>config/assets.yml</code>; use this option to override
       #           the configuration.

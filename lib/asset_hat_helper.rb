@@ -365,7 +365,10 @@ module AssetHatHelper
     when :css ; stylesheet_path(source)
     when :js  ; javascript_path(source)
     else
-      raise %{Unknown type "#{type}"; should be one of: #{TYPES.join(', ')}.}
+      raise %{
+        Unknown type "#{type}"; should be one of:
+        #{AssetHat::TYPES.join(', ')}.
+      }.squish!
     end
   end
   
