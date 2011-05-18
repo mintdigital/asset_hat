@@ -160,7 +160,7 @@ module AssetHatHelper
     return if args.blank?
 
     initialize_html_cache :css
-    
+
     options = setup_options(args,
       :media => 'screen,projection',
       :ssl => controller.request.ssl?
@@ -299,7 +299,7 @@ module AssetHatHelper
 
     options = setup_options(args, :ssl => controller.request.ssl?)
     cache_key = setup_cache_key(args, options)
-    
+
     if !asset_cached?(:js, cache_key)
       # Generate HTML and write to cache
 
@@ -371,27 +371,27 @@ module AssetHatHelper
       }.squish!
     end
   end
-  
+
   private
-  
+
   def initialize_html_cache(type)
     AssetHat.html_cache ||= {}
     AssetHat.html_cache[type] ||= {}
   end
-  
+
   def setup_options(args, defaults)
     options = args.extract_options!
     options.symbolize_keys!.reverse_merge!(defaults)
   end
-  
+
   def setup_cache_key(args, options)
     (args + [options]).inspect
   end
-  
+
   def make_html_safe(html)
     html.respond_to?(:html_safe) ? html.html_safe : html
   end
-  
+
   def asset_cached?(type, cache_key)
     AssetHat.cache? && !AssetHat.html_cache[type.to_sym][cache_key].blank?
   end
