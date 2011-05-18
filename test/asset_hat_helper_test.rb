@@ -1010,7 +1010,8 @@ class AssetHatHelperTest < ActionView::TestCase
   def flexmock_rails_app
     # Creates just enough hooks for a dummy Rails app.
     flexmock(Rails,
-      :application => flexmock('dummy_app', :env_defaults => {}),
+      :application => flexmock('dummy_app',
+                        :env_config => {}, :env_defaults => {}),
       :logger      => flexmock('dummy_logger', :warn => nil)
     )
 
