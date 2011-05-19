@@ -9,16 +9,16 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ron DeVera", "Mint Digital"]
-  s.date = %q{2011-05-06}
-  s.description = %q{Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular third-party JS (like jQuery, YUI, and Ext JS) from localhost in development, and auto-switches to Google's CDN in production. Lets you switch on LABjs to load more scripts in parallel. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
+  s.date = %q{2011-05-19}
+  s.description = %q{Load CSS and JS faster. Minifies, bundles, and optimizes CSS/JS assets ahead of time (e.g., on deploy), not at runtime. Loads popular third-party JS (like jQuery, YUI, and Dojo) from localhost in development, and auto-switches to Google's CDN in production. Lets you switch on LABjs mode to load more scripts in parallel. Can rewrite stylesheets to use CDN hosts (not just your web server) and cache-busting hashes for updated images.}
   s.email = %q{hello@rondevera.com}
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
   ]
   s.files = [
+    ".gemtest",
     "Gemfile",
-    "Gemfile.lock",
     "HISTORY",
     "LICENSE",
     "README.rdoc",
