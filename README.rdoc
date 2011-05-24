@@ -129,9 +129,10 @@ For the gritty details, check the
     <code>public/javascripts/bundles/</code>.
 
     If you're using a CSS/JS layer like SASS or CoffeeScript, be sure to
-    compile/transpile to regular CSS/JS before running `rake
-    asset_hat:minify`. (When AssetHat is ready for Rails 3.1, `rake
-    asset_hat:minify` will automatically start with `rake assets:precompile`.)
+    compile/transpile to regular CSS/JS before running
+    <code>rake asset_hat:minify</code>. (When AssetHat is ready for Rails 3.1,
+    <code>rake asset_hat:minify</code> will automatically start with
+    <code>rake assets:precompile</code>.)
 
 === Advanced configuration
 
