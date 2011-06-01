@@ -185,7 +185,7 @@ Additional settings are supported in <code>config/assets.yml</code>:
     JS will load from {Google's CDN}[http://code.google.com/apis/ajaxlibs/]
     in production (or any environment where
     <code>config.action_controller.consider_all_requests_local</code> is set
-    to <code>true</code>). If the original request to your app used SSL, the
+    to <code>false</code>). If the original request to your app used SSL, the
     vendor JS will also load from Google's CDN via SSL. If you prefer to use a
     different CDN, specify its SSL/non-SSL URLs, and the appropriate URL will
     be used per request.
