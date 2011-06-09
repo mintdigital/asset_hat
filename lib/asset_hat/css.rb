@@ -1,11 +1,12 @@
 require 'cssmin'
+require 'yui/compressor'
 
 module AssetHat
   # Methods for minifying and optimizing CSS.
   module CSS
     # A list of supported minification
     # <a href=CSS/Engines.html>engine</a> names.
-    ENGINES = [:weak, :cssmin]
+    ENGINES = [:weak, :cssmin, :yui]
 
     # Returns the expected path for the minified version of a CSS asset:
     #
@@ -120,6 +121,17 @@ module AssetHat
         output.gsub!(/\}([^\}]+\{;\}){1,}/, '}')
 
         output
+      end
+
+      # Ruby-YUI Compressor provides a Ruby interface to the YUI Compressor
+      # Java library for minifying JavaScript and CSS assets.
+      #
+      # Sources:
+      # - http://github.com/sstephenson/ruby-yui-compressor/
+      # - http://rubygems.org/gems/yui-compressor
+      def self.yui(input_string)
+        compressor = YUI::CssCompressor.new
+        compressor.compress(input_string)
       end
     end
 
