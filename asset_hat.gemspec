@@ -113,6 +113,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_runtime_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_runtime_dependency(%q<jsmin>, ["~> 1.0.1"])
+      s.add_runtime_dependency(%q<yui-compressor>, ["~> 0.9.6"])
     else
       s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_dependency(%q<hanna>, ["~> 0.1.12"])
@@ -120,6 +121,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
       s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
+      s.add_dependency(%q<yui-compressor>, ["~> 0.9.6"])
     end
   else
     s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
@@ -128,6 +130,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
     s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
     s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
+    s.add_dependency(%q<yui-compressor>, ["~> 0.9.6"])
   end
 end
 
