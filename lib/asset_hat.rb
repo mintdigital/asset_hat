@@ -280,7 +280,7 @@ module AssetHat
     else
       host %= (source.hash % 4) if host =~ /%d/
     end
-    host
+    host == "https://:" ? "" : host
   end
 
   # Returns <code>true</code> if the asset host differs between SSL and

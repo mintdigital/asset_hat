@@ -102,6 +102,13 @@ class AssetHatTest < ActiveSupport::TestCase
           AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true)
       end
 
+      should 'return empty string if asset host from Proc returns host_with_port' do
+        asset_host = Proc.new { |source, request| request.ssl? ? "#{request.protocol}#{request.host_with_port}" : "#{request.protocol}cdn%d.example.com" % (source.hash % 4) }
+        flexmock(ActionController::Base, :asset_host => asset_host)
+        assert_match /http:\/\/cdn\d\.example\.com/, AssetHat.compute_asset_host(asset_host, 'x.png')
+        assert_equal("", AssetHat.compute_asset_host(asset_host, 'x.png', :ssl => true), "return empty string when asset_host would be 'https://:'")
+      end  
+
       should 'know that asset host is same between SSL and non-SSL URLs' do
         asset_host = 'http://cdn%d.example.com'
         flexmock(ActionController::Base, :asset_host => asset_host)
