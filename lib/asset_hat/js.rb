@@ -88,7 +88,7 @@ module AssetHat
       # - http://github.com/sstephenson/ruby-yui-compressor/
       # - http://rubygems.org/gems/yui-compressor
       def self.yui(input_string)
-        compressor = YUI::JavaScriptCompressor.new
+        compressor = YUI::JavaScriptCompressor.new(:munge => true)
         compressor.compress(input_string)
       end
 
