@@ -2,7 +2,7 @@ namespace :asset_hat do
   namespace :js do
 
     desc 'Minifies one JS file'
-    task :minify_file, :filepath, :needs => :environment do |t, args|
+    task :minify_file, [:filepath] => :environment do |t, args|
       type = 'js'
 
       if args.filepath.blank?
@@ -31,7 +31,7 @@ namespace :asset_hat do
     end
 
     desc 'Minifies one JS bundle'
-    task :minify_bundle, :bundle, :needs => :environment do |t, args|
+    task :minify_bundle, [:bundle] => :environment do |t, args|
       type = 'js'
 
       if args.bundle.blank?
@@ -104,7 +104,7 @@ namespace :asset_hat do
     end
 
     desc 'Concatenates and minifies all JS bundles'
-    task :minify, :opts, :needs => :environment do |t, args|
+    task :minify, [:opts] => :environment do |t, args|
       args.with_defaults(:opts => {})
       opts = args.opts.reverse_merge(:show_intro => true, :show_outro => true)
       type = 'js'
