@@ -2,7 +2,7 @@ namespace :asset_hat do
   namespace :css do
 
     desc 'Adds commit IDs to asset URLs in CSS for cache busting'
-    task :add_asset_commit_ids, :filename, :needs => :environment do |t, args|
+    task :add_asset_commit_ids, [:filename] => :environment do |t, args|
       if args.filename.blank?
         raise 'Usage: rake asset_hat:css:' +
           'add_asset_commit_ids[filename.css]' and return
@@ -18,7 +18,7 @@ namespace :asset_hat do
     end
 
     desc 'Adds hosts to asset URLs in CSS'
-    task :add_asset_hosts, :filename, :needs => :environment do |t, args|
+    task :add_asset_hosts, [:filename] => :environment do |t, args|
       if args.filename.blank?
         raise 'Usage: rake asset_hat:css:' +
           'add_asset_hosts[filename.css]' and return
@@ -40,7 +40,7 @@ namespace :asset_hat do
     end
 
     desc 'Minifies one CSS file'
-    task :minify_file, :filepath, :needs => :environment do |t, args|
+    task :minify_file, [:filepath] => :environment do |t, args|
       type = 'css'
 
       if args.filepath.blank?
@@ -65,7 +65,7 @@ namespace :asset_hat do
     end
 
     desc 'Minifies one CSS bundle'
-    task :minify_bundle, :bundle, :needs => :environment do |t, args|
+    task :minify_bundle, [:bundle] => :environment do |t, args|
       type = 'css'
 
       if args.bundle.blank?
@@ -155,7 +155,7 @@ namespace :asset_hat do
     end
 
     desc 'Concatenates and minifies all CSS bundles'
-    task :minify, :opts, :needs => :environment do |t, args|
+    task :minify, [:opts] => :environment do |t, args|
       args.with_defaults(:opts => {})
       opts = args.opts.reverse_merge(:show_intro => true, :show_outro => true)
       type = 'css'
