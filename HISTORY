@@ -2,6 +2,8 @@
 
 * FIX: Changed Capistrano task to minify assets inside latest release path,
   not previous release path. (Thanks, sauliusg[https://github.com/sauliusg]!)
+* FIX: Fixed deprecation warnings when running Rake tasks. (Thanks,
+  jsonperl[https://github.com/jsonperl]!)
 
 == Version 0.4.1 (2011-05-06)
 * FIX: Stopped `gem install asset_hat` from foolishly requiring itself.

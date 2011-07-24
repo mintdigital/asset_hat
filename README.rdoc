@@ -348,8 +348,8 @@ Don't go overboard with huge bundles:
 === Contributing
 
 Have an idea, problem, or bug report?
-{Open an issue.}[https://github.com/mintdigital/asset_hat/issues] Attach a
-patch or fork away.
+{Send a pull request}[http://help.github.com/send-pull-requests/]! Please base
+pull requests on the `development` branch, not the `master` branch.
 
 Contributors:
 
@@ -359,6 +359,7 @@ Contributors:
 * {dstrelau}[https://github.com/dstrelau]
 * {daphonz}[https://github.com/daphonz]
 * {sauliusg}[https://github.com/sauliusg]
+* {jsonperl}[https://github.com/jsonperl]
 
 
 
