@@ -4,7 +4,7 @@ require 'asset_hat/tasks/js'
 namespace :asset_hat do
 
   desc 'Minifies all CSS and JS bundles'
-  task :minify, :needs => :environment do
+  task :minify => :environment do
     format = ENV['FORMAT']
     print 'Minifying CSS/JS...'
     puts unless format == 'dot'
