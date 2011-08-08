@@ -1,0 +1,139 @@
+RELEASE
+=======
+
+This document covers the process for releasing AssetHat updates. The
+repository has two primary branches:
+
+* `development`: Stable code goes here. (Unstable code belongs in topic
+  branches.)
+* `master`: Releaseable code goes here.
+
+The overall workflow is:
+
+1.  Keep all major/minor/patch changes in topic branches. Merge or cherry-pick
+    patch-level changes into the `development` branch when stable. *Do not
+    push code changes directly to the `master` branch.*
+2.  Merge major/minor topic branches into `development` when stable and ready
+    for testing.
+3.  Whenever merging to `development`, document the change in `HISTORY`.
+4.  When preparing a release, merge all expected changes into the `master`
+    branch, and test that branch thoroughly (documented below). This merge
+    represents a code freeze on `master`, while `development` can continue to
+    change.
+5.  Update `HISTORY` and `README.rdoc` in the `master` branch (which is
+    frozen, unlike `development`), and the full API docs in the `gh-pages`
+    branch.
+6.  Release to RubyGems.
+7.  Merge documentation back from `master` to `development`.
+
+
+
+development
+-----------
+
+Features for the next major/minor release go in this branch. Bug fixes for the
+next patch release also go into this branch, but should be cherry-picked to
+`master` for release.
+
+Noteworthy changes in this branch should be summarized in `HISTORY`.
+
+
+
+master
+------
+
+Merge the `development` branch into `master` and/or cherry-pick bug fixes into
+`master`. This branch represents a freeze on code to be released.
+
+### Test: ###
+
+1.  Run tests on the `master` branch:
+
+        rake test   # Use rvm and your own gemsets to test this in
+                    # Rails 2.3 and 3.0.
+                    #
+                    # TODO: Write a bash script that runs tests in all
+                    #       supported versions of Rails and Ruby.
+
+2. (Optional) Manually update VERSION.yml's `build` string:
+
+        vim VERSION.yml   # Update `build` to `rc1`, `rc2`, etc.
+        rake build        # Generates `.gem` file in `pkg/`
+
+3. Test the build in a host app:
+
+        cd path/to/app
+        vim Gemfile
+          # Point to local copy of AssetHat:
+          #   gem 'asset_hat', :path => 'path/to/asset_hat'
+          # Alternatively, install the `.gem` that was created in the
+          # previous step.
+
+4. Restart app and test.
+
+### Test `README.rdoc` with GitHub's parser: ###
+
+    $ gem install github-markup
+    $ ./script/preview_github_readme
+
+### Release: ###
+
+1.  Finalize numbers in `VERSION.yml`.
+2.  Add the upcoming version number to `HISTORY`.
+3.  Regenerate docs in the `master` branch:
+
+        rake rerdoc           # Regenerate HTML for docs
+        open doc/index.html   # Verify in browser; `open` is only in OS X
+        git add doc/[...]     # Add meaningful changes only; discard changes
+                              # that only affect timestamps
+
+4.  Regenerate gemspec:
+
+        rake gemspec
+          # IMPORTANT:
+          # - Ensure that the generated `.gemspec` doesn't include asset_hat
+          #   as a dependency.
+          # - Ensure that Jeweler doesn't generate duplicate dependencies.
+        git add asset_hat.gemspec
+
+5.  **Commit and release**:
+
+        # Commit and tag:
+        git commit -m "Version bump to 0.x.x"
+        git tag 'v0.x.x'
+
+        # Push to GitHub:
+        git push
+        git push --tags
+
+        # Push to RubyGems:
+        gem build asset_hat.gemspec       # Generates `.gem` file
+        gem install asset_hat-1.x.x.gem   # Optional; for testing with
+                                          # existing host apps
+        gem push asset_hat-1.x.x.gem      # Pushes to RubyGems
+
+6.  Update website:
+
+        # Copy generated docs to gh-pages branch with Git 1.6.x
+        # (shorter methods exist in 1.7.x):
+        cp -r doc/ doc2
+        git checkout gh-pages
+        rm -r doc/
+        mv doc2/ doc
+        git add doc
+
+        # Update current version number on website:
+        vim index.html  # Update version number at bottom
+        git add index.html
+
+        # Publish
+        git commit -m "gh-pages: Version bump to 0.x.x"
+        git push
+
+7.  Merge `master` changes (which should only affect documentation)
+    back into the `development` branch.
+8.  Lastly, update host apps to use the new version!
+
+Don't use Jeweler's `rake release` (updates gemspec; tags; and pushes to
+GitHub and RubyGems). The gemspec needs to be manually inspected for Jeweler
+silliness after being generated.
