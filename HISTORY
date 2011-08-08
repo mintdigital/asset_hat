@@ -1,5 +1,6 @@
 = HISTORY
 
+== Version 0.4.2 (2011-08-08)
 * FIX: Changed Capistrano task to minify assets inside latest release path,
   not previous release path. (Thanks, sauliusg[https://github.com/sauliusg]!)
 * FIX: Fixed deprecation warnings when running Rake tasks. (Thanks,
