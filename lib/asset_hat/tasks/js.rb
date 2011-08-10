@@ -1,6 +1,19 @@
 namespace :asset_hat do
   namespace :js do
 
+    desc 'Deletes existing JS bundle files'
+    task :clean do
+      dir = AssetHat.bundles_dir(:js)
+      verbose = (ENV['VERBOSE'] == 'true') # Defaults to `false`
+
+      if Dir.exists?(dir)
+        FileUtils.rm_r(dir)
+        puts "Deleted #{dir}."
+      elsif verbose
+        puts "#{dir} has already been cleaned out."
+      end
+    end
+
     desc 'Minifies one JS file'
     task :minify_file, [:filepath] => :environment do |t, args|
       type = 'js'

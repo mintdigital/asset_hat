@@ -46,4 +46,19 @@ namespace :asset_hat do
     puts 'and set up your CSS/JS bundles.'
   end
 
+  desc 'Deletes existing bundle files'
+  task :clean do
+    %w[css js].each do |type|
+      task = Rake::Task["asset_hat:#{type}:clean"]
+      task.reenable; task.invoke
+    end
+  end
+
+  namespace :clean do
+    %w[css js].each do |type|
+      desc "Alias for asset_hat:#{type}:clean"
+      task type.to_sym => "asset_hat:#{type}:clean"
+    end
+  end
+
 end # namespace :asset_hat

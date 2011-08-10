@@ -39,6 +39,19 @@ namespace :asset_hat do
       puts "- Added asset hosts to #{args.filename}" if verbose
     end
 
+    desc 'Deletes existing CSS bundle files'
+    task :clean do
+      dir = AssetHat.bundles_dir(:css)
+      verbose = (ENV['VERBOSE'] == 'true') # Defaults to `false`
+
+      if Dir.exists?(dir)
+        FileUtils.rm_r(dir)
+        puts "Deleted #{dir}."
+      elsif verbose
+        puts "#{dir} has already been cleaned out."
+      end
+    end
+
     desc 'Minifies one CSS file'
     task :minify_file, [:filepath] => :environment do |t, args|
       type = 'css'
