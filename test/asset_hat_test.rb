@@ -128,6 +128,13 @@ class AssetHatTest < ActiveSupport::TestCase
                     AssetHat::CSS.min_filepath('foo/bar/baz.css')
     end
 
+    should 'return path to minified file with MD5 fingerprint' do
+      fingerprint = 'a1b2c3'
+      assert_equal  "foo/bar/baz-#{fingerprint}.min.css",
+                    AssetHat::CSS.min_filepath('foo/bar/baz.css',
+                      :fingerprint => fingerprint)
+    end
+
     should 'add image asset commit IDs' do
       commit_id = 111
       flexmock(AssetHat, :last_commit_id => commit_id)
@@ -250,6 +257,13 @@ class AssetHatTest < ActiveSupport::TestCase
                     AssetHat::JS.min_filepath('foo/bar/baz.js')
     end
 
+    should 'return path to minified file with MD5 fingerprint' do
+      fingerprint = 'a1b2c3'
+      assert_equal  "foo/bar/baz-#{fingerprint}.min.js",
+                    AssetHat::JS.min_filepath('foo/bar/baz.js',
+                      :fingerprint => fingerprint)
+    end
+
     context 'with minifying' do
       should 'minify if a string ends with a comment and no line break' do
         input = 'foo(); // bar'
@@ -257,5 +271,37 @@ class AssetHatTest < ActiveSupport::TestCase
       end
     end # context 'with minifying'
   end # context 'AssetHat::JS'
+
+  context 'AssetHat::Fingerprint' do
+    should 'return the fingerprint for a string' do
+      assert_match /[a-f0-9]{32}/,
+        AssetHat::Fingerprint.for_string('application')
+    end
+
+    should 'return the fingerprint for a file' do
+      assert_match /[a-f0-9]{32}/,
+        AssetHat::Fingerprint.for_filepath(File.join(
+          'public', 'stylesheets', 'css-file-1-1.css'
+        ))
+    end
+
+    should 'return the fingerprint for a bundle' do
+      AssetHat::TYPES.each do |type|
+        bundle_name = AssetHat.config[type.to_s]['bundles'].keys.first
+        assert bundle_name.present?, %{
+          Precondition: The #{type.to_s.upcase} bundle
+          `#{bundle_name}` should exist.
+        }.squish!
+
+        assert_match /[a-f0-9]{32}/,
+          AssetHat::Fingerprint.for_bundle(bundle_name, type.to_sym)
+
+        flexmock(AssetHat::Fingerprint).should_receive(:for_string).never
+        assert AssetHat::Fingerprint.for_bundle(bundle_name, type.to_sym),
+          'Should memoize fingerprint from previous call'
+        flexmock_teardown
+      end
+    end
+  end # context 'AssetHat::Fingerprint'
 
 end

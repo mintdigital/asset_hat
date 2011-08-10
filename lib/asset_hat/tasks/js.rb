@@ -45,9 +45,10 @@ namespace :asset_hat do
 
     desc 'Minifies one JS bundle'
     task :minify_bundle, [:bundle] => :environment do |t, args|
-      type = 'js'
+      bundle = args.bundle
+      type   = 'js'
 
-      if args.bundle.blank?
+      if bundle.blank?
         raise "Usage: rake asset_hat:#{type}:" +
           "minify_bundle[application]" and return
       end
@@ -59,11 +60,14 @@ namespace :asset_hat do
         :engine => config['engine']
       }.reject { |k,v| v.blank? }
 
+      # Compute bundle fingerprint
+      fingerprint = AssetHat::Fingerprint.for_bundle(bundle, type)
+
       # Get bundle filenames
-      filenames = config['bundles'][args.bundle].select(&:present?)
+      filenames = config['bundles'][bundle].select(&:present?)
       if filenames.empty?
         raise "No #{type.upcase} files are specified for the " +
-          "#{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
+          "#{bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
       end
       filepaths = filenames.map do |filename|
         parts = filename.split(File::SEPARATOR)
@@ -75,8 +79,10 @@ namespace :asset_hat do
           parts
         )
       end
-      bundle_filepath = AssetHat::JS.min_filepath(File.join(
-        AssetHat.bundles_dir(type), "#{args.bundle}.#{type}"))
+      bundle_filepath = AssetHat::JS.min_filepath(
+        File.join(AssetHat.bundles_dir(type), "#{bundle}.#{type}"),
+        :fingerprint => fingerprint
+      )
 
       # Concatenate and process output
       output = ''
@@ -139,6 +145,11 @@ namespace :asset_hat do
           "in #{AssetHat::CONFIG_FILEPATH}." and return
       end
       bundles = config['bundles'].keys
+
+      # Clean out older bundles
+      puts
+      task = Rake::Task["asset_hat:#{type}:clean"]
+      task.reenable; task.invoke
 
       # Minify bundles
       bundles.each do |bundle|

@@ -53,6 +53,12 @@ module AssetHatHelper
         sources << filename
       else
         min_filename_with_ext = "#{filename}.min.#{type}"
+        # if use_caching
+        #   fingerprint = AssetHat::Fingerprint.for_filepath(filename)
+        #   min_filename_with_ext = "#{filename}-#{fingerprint}.min.#{type}"
+        # else
+        #   min_filename_with_ext = "#{filename}.min.#{type}"
+        # end
         if use_caching && AssetHat.asset_exists?(min_filename_with_ext, type)
           sources << min_filename_with_ext  # Use minified version
         else
@@ -64,27 +70,29 @@ module AssetHatHelper
     sources.uniq!
 
     if use_caching
-      # Add commit IDs to bust browser caches based on when each file was
-      # last updated in the repository. If `use_caching` is false (e.g., in
-      # development environments), skip this, and instead default to Rails'
-      # mtime-based cache busting.
+      # Add alphanumeric fingerprints to bust browser caches whenever a file
+      # changes. If `use_caching` is false (e.g., in development
+      # environments), skip this, and instead default to Rails' cache busting
+      # strategy (mtime-based before Rails 3.1).
       sources.map! do |src|
         if src =~ %r{^http(s?)://} || src =~ %r{^//}
           # Absolute URL; do nothing
         elsif src =~ /^#{AssetHat.bundles_dir}\//
-          # Get commit ID of bundle file with most recently committed update
+          # Get fingerprint for the whole bundle
           bundle = src.
             match(/^#{AssetHat.bundles_dir}\/(ssl\/)?(.*)\.min\.#{type}$/).
             to_a.last
-          commit_id = AssetHat.last_bundle_commit_id(bundle, type)
+          fingerprint = AssetHat::Fingerprint.for_bundle(bundle, type)
         else
-          # Get commit ID of file's most recently committed update
-          commit_id = AssetHat.last_commit_id(
+          # Get fingerprint for a single file
+          fingerprint = AssetHat::Fingerprint.for_filepath(
             File.join(AssetHat.assets_dir(type), src))
         end
-        if commit_id.present? # False if file isn't committed to repo
-          src += "#{src =~ /\?/ ? '&' : '?'}#{commit_id}"
+
+        if fingerprint.present?
+          src.sub!(/\.min\.#{type}$/, "-#{fingerprint}.min.#{type}")
         end
+
         src
       end
     end

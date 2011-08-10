@@ -16,8 +16,15 @@ module AssetHat
     #
     #     AssetHat::JS.min_filepath('public/javascripts/bundles/application.js')
     #       # => 'public/javascripts/bundles/application.min.js'
-    def self.min_filepath(filepath)
-      AssetHat.min_filepath(filepath, 'js')
+    #
+    # Options:
+    #
+    # [fingerprint] Default is <code>nil</code>. If the fingerprint of the
+    #               code to be stored in this file is known, specify it here
+    #               to include it in the returned file path
+    #               (e.g., <code>path/to/application-a1b2c3.min.css</code>).
+    def self.min_filepath(filepath, options={})
+      AssetHat.min_filepath(filepath, 'js', options)
     end
 
     # Accepts a string of JS, and returns that JS minified. Options:

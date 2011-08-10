@@ -1,4 +1,4 @@
-%w[css js vcs].each do |filename|
+%w[css js fingerprint vcs].each do |filename|
   require File.join(File.dirname(__FILE__), 'asset_hat', filename)
 end
 
@@ -197,8 +197,19 @@ module AssetHat
   #
   # See also <code>AssetHat::CSS.min_filepath</code> and
   # <code>AssetHat::JS.min_filepath</code>.
-  def self.min_filepath(filepath, extension)
-    filepath.sub(/([^\.]*).#{extension}$/, "\\1.min.#{extension}")
+  #
+  # Options:
+  #
+  # [fingerprint] Default is <code>nil</code>. If the fingerprint of the
+  #               code to be stored in this file is known, specify it here
+  #               to include it in the returned file path
+  #               (e.g., <code>path/to/application-a1b2c3.min.css</code>).
+  def self.min_filepath(filepath, extension, options={})
+    # filepath.sub(/([^\.]*).#{extension}$/, "\\1.min.#{extension}")
+    filepath.sub(/([^\.]*).#{extension}$/) do |match|
+      filename = [$1, options[:fingerprint]].select(&:present?).join('-')
+      "#{filename}.min.#{extension}"
+    end
   end
 
   # Returns the extension-less names of files in the given bundle:

@@ -79,9 +79,10 @@ namespace :asset_hat do
 
     desc 'Minifies one CSS bundle'
     task :minify_bundle, [:bundle] => :environment do |t, args|
-      type = 'css'
+      bundle = args.bundle
+      type   = 'css'
 
-      if args.bundle.blank?
+      if bundle.blank?
         raise "Usage: rake asset_hat:#{type}:" +
           "minify_bundle[application]" and return
       end
@@ -94,10 +95,10 @@ namespace :asset_hat do
       }.reject { |k,v| v.blank? }
 
       # Get bundle filenames
-      filenames = config['bundles'][args.bundle].select(&:present?)
+      filenames = config['bundles'][bundle].select(&:present?)
       if filenames.empty?
         raise "No #{type.upcase} files are specified for the " +
-          "#{args.bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
+          "#{bundle} bundle in #{AssetHat::CONFIG_FILEPATH}." and return
       end
       filepaths = filenames.map do |filename|
         parts = filename.split(File::SEPARATOR)
@@ -120,13 +121,20 @@ namespace :asset_hat do
 
       output_options_array.each do |output_options|
 
+        # Compute bundle fingerprint
+        fingerprint = AssetHat::Fingerprint.for_bundle(bundle, type)
+
         # Concatenate and process output
-        bundle_filepath = AssetHat::CSS.min_filepath(File.join(
-          AssetHat.bundles_dir(type, output_options.slice(:ssl)),
-          "#{args.bundle}.#{type}"))
+        bundle_filepath = AssetHat::CSS.min_filepath(
+          File.join(
+            AssetHat.bundles_dir(type, output_options.slice(:ssl)),
+            "#{bundle}.#{type}"
+          ),
+          :fingerprint => fingerprint
+        )
         old_bundle_size = 0.0
         new_bundle_size = 0.0
-        output     = ''
+        output = ''
         filepaths.each do |filepath|
           file_output = File.open(filepath, 'r').read
           old_bundle_size += file_output.size
@@ -191,11 +199,15 @@ namespace :asset_hat do
       end
       bundles = config['bundles'].keys
 
+      # Clean out older bundles
+      puts
+      task = Rake::Task["asset_hat:#{type}:clean"]
+      task.reenable; task.invoke
+
       # Minify bundles
       bundles.each do |bundle|
         task = Rake::Task["asset_hat:#{type}:minify_bundle"]
-        task.reenable
-        task.invoke(bundle)
+        task.reenable; task.invoke(bundle)
       end
 
       if opts[:show_outro]
