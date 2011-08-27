@@ -146,8 +146,8 @@ packaged example at
 <code>lib/asset_hat/unicorn.rb[https://github.com/mintdigital/asset_hat/blob/master/lib/asset_hat/unicorn.rb]</code>.
 
 If you want shorter output during deployments, you can use
-`rake asset_hat:minify FORMAT=short` (one output line per bundle) or
-`FORMAT=dot` (one output line total) in your deploy script.
+<code>rake asset_hat:minify FORMAT=short</code> (one output line per bundle)
+or <code>FORMAT=dot</code> (one output line total) in your deploy script.
 
 Additional settings are supported in <code>config/assets.yml</code>:
 
@@ -348,8 +348,9 @@ Don't go overboard with huge bundles:
 === Contributing
 
 Have an idea, problem, or bug report?
-{Open an issue.}[https://github.com/mintdigital/asset_hat/issues] Attach a
-patch or fork away.
+{Send a pull request}[http://help.github.com/send-pull-requests/]! Please base
+pull requests on the <code>development</code> branch, not the
+<code>master</code> branch.
 
 Contributors:
 
@@ -359,6 +360,7 @@ Contributors:
 * {dstrelau}[https://github.com/dstrelau]
 * {daphonz}[https://github.com/daphonz]
 * {sauliusg}[https://github.com/sauliusg]
+* {jsonperl}[https://github.com/jsonperl]
 
 
 

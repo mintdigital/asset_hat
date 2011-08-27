@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'github/markup'
+
+html_path = 'tmp/readme.html'
+File.open(html_path, 'w') do |f|
+  f.write GitHub::Markup.render('README.rdoc')
+end
+puts "Wrote to #{html_path}"
+`open tmp/readme.html` # OS X only
