@@ -2,4 +2,5 @@ _site/
 pkg/
 tmp/
 Gemfile.lock
-/.idea
+.idea
+.AppleDouble
