@@ -4,3 +4,4 @@ tmp/
 Gemfile.lock
 .idea
 .AppleDouble
+*.gem
