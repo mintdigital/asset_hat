@@ -111,13 +111,17 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.0"])
       s.add_development_dependency(%q<shoulda>, ["~> 2.10.2"])
+      s.add_development_dependency(%q<actionpack>, ["~> 3.0.0"])
+      s.add_development_dependency(%q<test-unit>, ["~> 2.0.0"])
       s.add_runtime_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_runtime_dependency(%q<jsmin>, ["~> 1.0.1"])
-    else
+   else
       s.add_dependency(%q<flexmock>, ["~> 0.8.6"])
       s.add_dependency(%q<hanna>, ["~> 0.1.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.0"])
       s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
+      s.add_dependency(%q<actionpack>, ["~> 3.0.0"])
+      s.add_dependency(%q<test-unit>, ["~> 2.0.0"])
       s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
       s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
     end
@@ -126,6 +130,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<hanna>, ["~> 0.1.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.0"])
     s.add_dependency(%q<shoulda>, ["~> 2.10.2"])
+    s.add_dependency(%q<actionpack>, ["~> 3.0.0"])
+    s.add_dependency(%q<test-unit>, ["~> 2.0.0"])
     s.add_dependency(%q<cssmin>, ["~> 1.0.2"])
     s.add_dependency(%q<jsmin>, ["~> 1.0.1"])
   end
