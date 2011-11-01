@@ -21,12 +21,14 @@ begin
     gemspec.authors     = ['Ron DeVera', 'Mint Digital']
     gemspec.email       = 'hello@rondevera.com'
 
-    gemspec.add_development_dependency  'flexmock', '~> 0.8.6'
-    gemspec.add_development_dependency  'hanna',    '~> 0.1.12'
-    gemspec.add_development_dependency  'jeweler',  '~> 1.6.0'
-    gemspec.add_development_dependency  'shoulda',  '~> 2.10.2'
-    gemspec.add_runtime_dependency      'cssmin',   '~> 1.0.2'
-    gemspec.add_runtime_dependency      'jsmin',    '~> 1.0.1'
+    gemspec.add_development_dependency  'flexmock',   '~> 0.8.6'
+    gemspec.add_development_dependency  'hanna',      '~> 0.1.12'
+    gemspec.add_development_dependency  'jeweler',    '~> 1.6.0'
+    gemspec.add_development_dependency  'shoulda',    '~> 2.10.2'
+    gemspec.add_development_dependency  'actionpack', '~> 3.0.0'
+    gemspec.add_development_dependency  'test-unit',  '~> 2.0.0'
+    gemspec.add_runtime_dependency      'cssmin',     '~> 1.0.2'
+    gemspec.add_runtime_dependency      'jsmin',      '~> 1.0.1'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
