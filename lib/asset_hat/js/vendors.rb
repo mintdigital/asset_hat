@@ -91,8 +91,10 @@ module AssetHat
           # use a remote URL as a fallback.
 
           # Give precedence to configured remote URLs
-          src   = vendor_config.try(:[], 'remote_ssl_url') if use_ssl
-          src ||= vendor_config.try(:[], 'remote_url')
+          unless vendor_config.nil?
+            src   = vendor_config['remote_ssl_url'] if use_ssl
+            src ||= vendor_config['remote_url']
+          end
 
           # Use default remote URL as fallback
           src ||= remote_src
@@ -232,3 +234,4 @@ module AssetHat
   end
 
 end
+
