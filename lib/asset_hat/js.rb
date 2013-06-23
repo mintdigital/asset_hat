@@ -1,4 +1,5 @@
 require 'jsmin'
+require 'yui/copmressor'
 require File.join(File.dirname(__FILE__), 'js', 'vendors')
 
 module AssetHat
@@ -6,7 +7,7 @@ module AssetHat
   module JS
     # A list of supported minification
     # <a href=JS/Engines.html>engine</a> names.
-    ENGINES = [:weak, :jsmin]
+    ENGINES = [:weak, :jsmin, :yui]
 
     # A list of supported
     # <a href=JS/Vendors.html>3rd-party JavaScript plugin/vendor</a> names.
@@ -79,6 +80,18 @@ module AssetHat
       def self.jsmin(input_string)
         JSMin.minify(input_string + "\n")
       end
+
+      # Ruby-YUI Compressor provides a Ruby interface to the YUI Compressor
+      # Java library for minifying JavaScript and CSS assets.
+      #
+      # Sources:
+      # - http://github.com/sstephenson/ruby-yui-compressor/
+      # - http://rubygems.org/gems/yui-compressor
+      def self.yui(input_string)
+        compressor = YUI::JavaScriptCompressor.new
+        compressor.compress(input_string)
+      end
+
     end # module Engines
 
   end
